@@ -1,0 +1,13 @@
+IP Address: 192.168.0.102
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.0.1
+
+Preferred DNS server: 192.168.0.254
+
+Link: 192.168.0.102:4000
+
+ginMartini2.4: Ac_lab123
+ginMartini5.0: Ac_lab123
+
+JieWei: 192.168.0.102
+Alfred: 192.168.0.103
