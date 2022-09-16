@@ -43,9 +43,7 @@ func main() {
 
 func adminUpdateUserController(w http.ResponseWriter, req *http.Request) {
 	err := req.ParseForm()
-	if err != nil {
-		log.Fatalln(err)
-	}
+	checkError(err)
 
 	// returns a slice of bytes
 	body, _ := io.ReadAll(req.Body)
@@ -64,13 +62,6 @@ func adminUpdateUserController(w http.ResponseWriter, req *http.Request) {
 	status := keyVal["status"]
 
 	adminUpdateUser(username, password, email, user_group, status, w)
-
-	// 	json.NewEncoder(w).Encode(&keyVal)
-
-	// func NewEncoder(w io.Writer) *Encoder
-	// func (enc *Encoder) Encode(v any) error
-	// Conversion of Go values to JSON
-
 }
 
 func adminUpdateUser(username string, password string, email string, user_group string, status string, w http.ResponseWriter) {
@@ -114,8 +105,8 @@ func adminUpdateUserEmail(username string, hashedPassword string, email string, 
 }
 
 func adminUpdateUserGroup(username string, hashedPassword string, email string, user_group string, status string, w http.ResponseWriter) {
-	// To Do: Update user group querying (split, includes)
 	if user_group != "" {
+		user_group = appendNewUserGroup(username, user_group)
 		adminUpdateUserStatus(username, hashedPassword, email, user_group, status, w)
 	} else {
 		user_group = getCurrentUserData(username)["user_group"]
@@ -137,7 +128,18 @@ func adminUpdateAccountsTable(username string, hashedPassword string, email stri
 		username, hashedPassword, email, user_group, status, username)
 	checkError(err)
 
-	io.WriteString(w, "Successfully updated user!")
+	jsonStatus := struct {
+		Message string `json:"message"`
+		Code    int    `json:"code"`
+	}{
+		Message: "Successfully updated user!",
+		Code:    200,
+	}
+
+	json.NewEncoder(w).Encode(jsonStatus)
+	// func NewEncoder(w io.Writer) *Encoder
+	// func (enc *Encoder) Encode(v any) error
+	// Conversion of Go values to JSON
 }
 
 func getCurrentUserData(username string) map[string]string {
@@ -161,6 +163,46 @@ func getCurrentUserData(username string) map[string]string {
 	return currentUserData
 }
 
+func appendNewUserGroup(username string, user_group string) string {
+	currentUserGroup := getCurrentUserData(username)["user_group"]
+	currentUserGroupSplit := strings.Split(currentUserGroup, ",")
+	newUserGroupSplit := strings.Split(user_group, ",")
+
+	userGroupSlice := []string{}
+	for _, i := range newUserGroupSplit {
+		if !contains(currentUserGroupSplit, i) {
+			updateUserGroupTable(username, i)
+			userGroupSlice = append(currentUserGroupSplit, i)
+		} else {
+			userGroupSlice = currentUserGroupSplit
+		}
+	}
+	user_group = strings.Join(userGroupSlice, ",")
+	return user_group
+}
+
+func contains(s []string, str string) bool {
+	for _, i := range s {
+		if i == str {
+			return true
+		}
+	}
+	return false
+}
+
+func updateUserGroupTable(username string, user_group string) {
+	rows, err := db.Query(`SELECT * FROM usergroup WHERE username = ? AND user_group = ?;`,
+		username, user_group)
+	checkError(err)
+
+	if !rows.Next() {
+		fmt.Println("reached here")
+		fmt.Println(username, user_group)
+		_, err := db.Query(`INSERT INTO usergroup VALUES (?,?)`, username, user_group)
+		checkError(err)
+	}
+}
+
 func hashAndSaltPassword(pwd []byte) string {
 	pwdCost := 10
 	hash, err := bcrypt.GenerateFromPassword(pwd, pwdCost)
@@ -177,7 +219,6 @@ func connectionToMySQL() {
 	err = db.Ping()
 	checkError(err)
 	fmt.Println("Connected to MySQL Database!")
-
 }
 
 func checkError(err error) {
