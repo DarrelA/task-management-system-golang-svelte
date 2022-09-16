@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
@@ -16,15 +15,11 @@ import (
 
 // Go struct in the form of JSON
 type User struct {
-	Username  string `json:"username"`
-	Password  string `json:"password"`
-	Email     string `json:"email"`
-	Usergroup string `json:"usergroup"`
-	Status    string `json:"status"`
-}
-
-type accounts struct {
-	users User
+	Username   string `json:"username"`
+	Password   string `json:"password"`
+	Email      string `json:"email"`
+	User_group string `json:"user_group"`
+	Status     string `json:"status"`
 }
 
 var db *sql.DB
@@ -53,7 +48,7 @@ func adminUpdateUserController(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// returns a slice of bytes
-	body, _ := ioutil.ReadAll(req.Body)
+	body, _ := io.ReadAll(req.Body)
 
 	keyVal := make(map[string]string)
 	// func Unmarshal(data []byte, v interface{}) error
@@ -65,67 +60,12 @@ func adminUpdateUserController(w http.ResponseWriter, req *http.Request) {
 	username := strings.TrimSpace(keyVal["username"])
 	password := keyVal["password"]
 	email := strings.TrimSpace(keyVal["email"])
-	// usergroup := keyVal["usergroup"]
-	// status := keyVal["status"]
+	user_group := keyVal["user_group"]
+	status := keyVal["status"]
 
-	hashedPassword := hashAndSaltPassword([]byte(password))
-	fmt.Println(hashedPassword)
+	adminUpdateUser(username, password, email, user_group, status, w)
 
-	// Check if username exists
-	if username == "" {
-		http.Error(w, "Please enter a username.", 500)
-	} else {
-		rows, err := db.Query(`SELECT * FROM accounts WHERE username = ?;`, username)
-		checkError(err)
-
-		if rows.Next() {
-			if password != "" {
-				// _, err := db.Query(`UPDATE accounts SET password = ? WHERE username = ?`, password, username)
-				// checkError(err)
-				// io.WriteString(w, "Updated Password!")
-				if email != "" {
-					rows, err := db.Query(`SELECT * FROM accounts WHERE email = ?;`, email)
-					checkError(err)
-					if rows.Next() {
-						http.Error(w, "This email already exist. Please try again.", 404)
-					} else {
-						io.WriteString(w, "Don't have this email, can update!")
-					}
-				}
-			}
-		} else {
-			http.Error(w, "This username does not exist, please try again", 404)
-		}
-	}
-
-	//////
-
-	// u1 := "lowjiewei"
-	// jsonData := map[string]string{
-	// 	"username": u1,
-	// }
-
-	// json.NewEncoder(w).Encode(&keyVal)
-	// fmt.Println(keyVal["username"])
-
-	// stmt, err := db.Prepare(`UPDATE accounts SET password="Password123456" WHERE username="admin";`)
-	// checkError(err)
-	// defer stmt.Close()
-
-	// r, err := stmt.Exec()
-	// checkError(err)
-
-	// n, err := r.RowsAffected()
-	// checkError(err)
-
-	// fmt.Fprintln(w, "UPDATED RECORD", n, "SUCCESSFULLY UPDATED")
-
-	// defer db.Close()
-
-	// Testing
-	// if username != "" {
 	// 	json.NewEncoder(w).Encode(&keyVal)
-	// }
 
 	// func NewEncoder(w io.Writer) *Encoder
 	// func (enc *Encoder) Encode(v any) error
@@ -133,8 +73,97 @@ func adminUpdateUserController(w http.ResponseWriter, req *http.Request) {
 
 }
 
+func adminUpdateUser(username string, password string, email string, user_group string, status string, w http.ResponseWriter) {
+	hashedPassword := hashAndSaltPassword([]byte(password))
+
+	if username != "" {
+		rows, err := db.Query(`SELECT * FROM accounts WHERE username = ?;`, username)
+		checkError(err)
+		if rows.Next() {
+			adminUpdateUserPassword(username, hashedPassword, email, user_group, status, w)
+		} else {
+			http.Error(w, "This username does not exist, please try again", 404)
+		}
+	} else {
+		http.Error(w, "Please enter a username.", 500)
+	}
+}
+
+func adminUpdateUserPassword(username string, hashedPassword string, email string, user_group string, status string, w http.ResponseWriter) {
+	if hashedPassword != "" {
+		adminUpdateUserEmail(username, hashedPassword, email, user_group, status, w)
+	} else {
+		hashedPassword = getCurrentUserData(username)["password"]
+		adminUpdateUserEmail(username, hashedPassword, email, user_group, status, w)
+	}
+}
+
+func adminUpdateUserEmail(username string, hashedPassword string, email string, user_group string, status string, w http.ResponseWriter) {
+	if email != "" {
+		rows, err := db.Query(`SELECT * FROM accounts WHERE email = ?;`, email)
+		checkError(err)
+		if rows.Next() {
+			http.Error(w, "Email already exists in database. Please try again.", 404)
+		} else {
+			adminUpdateUserGroup(username, hashedPassword, email, user_group, status, w)
+		}
+	} else {
+		email = getCurrentUserData(username)["email"]
+		adminUpdateUserGroup(username, hashedPassword, email, user_group, status, w)
+	}
+}
+
+func adminUpdateUserGroup(username string, hashedPassword string, email string, user_group string, status string, w http.ResponseWriter) {
+	// To Do: Update user group querying (split, includes)
+	if user_group != "" {
+		adminUpdateUserStatus(username, hashedPassword, email, user_group, status, w)
+	} else {
+		user_group = getCurrentUserData(username)["user_group"]
+		adminUpdateUserStatus(username, hashedPassword, email, user_group, status, w)
+	}
+}
+
+func adminUpdateUserStatus(username string, hashedPassword string, email string, user_group string, status string, w http.ResponseWriter) {
+	if status != "" {
+		adminUpdateAccountsTable(username, hashedPassword, email, user_group, status, w)
+	} else {
+		status = getCurrentUserData(username)["status"]
+		adminUpdateAccountsTable(username, hashedPassword, email, user_group, status, w)
+	}
+}
+
+func adminUpdateAccountsTable(username string, hashedPassword string, email string, user_group string, status string, w http.ResponseWriter) {
+	_, err := db.Query(`UPDATE accounts SET username = ?, password = ?, email = ?, user_group = ?, status = ? WHERE username = ?`,
+		username, hashedPassword, email, user_group, status, username)
+	checkError(err)
+
+	io.WriteString(w, "Successfully updated user!")
+}
+
+func getCurrentUserData(username string) map[string]string {
+	var password string
+	var email string
+	var user_group string
+	var status string
+	rows, err := db.Query(`SELECT username, password, email, user_group, status FROM accounts WHERE username = ?`,
+		username)
+	checkError(err)
+
+	currentUserData := make(map[string]string)
+	for rows.Next() {
+		err = rows.Scan(&username, &password, &email, &user_group, &status)
+		checkError(err)
+		currentUserData["password"] = password
+		currentUserData["email"] = email
+		currentUserData["user_group"] = user_group
+		currentUserData["status"] = status
+	}
+	return currentUserData
+}
+
 func hashAndSaltPassword(pwd []byte) string {
-	hash, err := bcrypt.GenerateFromPassword(pwd, bcrypt.MinCost)
+	pwdCost := 10
+	hash, err := bcrypt.GenerateFromPassword(pwd, pwdCost)
 	checkError(err)
 
 	return string(hash)
