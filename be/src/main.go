@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Go struct in the form of JSON
@@ -66,6 +67,9 @@ func adminUpdateUserController(w http.ResponseWriter, req *http.Request) {
 	email := strings.TrimSpace(keyVal["email"])
 	// usergroup := keyVal["usergroup"]
 	// status := keyVal["status"]
+
+	hashedPassword := hashAndSaltPassword([]byte(password))
+	fmt.Println(hashedPassword)
 
 	// Check if username exists
 	if username == "" {
@@ -127,6 +131,13 @@ func adminUpdateUserController(w http.ResponseWriter, req *http.Request) {
 	// func (enc *Encoder) Encode(v any) error
 	// Conversion of Go values to JSON
 
+}
+
+func hashAndSaltPassword(pwd []byte) string {
+	hash, err := bcrypt.GenerateFromPassword(pwd, bcrypt.MinCost)
+	checkError(err)
+
+	return string(hash)
 }
 
 func connectionToMySQL() {
