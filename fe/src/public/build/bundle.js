@@ -58,6 +58,9 @@ var app = (function () {
     function children(element) {
         return Array.from(element.childNodes);
     }
+    function set_input_value(input, value) {
+        input.value = value == null ? '' : value;
+    }
     function set_style(node, key, value, important) {
         if (value === null) {
             node.style.removeProperty(key);
@@ -332,9 +335,12 @@ var app = (function () {
         else
             dispatch_dev('SvelteDOMSetAttribute', { node, attribute, value });
     }
-    function prop_dev(node, property, value) {
-        node[property] = value;
-        dispatch_dev('SvelteDOMSetProperty', { node, property, value });
+    function set_data_dev(text, data) {
+        data = '' + data;
+        if (text.wholeText === data)
+            return;
+        dispatch_dev('SvelteDOMSetData', { node: text, data });
+        text.data = data;
     }
     function validate_slots(name, slot, keys) {
         for (const slot_key of Object.keys(slot)) {
@@ -393,6 +399,31 @@ var app = (function () {
     	let br4;
     	let t11;
     	let button;
+    	let t13;
+    	let p;
+    	let t14;
+    	let t15;
+    	let t16;
+    	let ul;
+    	let li0;
+    	let t17;
+    	let t18;
+    	let t19;
+    	let li1;
+    	let t20;
+    	let t21;
+    	let t22;
+    	let li2;
+    	let t23;
+    	let t24;
+    	let t25;
+    	let li3;
+    	let t26;
+    	let t27;
+    	let t28;
+    	let li4;
+    	let t29;
+    	let t30;
     	let mounted;
     	let dispose;
 
@@ -424,36 +455,63 @@ var app = (function () {
     			t11 = space();
     			button = element("button");
     			button.textContent = "Update User";
+    			t13 = space();
+    			p = element("p");
+    			t14 = text("Result: ");
+    			t15 = text(/*result*/ ctx[5]);
+    			t16 = space();
+    			ul = element("ul");
+    			li0 = element("li");
+    			t17 = text("Username: ");
+    			t18 = text(/*username*/ ctx[0]);
+    			t19 = space();
+    			li1 = element("li");
+    			t20 = text("Password: ");
+    			t21 = text(/*password*/ ctx[1]);
+    			t22 = space();
+    			li2 = element("li");
+    			t23 = text("Email: ");
+    			t24 = text(/*email*/ ctx[2]);
+    			t25 = space();
+    			li3 = element("li");
+    			t26 = text("UserGroup: ");
+    			t27 = text(/*user_group*/ ctx[3]);
+    			t28 = space();
+    			li4 = element("li");
+    			t29 = text("Status: ");
+    			t30 = text(/*status*/ ctx[4]);
     			attr_dev(h1, "class", "svelte-i7qo5m");
-    			add_location(h1, file, 45, 0, 935);
+    			add_location(h1, file, 41, 0, 737);
     			attr_dev(input0, "type", "text");
-    			input0.value = /*username*/ ctx[0];
     			attr_dev(input0, "placeholder", "Username");
-    			add_location(input0, file, 46, 0, 962);
-    			add_location(br0, file, 46, 87, 1049);
+    			add_location(input0, file, 42, 0, 764);
+    			add_location(br0, file, 42, 66, 830);
     			attr_dev(input1, "type", "text");
-    			input1.value = /*password*/ ctx[1];
     			attr_dev(input1, "placeholder", "Password");
-    			add_location(input1, file, 47, 0, 1054);
-    			add_location(br1, file, 47, 87, 1141);
+    			add_location(input1, file, 43, 0, 835);
+    			add_location(br1, file, 43, 66, 901);
     			attr_dev(input2, "type", "text");
-    			input2.value = /*email*/ ctx[2];
     			attr_dev(input2, "placeholder", "Email");
-    			add_location(input2, file, 48, 0, 1146);
-    			add_location(br2, file, 48, 78, 1224);
+    			add_location(input2, file, 44, 0, 906);
+    			add_location(br2, file, 44, 60, 966);
     			attr_dev(input3, "type", "text");
-    			input3.value = /*user_group*/ ctx[3];
     			attr_dev(input3, "placeholder", "User Group");
-    			add_location(input3, file, 49, 0, 1229);
-    			add_location(br3, file, 49, 92, 1321);
+    			add_location(input3, file, 45, 0, 971);
+    			add_location(br3, file, 45, 70, 1041);
     			attr_dev(input4, "type", "text");
-    			input4.value = /*status*/ ctx[4];
     			attr_dev(input4, "placeholder", "Active / Inactive");
-    			add_location(input4, file, 50, 0, 1326);
-    			add_location(br4, file, 50, 92, 1418);
-    			add_location(button, file, 51, 0, 1423);
+    			add_location(input4, file, 46, 0, 1046);
+    			add_location(br4, file, 46, 73, 1119);
+    			add_location(button, file, 47, 0, 1124);
     			set_style(div, "text-align", "center");
-    			add_location(div, file, 44, 0, 903);
+    			add_location(div, file, 40, 0, 705);
+    			add_location(p, file, 50, 0, 1186);
+    			add_location(li0, file, 53, 1, 1217);
+    			add_location(li1, file, 54, 1, 1248);
+    			add_location(li2, file, 55, 1, 1279);
+    			add_location(li3, file, 56, 1, 1304);
+    			add_location(li4, file, 57, 1, 1338);
+    			add_location(ul, file, 52, 0, 1211);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -463,35 +521,65 @@ var app = (function () {
     			append_dev(div, h1);
     			append_dev(div, t1);
     			append_dev(div, input0);
+    			set_input_value(input0, /*username*/ ctx[0]);
     			append_dev(div, t2);
     			append_dev(div, br0);
     			append_dev(div, t3);
     			append_dev(div, input1);
+    			set_input_value(input1, /*password*/ ctx[1]);
     			append_dev(div, t4);
     			append_dev(div, br1);
     			append_dev(div, t5);
     			append_dev(div, input2);
+    			set_input_value(input2, /*email*/ ctx[2]);
     			append_dev(div, t6);
     			append_dev(div, br2);
     			append_dev(div, t7);
     			append_dev(div, input3);
+    			set_input_value(input3, /*user_group*/ ctx[3]);
     			append_dev(div, t8);
     			append_dev(div, br3);
     			append_dev(div, t9);
     			append_dev(div, input4);
+    			set_input_value(input4, /*status*/ ctx[4]);
     			append_dev(div, t10);
     			append_dev(div, br4);
     			append_dev(div, t11);
     			append_dev(div, button);
+    			insert_dev(target, t13, anchor);
+    			insert_dev(target, p, anchor);
+    			append_dev(p, t14);
+    			append_dev(p, t15);
+    			insert_dev(target, t16, anchor);
+    			insert_dev(target, ul, anchor);
+    			append_dev(ul, li0);
+    			append_dev(li0, t17);
+    			append_dev(li0, t18);
+    			append_dev(ul, t19);
+    			append_dev(ul, li1);
+    			append_dev(li1, t20);
+    			append_dev(li1, t21);
+    			append_dev(ul, t22);
+    			append_dev(ul, li2);
+    			append_dev(li2, t23);
+    			append_dev(li2, t24);
+    			append_dev(ul, t25);
+    			append_dev(ul, li3);
+    			append_dev(li3, t26);
+    			append_dev(li3, t27);
+    			append_dev(ul, t28);
+    			append_dev(ul, li4);
+    			append_dev(li4, t29);
+    			append_dev(li4, t30);
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(input0, "input", /*usernameInput*/ ctx[5], false, false, false),
-    					listen_dev(input1, "input", passwordInput, false, false, false),
-    					listen_dev(input2, "input", emailInput, false, false, false),
-    					listen_dev(input3, "input", userGroupInput, false, false, false),
-    					listen_dev(input4, "input", statusInput, false, false, false),
-    					listen_dev(button, "click", handleClick, false, false, false)
+    					listen_dev(input0, "input", /*input0_input_handler*/ ctx[7]),
+    					listen_dev(input1, "input", /*input1_input_handler*/ ctx[8]),
+    					listen_dev(input2, "input", /*input2_input_handler*/ ctx[9]),
+    					listen_dev(input3, "input", /*input3_input_handler*/ ctx[10]),
+    					listen_dev(input4, "input", /*input4_input_handler*/ ctx[11]),
+    					listen_dev(button, "click", /*handleClick*/ ctx[6], false, false, false)
     				];
 
     				mounted = true;
@@ -499,29 +587,40 @@ var app = (function () {
     		},
     		p: function update(ctx, [dirty]) {
     			if (dirty & /*username*/ 1 && input0.value !== /*username*/ ctx[0]) {
-    				prop_dev(input0, "value", /*username*/ ctx[0]);
+    				set_input_value(input0, /*username*/ ctx[0]);
     			}
 
     			if (dirty & /*password*/ 2 && input1.value !== /*password*/ ctx[1]) {
-    				prop_dev(input1, "value", /*password*/ ctx[1]);
+    				set_input_value(input1, /*password*/ ctx[1]);
     			}
 
     			if (dirty & /*email*/ 4 && input2.value !== /*email*/ ctx[2]) {
-    				prop_dev(input2, "value", /*email*/ ctx[2]);
+    				set_input_value(input2, /*email*/ ctx[2]);
     			}
 
     			if (dirty & /*user_group*/ 8 && input3.value !== /*user_group*/ ctx[3]) {
-    				prop_dev(input3, "value", /*user_group*/ ctx[3]);
+    				set_input_value(input3, /*user_group*/ ctx[3]);
     			}
 
     			if (dirty & /*status*/ 16 && input4.value !== /*status*/ ctx[4]) {
-    				prop_dev(input4, "value", /*status*/ ctx[4]);
+    				set_input_value(input4, /*status*/ ctx[4]);
     			}
+
+    			if (dirty & /*result*/ 32) set_data_dev(t15, /*result*/ ctx[5]);
+    			if (dirty & /*username*/ 1) set_data_dev(t18, /*username*/ ctx[0]);
+    			if (dirty & /*password*/ 2) set_data_dev(t21, /*password*/ ctx[1]);
+    			if (dirty & /*email*/ 4) set_data_dev(t24, /*email*/ ctx[2]);
+    			if (dirty & /*user_group*/ 8) set_data_dev(t27, /*user_group*/ ctx[3]);
+    			if (dirty & /*status*/ 16) set_data_dev(t30, /*status*/ ctx[4]);
     		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
+    			if (detaching) detach_dev(t13);
+    			if (detaching) detach_dev(p);
+    			if (detaching) detach_dev(t16);
+    			if (detaching) detach_dev(ul);
     			mounted = false;
     			run_all(dispose);
     		}
@@ -538,30 +637,6 @@ var app = (function () {
     	return block;
     }
 
-    function passwordInput(event) {
-    	const enteredPassword = event.target.value;
-    	console.log("Password", enteredPassword);
-    }
-
-    function emailInput(event) {
-    	const enteredEmail = event.target.value;
-    	console.log("Email", enteredEmail);
-    }
-
-    function userGroupInput(event) {
-    	const enteredUserGroup = event.target.value;
-    	console.log("User Group", enteredUserGroup);
-    }
-
-    function statusInput(event) {
-    	const enteredStatus = event.target.value;
-    	console.log("Status", enteredStatus);
-    }
-
-    function handleClick() {
-    	alert("User updated successfully!");
-    }
-
     function instance($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('AdminUpdateUser', slots, []);
@@ -570,18 +645,59 @@ var app = (function () {
     	let { email = "" } = $$props;
     	let { user_group = "" } = $$props;
     	let { status = "" } = $$props;
+    	let { result = null } = $$props;
 
-    	function usernameInput(event) {
-    		const enteredUsername = event.target.value;
-    		$$invalidate(0, username = enteredUsername);
-    		console.log("Username", enteredUsername);
-    	}
+    	async function handleClick() {
+    		await fetch("http://localhost:4000/admin-update-user", {
+    			mode: "no-cors",
+    			method: "POST",
+    			headers: { "Content-Type": "application/json" },
+    			body: JSON.stringify({
+    				username,
+    				password,
+    				email,
+    				user_group,
+    				status
+    			})
+    		}).then(response => {
+    			// response.json()
+    			console.log(response);
+    		}).catch(error => {
+    			console.error(error);
+    		});
+    	} // const json = await response.json()
+    	// result = JSON.stringify(json)
 
-    	const writable_props = ['username', 'password', 'email', 'user_group', 'status'];
+    	const writable_props = ['username', 'password', 'email', 'user_group', 'status', 'result'];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console_1.warn(`<AdminUpdateUser> was created with unknown prop '${key}'`);
     	});
+
+    	function input0_input_handler() {
+    		username = this.value;
+    		$$invalidate(0, username);
+    	}
+
+    	function input1_input_handler() {
+    		password = this.value;
+    		$$invalidate(1, password);
+    	}
+
+    	function input2_input_handler() {
+    		email = this.value;
+    		$$invalidate(2, email);
+    	}
+
+    	function input3_input_handler() {
+    		user_group = this.value;
+    		$$invalidate(3, user_group);
+    	}
+
+    	function input4_input_handler() {
+    		status = this.value;
+    		$$invalidate(4, status);
+    	}
 
     	$$self.$$set = $$props => {
     		if ('username' in $$props) $$invalidate(0, username = $$props.username);
@@ -589,6 +705,7 @@ var app = (function () {
     		if ('email' in $$props) $$invalidate(2, email = $$props.email);
     		if ('user_group' in $$props) $$invalidate(3, user_group = $$props.user_group);
     		if ('status' in $$props) $$invalidate(4, status = $$props.status);
+    		if ('result' in $$props) $$invalidate(5, result = $$props.result);
     	};
 
     	$$self.$capture_state = () => ({
@@ -597,11 +714,7 @@ var app = (function () {
     		email,
     		user_group,
     		status,
-    		usernameInput,
-    		passwordInput,
-    		emailInput,
-    		userGroupInput,
-    		statusInput,
+    		result,
     		handleClick
     	});
 
@@ -611,13 +724,27 @@ var app = (function () {
     		if ('email' in $$props) $$invalidate(2, email = $$props.email);
     		if ('user_group' in $$props) $$invalidate(3, user_group = $$props.user_group);
     		if ('status' in $$props) $$invalidate(4, status = $$props.status);
+    		if ('result' in $$props) $$invalidate(5, result = $$props.result);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [username, password, email, user_group, status, usernameInput];
+    	return [
+    		username,
+    		password,
+    		email,
+    		user_group,
+    		status,
+    		result,
+    		handleClick,
+    		input0_input_handler,
+    		input1_input_handler,
+    		input2_input_handler,
+    		input3_input_handler,
+    		input4_input_handler
+    	];
     }
 
     class AdminUpdateUser extends SvelteComponentDev {
@@ -629,7 +756,8 @@ var app = (function () {
     			password: 1,
     			email: 2,
     			user_group: 3,
-    			status: 4
+    			status: 4,
+    			result: 5
     		});
 
     		dispatch_dev("SvelteRegisterComponent", {
@@ -677,6 +805,14 @@ var app = (function () {
     	}
 
     	set status(value) {
+    		throw new Error("<AdminUpdateUser>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get result() {
+    		throw new Error("<AdminUpdateUser>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set result(value) {
     		throw new Error("<AdminUpdateUser>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
     }

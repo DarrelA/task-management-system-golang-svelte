@@ -49,9 +49,13 @@ func adminUpdateUserController(w http.ResponseWriter, req *http.Request) {
 	// returns a slice of bytes
 	body, _ := io.ReadAll(req.Body)
 
+	fmt.Println("Hello!")
+
 	keyVal := make(map[string]string)
 	// func Unmarshal(data []byte, v interface{}) error
 	json.Unmarshal(body, &keyVal)
+
+	fmt.Println(keyVal)
 
 	// Set Headers for response, server informs client that JSON data is being sent.
 	w.Header().Set("Content-Type", "application/json")

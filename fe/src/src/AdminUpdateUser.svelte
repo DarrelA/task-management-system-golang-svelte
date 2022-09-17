@@ -4,35 +4,31 @@
 	export let email = "";
 	export let user_group = "";
 	export let status = "";
+	export let result = null
 
-	function usernameInput(event) {
-		const enteredUsername = event.target.value
-		username = enteredUsername
-		console.log("Username", enteredUsername)
-	}
+	async function handleClick() {
+		await fetch("http://localhost:4000/admin-update-user", {
+			mode: "no-cors",
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				username, password, email, user_group, status
+			})
+		})
+		.then(response => {
+			// response.json()
+			console.log(response)
+		})
+		.catch(error => {
+			console.error(error)
+		})
 
-	function passwordInput(event) {
-		const enteredPassword = event.target.value
-		console.log("Password", enteredPassword)
-	}
+		
 
-	function emailInput(event) {
-		const enteredEmail = event.target.value
-		console.log("Email", enteredEmail)
-	}
-
-	function userGroupInput(event) {
-		const enteredUserGroup = event.target.value
-		console.log("User Group", enteredUserGroup)
-	}
-
-	function statusInput(event) {
-		const enteredStatus = event.target.value
-		console.log("Status", enteredStatus)
-	}
-
-	function handleClick() {
-		alert("User updated successfully!")
+		// const json = await response.json()
+		// result = JSON.stringify(json)
 	}
 </script>
 
@@ -44,10 +40,20 @@
 
 <div style="text-align:center">
 <h1>Admin Update User</h1>
-<input type="text" value={username} placeholder="Username" on:input="{usernameInput}"> <br>
-<input type="text" value={password} placeholder="Password" on:input="{passwordInput}"> <br>
-<input type="text" value={email} placeholder="Email" on:input="{emailInput}"> <br>
-<input type="text" value={user_group} placeholder="User Group" on:input="{userGroupInput}"> <br>
-<input type="text" value={status} placeholder="Active / Inactive" on:input="{statusInput}"> <br>
+<input type="text" bind:value={username} placeholder="Username" > <br>
+<input type="text" bind:value={password} placeholder="Password" > <br>
+<input type="text" bind:value={email} placeholder="Email" > <br>
+<input type="text" bind:value={user_group} placeholder="User Group" > <br>
+<input type="text" bind:value={status} placeholder="Active / Inactive" > <br>
 <button on:click="{handleClick}">Update User</button>
 </div>
+
+<p>Result: {result}</p>
+
+<ul>
+	<li>Username: {username}</li>
+	<li>Password: {password}</li>
+	<li>Email: {email}</li>
+	<li>UserGroup: {user_group}</li>
+	<li>Status: {status}</li>
+</ul>
