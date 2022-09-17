@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"unicode"
 
 	_ "github.com/go-sql-driver/mysql"
 	"golang.org/x/crypto/bcrypt"
@@ -65,28 +66,62 @@ func adminUpdateUserController(w http.ResponseWriter, req *http.Request) {
 }
 
 func adminUpdateUser(username string, password string, email string, user_group string, status string, w http.ResponseWriter) {
-	hashedPassword := hashAndSaltPassword([]byte(password))
 
 	if username != "" {
 		rows, err := db.Query(`SELECT * FROM accounts WHERE username = ?;`, username)
 		checkError(err)
 		if rows.Next() {
-			adminUpdateUserPassword(username, hashedPassword, email, user_group, status, w)
+			adminUpdateUserPassword(username, password, email, user_group, status, w)
 		} else {
-			http.Error(w, "This username does not exist, please try again", 404)
+			responseMessage("Username does not exist. Please try again.", 404, w)
 		}
 	} else {
-		http.Error(w, "Please enter a username.", 500)
+		responseMessage("Please enter a username.", 500, w)
 	}
 }
 
-func adminUpdateUserPassword(username string, hashedPassword string, email string, user_group string, status string, w http.ResponseWriter) {
-	if hashedPassword != "" {
-		adminUpdateUserEmail(username, hashedPassword, email, user_group, status, w)
+func adminUpdateUserPassword(username string, password string, email string, user_group string, status string, w http.ResponseWriter) {
+
+	if validatePassword(password, w) {
+		hashedPassword := hashAndSaltPassword([]byte(password))
+		if hashedPassword != "" {
+			adminUpdateUserEmail(username, hashedPassword, email, user_group, status, w)
+		} else {
+			hashedPassword = getCurrentUserData(username)["password"]
+			adminUpdateUserEmail(username, hashedPassword, email, user_group, status, w)
+		}
 	} else {
-		hashedPassword = getCurrentUserData(username)["password"]
-		adminUpdateUserEmail(username, hashedPassword, email, user_group, status, w)
+		responseMessage("Password length must be between length 8 - 10 with alphabets, numbers and special characters.", 400, w)
 	}
+
+}
+
+func validatePassword(password string, w http.ResponseWriter) bool {
+	var (
+		hasMinLength = false
+		hasUpper     = false
+		hasLower     = false
+		hasNumber    = false
+		hasSpecial   = false
+	)
+
+	if len(password) >= 8 && len(password) <= 10 {
+		hasMinLength = true
+	}
+
+	for _, char := range password {
+		switch {
+		case unicode.IsUpper(char):
+			hasUpper = true
+		case unicode.IsLower(char):
+			hasLower = true
+		case unicode.IsNumber(char):
+			hasNumber = true
+		case unicode.IsSymbol(char) || unicode.IsPunct(char):
+			hasSpecial = true
+		}
+	}
+	return hasMinLength && hasUpper && hasLower && hasNumber && hasSpecial
 }
 
 func adminUpdateUserEmail(username string, hashedPassword string, email string, user_group string, status string, w http.ResponseWriter) {
@@ -94,7 +129,7 @@ func adminUpdateUserEmail(username string, hashedPassword string, email string, 
 		rows, err := db.Query(`SELECT * FROM accounts WHERE email = ?;`, email)
 		checkError(err)
 		if rows.Next() {
-			http.Error(w, "Email already exists in database. Please try again.", 404)
+			responseMessage("Email already exists in database. Please try again.", 500, w)
 		} else {
 			adminUpdateUserGroup(username, hashedPassword, email, user_group, status, w)
 		}
@@ -128,18 +163,7 @@ func adminUpdateAccountsTable(username string, hashedPassword string, email stri
 		username, hashedPassword, email, user_group, status, username)
 	checkError(err)
 
-	jsonStatus := struct {
-		Message string `json:"message"`
-		Code    int    `json:"code"`
-	}{
-		Message: "Successfully updated user!",
-		Code:    200,
-	}
-
-	json.NewEncoder(w).Encode(jsonStatus)
-	// func NewEncoder(w io.Writer) *Encoder
-	// func (enc *Encoder) Encode(v any) error
-	// Conversion of Go values to JSON
+	responseMessage("User successfully updated!", 200, w)
 }
 
 func getCurrentUserData(username string) map[string]string {
@@ -196,11 +220,26 @@ func updateUserGroupTable(username string, user_group string) {
 	checkError(err)
 
 	if !rows.Next() {
-		fmt.Println("reached here")
-		fmt.Println(username, user_group)
 		_, err := db.Query(`INSERT INTO usergroup VALUES (?,?)`, username, user_group)
 		checkError(err)
 	}
+}
+
+func responseMessage(Message string, Code int, w http.ResponseWriter) bool {
+	// func NewEncoder(w io.Writer) *Encoder
+	// func (enc *Encoder) Encode(v any) error
+	// Conversion of Go values to JSON
+
+	jsonStatus := struct {
+		Message string `json:"message"`
+		Code    int    `json:"code"`
+	}{
+		Message: Message,
+		Code:    Code,
+	}
+
+	json.NewEncoder(w).Encode(jsonStatus)
+	return false
 }
 
 func hashAndSaltPassword(pwd []byte) string {
