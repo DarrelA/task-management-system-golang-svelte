@@ -86,46 +86,18 @@ func adminUpdateUser(username string, password string, email string, user_group 
 
 func adminUpdateUserPassword(username string, password string, email string, user_group string, status string, w http.ResponseWriter) {
 
-	if validatePassword(password, w) {
-		hashedPassword := hashAndSaltPassword([]byte(password))
-		if hashedPassword != "" {
+	if password != "" {
+		if validatePassword(password, w) {
+			hashedPassword := hashAndSaltPassword([]byte(password))
 			adminUpdateUserEmail(username, hashedPassword, email, user_group, status, w)
 		} else {
-			hashedPassword = getCurrentUserData(username)["password"]
-			adminUpdateUserEmail(username, hashedPassword, email, user_group, status, w)
+			responseMessage("Password length must be between length 8 - 10 with alphabets, numbers and special characters.", 400, w)
 		}
 	} else {
-		responseMessage("Password length must be between length 8 - 10 with alphabets, numbers and special characters.", 400, w)
+		password = getCurrentUserData(username)["password"]
+		adminUpdateUserEmail(username, password, email, user_group, status, w)
 	}
 
-}
-
-func validatePassword(password string, w http.ResponseWriter) bool {
-	var (
-		hasMinLength = false
-		hasUpper     = false
-		hasLower     = false
-		hasNumber    = false
-		hasSpecial   = false
-	)
-
-	if len(password) >= 8 && len(password) <= 10 {
-		hasMinLength = true
-	}
-
-	for _, char := range password {
-		switch {
-		case unicode.IsUpper(char):
-			hasUpper = true
-		case unicode.IsLower(char):
-			hasLower = true
-		case unicode.IsNumber(char):
-			hasNumber = true
-		case unicode.IsSymbol(char) || unicode.IsPunct(char):
-			hasSpecial = true
-		}
-	}
-	return hasMinLength && hasUpper && hasLower && hasNumber && hasSpecial
 }
 
 func adminUpdateUserEmail(username string, hashedPassword string, email string, user_group string, status string, w http.ResponseWriter) {
@@ -146,6 +118,7 @@ func adminUpdateUserEmail(username string, hashedPassword string, email string, 
 func adminUpdateUserGroup(username string, hashedPassword string, email string, user_group string, status string, w http.ResponseWriter) {
 	if user_group != "" {
 		user_group = appendNewUserGroup(username, user_group)
+		fmt.Println("1", user_group)
 		adminUpdateUserStatus(username, hashedPassword, email, user_group, status, w)
 	} else {
 		user_group = getCurrentUserData(username)["user_group"]
@@ -196,13 +169,11 @@ func appendNewUserGroup(username string, user_group string) string {
 	currentUserGroupSplit := strings.Split(currentUserGroup, ",")
 	newUserGroupSplit := strings.Split(user_group, ",")
 
-	userGroupSlice := []string{}
+	userGroupSlice := []string{currentUserGroup}
 	for _, i := range newUserGroupSplit {
 		if !contains(currentUserGroupSplit, i) {
 			updateUserGroupTable(username, i)
-			userGroupSlice = append(currentUserGroupSplit, i)
-		} else {
-			userGroupSlice = currentUserGroupSplit
+			userGroupSlice = append(userGroupSlice, i)
 		}
 	}
 	user_group = strings.Join(userGroupSlice, ",")
@@ -244,6 +215,34 @@ func responseMessage(Message string, Code int, w http.ResponseWriter) bool {
 
 	json.NewEncoder(w).Encode(jsonStatus)
 	return false
+}
+
+func validatePassword(password string, w http.ResponseWriter) bool {
+	var (
+		hasMinLength = false
+		hasUpper     = false
+		hasLower     = false
+		hasNumber    = false
+		hasSpecial   = false
+	)
+
+	if len(password) >= 8 && len(password) <= 10 {
+		hasMinLength = true
+	}
+
+	for _, char := range password {
+		switch {
+		case unicode.IsUpper(char):
+			hasUpper = true
+		case unicode.IsLower(char):
+			hasLower = true
+		case unicode.IsNumber(char):
+			hasNumber = true
+		case unicode.IsSymbol(char) || unicode.IsPunct(char):
+			hasSpecial = true
+		}
+	}
+	return hasMinLength && hasUpper && hasLower && hasNumber && hasSpecial
 }
 
 func hashAndSaltPassword(pwd []byte) string {
