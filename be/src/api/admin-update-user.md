@@ -1,3 +1,117 @@
+# Admin Update User
+
+### Accounts Table
+
+1. check if `username` is provided
+1. retrieve username, password, email, usergroup, status (isactive) from frontend.
+1. trim username and email
+1. check if username exist (otherwise return error)
+```
+SELECT * FROM accounts WHERE username = ?
+```
+1. 
+
+
+```go
+if (username != "") {
+    // Check if username exists in database
+    // Error: Username does not exists in database. Please try again.
+    if (password != "") {
+        // update accounts with NEW password provided
+        if (email != "") {
+            // Check if email exists in database
+            // Error: Email already exists in database. Please try again.
+            // Update Accounts with NEW email
+            if (user_group) {
+                // Append new user_group to accounts table (if any)
+                // Add new usergroup and username to the `user_group` table (if any)
+                // Update `accounts` table with NEW user_group
+                if (status) {
+                    // Update Accounts with NEW status
+                } else {
+                    // update accounts with OLD status, SELECT statement to get old status
+                }
+            } else {
+                // update accounts with OLD user_group, SELECT statement to get old user_group
+                if (status) {
+                    // Update Accounts with NEW status
+                } else {
+                    // update accounts with OLD status, SELECT statement to get old status
+                }
+            }
+        } else {
+            // update accounts with OLD email, SELECT statement to get old email
+            if (user_group) {
+                // Append new user_group to accounts table (if any)
+                // Add new usergroup and username to the `user_group` table (if any)
+                // Update `accounts` table with NEW user_group
+                if (status) {
+                    // Update Accounts with NEW status
+                } else {
+                    // update accounts with OLD status, SELECT statement to get old status
+                }
+            } else {
+                // update accounts with OLD user_group, SELECT statement to get old user_group
+                if (status) {
+                    // Update Accounts with NEW status
+                } else {
+                    // update accounts with OLD status, SELECT statement to get old status
+                }
+            }
+        }
+    } else {
+        // update accounts with OLD password, SELECT statement to get old password
+        if (email != "") {
+            // Check if email exists in database
+            // Error: Email already exists in database. Please try again.
+            // Update Accounts with NEW email
+            if (user_group) {
+                // Append new user_group to accounts table (if any)
+                // Add new usergroup and username to the `user_group` table (if any)
+                // Update `accounts` table with NEW user_group
+                if (status) {
+                    // Update Accounts with NEW status
+                } else {
+                    // update accounts with OLD status, SELECT statement to get old status
+                }
+            } else {
+                // update accounts with OLD user_group, SELECT statement to get old user_group
+                if (status) {
+                    // Update Accounts with NEW status
+                } else {
+                    // update accounts with OLD status, SELECT statement to get old status
+                }
+            }
+        } else {
+            // update accounts with OLD email, SELECT statement to get old email
+            if (user_group) {
+                // Append new user_group to accounts table (if any)
+                // Add new usergroup and username to the `user_group` table (if any)
+                // Update `accounts` table with NEW user_group
+                if (status) {
+                    // Update Accounts with NEW status
+                } else {
+                    // update accounts with OLD status, SELECT statement to get old status
+                }
+            } else {
+                // update accounts with OLD user_group, SELECT statement to get old user_group
+                if (status) {
+                    // Update Accounts with NEW status
+                } else {
+                    // update accounts with OLD status, SELECT statement to get old status
+                }
+            }
+        }
+    }
+} else {
+    // Error: Please provide a username.
+}
+
+```
+
+- Calling Backend API using `http.HandleFunc`
+
+```go
 package main
 
 import (
@@ -144,10 +258,7 @@ func adminUpdateAccountsTable(username string, hashedPassword string, email stri
 }
 
 func getCurrentUserData(username string) map[string]string {
-	var password string
-	var email string
-	var user_group string
-	var status string
+	var password, email, user_group, status string
 	rows, err := db.Query(`SELECT username, password, email, user_group, status FROM accounts WHERE username = ?`,
 		username)
 	checkError(err)
@@ -213,7 +324,10 @@ func responseMessage(Message string, Code int, w http.ResponseWriter) bool {
 		Code:    Code,
 	}
 
-	json.NewEncoder(w).Encode(jsonStatus)
+	bs, err := json.Marshal(jsonStatus)
+	checkError(err)
+	io.WriteString(w, string(bs))
+	// json.NewEncoder(w).Encode(jsonStatus)
 	return false
 }
 
@@ -268,3 +382,6 @@ func checkError(err error) {
 		log.Fatalln(err)
 	}
 }
+
+```
+

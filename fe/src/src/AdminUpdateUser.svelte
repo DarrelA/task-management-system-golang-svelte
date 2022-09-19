@@ -30,7 +30,7 @@
 				// result = response.status
 				const json = await response.json()
 				// result = JSON.stringify(json)
-				result = json.message
+				result = json.error
 				code = json.code
 			}
 		})
@@ -49,8 +49,8 @@
 <div style="text-align:center">
 <h1>Admin Update User</h1>
 <input type="text" bind:value={username} placeholder="Username" > <br>
-<input type="text" bind:value={password} placeholder="Password" > <br>
-<input type="text" bind:value={email} placeholder="Email" > <br>
+<input type="password" bind:value={password} placeholder="Password" > <br>
+<input type="email" bind:value={email} placeholder="Email" > <br>
 <!-- <input type="text" bind:value={user_group} placeholder="User Group" > <br> -->
 <MultiSelect bind:value={user_group} placeholder="User Group(s)">
 	<option value="Project Lead" >Project Lead</option>

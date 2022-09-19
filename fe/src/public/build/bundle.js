@@ -1688,13 +1688,13 @@ var app = (function () {
     			option2.textContent = "Team Member";
     			option0.__value = "Project Lead";
     			option0.value = option0.__value;
-    			add_location(option0, file, 55, 1, 1390);
+    			add_location(option0, file, 55, 1, 1393);
     			option1.__value = "Project Manager";
     			option1.value = option1.__value;
-    			add_location(option1, file, 56, 1, 1443);
+    			add_location(option1, file, 56, 1, 1446);
     			option2.__value = "Team Member";
     			option2.value = option2.__value;
-    			add_location(option2, file, 57, 1, 1501);
+    			add_location(option2, file, 57, 1, 1504);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, option0, anchor);
@@ -1864,41 +1864,41 @@ var app = (function () {
     			t34 = text("Status: ");
     			t35 = text(/*status*/ ctx[4]);
     			attr_dev(h1, "class", "svelte-i7qo5m");
-    			add_location(h1, file, 49, 0, 1005);
+    			add_location(h1, file, 49, 0, 1003);
     			attr_dev(input0, "type", "text");
     			attr_dev(input0, "placeholder", "Username");
-    			add_location(input0, file, 50, 0, 1032);
-    			add_location(br0, file, 50, 66, 1098);
-    			attr_dev(input1, "type", "text");
+    			add_location(input0, file, 50, 0, 1030);
+    			add_location(br0, file, 50, 66, 1096);
+    			attr_dev(input1, "type", "password");
     			attr_dev(input1, "placeholder", "Password");
-    			add_location(input1, file, 51, 0, 1103);
-    			add_location(br1, file, 51, 66, 1169);
-    			attr_dev(input2, "type", "text");
+    			add_location(input1, file, 51, 0, 1101);
+    			add_location(br1, file, 51, 70, 1171);
+    			attr_dev(input2, "type", "email");
     			attr_dev(input2, "placeholder", "Email");
-    			add_location(input2, file, 52, 0, 1174);
-    			add_location(br2, file, 52, 60, 1234);
-    			add_location(br3, file, 58, 15, 1565);
+    			add_location(input2, file, 52, 0, 1176);
+    			add_location(br2, file, 52, 61, 1237);
+    			add_location(br3, file, 58, 15, 1568);
     			option0.__value = "Active";
     			option0.value = option0.__value;
-    			add_location(option0, file, 60, 1, 1621);
+    			add_location(option0, file, 60, 1, 1624);
     			option1.__value = "Inactive";
     			option1.value = option1.__value;
-    			add_location(option1, file, 61, 1, 1662);
+    			add_location(option1, file, 61, 1, 1665);
     			attr_dev(select, "placeholder", "Status");
     			if (/*status*/ ctx[4] === void 0) add_render_callback(() => /*select_change_handler*/ ctx[12].call(select));
-    			add_location(select, file, 59, 0, 1570);
-    			add_location(br4, file, 62, 10, 1715);
-    			add_location(button, file, 64, 0, 1721);
+    			add_location(select, file, 59, 0, 1573);
+    			add_location(br4, file, 62, 10, 1718);
+    			add_location(button, file, 64, 0, 1724);
     			set_style(div, "text-align", "center");
-    			add_location(div, file, 48, 0, 973);
-    			add_location(p0, file, 67, 0, 1783);
-    			add_location(p1, file, 68, 0, 1808);
-    			add_location(li0, file, 71, 1, 1835);
-    			add_location(li1, file, 72, 1, 1866);
-    			add_location(li2, file, 73, 1, 1897);
-    			add_location(li3, file, 74, 1, 1922);
-    			add_location(li4, file, 75, 1, 1956);
-    			add_location(ul, file, 70, 0, 1829);
+    			add_location(div, file, 48, 0, 971);
+    			add_location(p0, file, 67, 0, 1786);
+    			add_location(p1, file, 68, 0, 1811);
+    			add_location(li0, file, 71, 1, 1838);
+    			add_location(li1, file, 72, 1, 1869);
+    			add_location(li2, file, 73, 1, 1900);
+    			add_location(li3, file, 74, 1, 1925);
+    			add_location(li4, file, 75, 1, 1959);
+    			add_location(ul, file, 70, 0, 1832);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2087,7 +2087,7 @@ var app = (function () {
     				const json = await response.json();
 
     				// result = JSON.stringify(json)
-    				$$invalidate(5, result = json.message);
+    				$$invalidate(5, result = json.error);
 
     				$$invalidate(6, code = json.code);
     			}
