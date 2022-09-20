@@ -163,8 +163,6 @@ func adminUpdateUserController(w http.ResponseWriter, req *http.Request) {
 	// returns a slice of bytes
 	body, _ := io.ReadAll(req.Body)
 
-	fmt.Println("Hello!")
-
 	keyVal := make(map[string]string)
 	// func Unmarshal(data []byte, v interface{}) error
 	json.Unmarshal(body, &keyVal)
