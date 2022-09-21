@@ -3,7 +3,6 @@ package route
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -20,8 +19,8 @@ import (
 var db *sql.DB
 
 // Function to load env file values based on key param
-func loadENV(key string) string {
-	err := godotenv.Load("../.env")
+func LoadENV(key string) string {
+	err := godotenv.Load()
 	if err != nil {
 		fmt.Println("Error loading .env file")
 	}
@@ -57,21 +56,14 @@ func AdminCreateUser(c *gin.Context) {
 		return
 	}
 
-	// Start mysql connection with db
-	// db, err := sql.Open("mysql", "root:admin123@/c3_database")
-	// defer db.Close()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
 	whiteSpace := middleware.CheckWhiteSpace(newUser.Username)
-	if whiteSpace == true {
+	if whiteSpace {
 		middleware.ErrorHandler(c, 400, "Username should not contain whitespace")
 		return
 	}
 
 	minLength := middleware.CheckLength(newUser.Username)
-	if minLength == true {
+	if minLength {
 		middleware.ErrorHandler(c, 400, "Username should not be empty")
 		return
 	}
@@ -91,7 +83,7 @@ func AdminCreateUser(c *gin.Context) {
 		validPassword := middleware.CheckPassword(newUser.Password)
 
 		// Invalid password format
-		if validPassword == false {
+		if !validPassword {
 			middleware.ErrorHandler(c, 400, "Password length should be between length 8 - 10 with numbers and special characters")
 			return
 		}
@@ -101,7 +93,7 @@ func AdminCreateUser(c *gin.Context) {
 		validEmail := middleware.CheckEmail(newUser.Email)
 
 		// Invalid email format
-		if validEmail == false {
+		if !validEmail {
 			middleware.ErrorHandler(c, 400, "Invalid email format")
 			return
 		}
@@ -164,14 +156,25 @@ func AdminCreateUser(c *gin.Context) {
 }
 
 func GetUsers(c *gin.Context) {
-	rows, err := db.Query("SELECT username, email, admin_privilege, user_group, status, timestamp FROM accounts")
+	var existingUser ExistingUser
+	rows, err := db.Query("SELECT username, email, status, admin_privilege, user_group FROM accounts")
 	if err != nil {
 		panic(err)
 	}
+	defer rows.Close()
 	for rows.Next() {
-		var existingUser ExistingUser
 
-		err = rows.Scan(&existingUser.Username, &existingUser.Email, &existingUser.AdminPrivilege, &existingUser.Usergroup, &existingUser.Status, &existingUser.Timestamp)
+		// var (
+		// 	username        string
+		// 	email           string
+		// 	admin_privilege int
+		// 	usergroup       string
+		// 	status          string
+		// 	timestamp       string
+		// )
+
+		err = rows.Scan(&existingUser.Username, &existingUser.Email, &existingUser.Status, &existingUser.AdminPrivilege, &existingUser.Usergroup)
+		// err = rows.Scan(username, email, admin_privilege, usergroup, status, timestamp)
 		if err != nil {
 			panic(err)
 		}
@@ -193,41 +196,4 @@ func GetUsers(c *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-}
-
-func connectionToDatabase() {
-	var err error
-	db, err = sql.Open("mysql", "root:admin123@/c3_database")
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
-	// defer db.Close()
-}
-
-// Declare routes
-func main() {
-
-	// Start db connection
-	connectionToDatabase()
-	defer db.Close()
-
-	router := gin.Default()
-	router.POST("/admin-create-user", AdminCreateUser)
-
-	// Testing route
-	router.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"code":    200,
-			"message": "pong",
-		})
-	})
-
-	router.GET("/get-users", GetUsers)
-
-	// using env variables
-	port := loadENV("SERVER_PORT")
-	server := fmt.Sprintf(":%s", port)
-
-	router.Run(server)
 }

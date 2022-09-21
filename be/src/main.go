@@ -20,7 +20,7 @@ func main() {
 	router := gin.Default()
 
 	router.POST("/admin-update-user", route.AdminUpdateUserController)
-	router.POST("/admin-create-user", route.AdminCreateUser)
+	// router.POST("/admin-create-user", route.AdminCreateUser)
 	router.GET("/get-users", route.GetUsers)
 
 	port := middleware.LoadENV("SERVER_PORT")
