@@ -22,6 +22,10 @@ type UpdateUser struct {
 	Status     string `json:"status"`
 }
 
+type SpecificUser struct {
+	Username string `json:"username"`
+}
+
 // var err error
 
 func AdminUpdateUser(c *gin.Context) {
@@ -181,5 +185,52 @@ func hashAndSaltPassword(pwd []byte) string {
 func checkError(err error) {
 	if err != nil {
 		log.Fatalln("Some other error occurred", err)
+	}
+}
+
+func GetSelectedUser(c *gin.Context) {
+	var specificUser SpecificUser
+
+	if err := c.BindJSON(&specificUser); err != nil {
+		checkError(err)
+		middleware.ErrorHandler(c, http.StatusBadRequest, "Bad Request")
+		return
+	}
+
+	fmt.Println(specificUser.Username)
+
+	var existingUser ExistingUser
+	var data []ExistingUser
+
+	rows, err := db.Query("SELECT email, status, user_group FROM accounts WHERE username = ?")
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+
+		err = rows.Scan(&existingUser.Email, &existingUser.Status, &existingUser.Usergroup, &specificUser.Username,)
+		if err != nil {
+			panic(err)
+		}
+
+		// Using ExistingUser struct as response struct to maintain order of JSON key values
+		response := ExistingUser{
+			Username:       existingUser.Username,
+			Email:          existingUser.Email,
+			Status:         existingUser.Status,
+			Usergroup:      existingUser.Usergroup,
+		}
+
+		// append response into slice
+		data = append(data, response)
+	}
+
+	// send data as array of JSON obj
+	c.JSON(200, data)
+
+	err = rows.Err()
+	if err != nil {
+		panic(err)
 	}
 }

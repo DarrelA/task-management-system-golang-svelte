@@ -9,6 +9,7 @@
 	let password = "";
 	let email = "";
 	let status = "";
+	export let selectedUsername;
 
 	let code = ""
 	let message = "";
@@ -42,14 +43,14 @@
 
 <style>
 	.disabled {
-		background-color: lightgrey;
+		background-color: yellow;
 	}
 </style>
 
 <Form>
 <FormGroup>
 	<Label for="username">Username:</Label>
-	<Input type="text" bind:value={username} placeholder="Username" class="disabled" disabled />
+	<Input type="text" bind:value={selectedUsername} class="disabled" disabled />
 </FormGroup>
 <FormGroup>
 	<Label for="password">Password:</Label>

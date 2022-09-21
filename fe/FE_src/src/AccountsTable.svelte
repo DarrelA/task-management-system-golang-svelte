@@ -8,6 +8,7 @@
 	let usersData = [];
 	let open = false;
 	let selectedUsername = ""
+	let selectedUserData;
 
     $: getUsers()
 	
@@ -22,10 +23,23 @@
 		}
 	}
 
+	async function getSelectedUserData() {
+		try {
+			const response = await Axios.post("http://localhost:4000/get-selected-users", selectedUsername)
+			console.log(selectedUsername)
+			if (response) {
+				selectedUserData = response.data
+				console.log(response.data)
+			}
+		} catch (error) {
+
+		}
+	}
+
 	function editUserData(username) {
 		open = !open
 		selectedUsername = username
-		console.log(selectedUsername)
+		getSelectedUserData()
 	}
 </script>
 
@@ -65,7 +79,7 @@
 			<Modal isOpen={open} {editUserData}>
 			  <ModalHeader {editUserData}>Update User</ModalHeader>
 			  <ModalBody>
-				<AdminUpdateUser />
+				<AdminUpdateUser selectedUsername={selectedUsername} />
 			  </ModalBody>
 			  <ModalFooter>
 				<Button color="secondary" on:click={editUserData}>Back</Button>

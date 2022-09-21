@@ -23,9 +23,11 @@ func main() {
 
 	router.POST("/login", route.Login)
 
-	router.POST("/admin-update-user", middleware.CheckCookie, route.AdminUpdateUser)
-	router.POST("/admin-create-user", route.AdminCreateUser)
+	// router.POST("/admin-update-user", middleware.CheckCookie, route.AdminUpdateUser)
 	router.POST("/admin-update-user", route.AdminUpdateUser)
+	router.POST("/get-selected-users", route.GetSelectedUser)
+
+	router.POST("/admin-create-user", route.AdminCreateUser)
 	router.GET("/get-users", route.GetUsers)
 
 	port := middleware.LoadENV("SERVER_PORT")
