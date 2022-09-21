@@ -65,7 +65,7 @@ func Login(c *gin.Context) {
 		// Generate JWT and set cookie
 
 		// Set expiration of token to 5mins
-		expirationTime := time.Now().Add(5 * time.Minute)
+		expirationTime := time.Now().Add(time.Hour * 1)
 
 		// Create JWT claims
 		claims := Claims{
@@ -94,50 +94,6 @@ func Login(c *gin.Context) {
 			"code":  200,
 			"token": tokenString,
 		})
-
-		fmt.Println("New cookie set!")
 	}
-
-}
-
-func Welcome(c *gin.Context) {
-	// Request for cookie
-	cookie, err := c.Cookie("token")
-	if err != nil {
-		if err == http.ErrNoCookie {
-			middleware.ErrorHandler(c, http.StatusUnauthorized, "Unauthorized User, cookie not found")
-			return
-		}
-		middleware.ErrorHandler(c, http.StatusBadRequest, "Bad Request")
-		return
-	}
-
-	// ParsewithClaims
-	// Parse JWT string and store results in claims
-	// Pass in jwt key as well
-	claims := &Claims{}
-
-	token, err := jwt.ParseWithClaims(cookie, claims, func(token *jwt.Token) (interface{}, error) {
-		return jwtKey, nil
-	})
-
-	if err != nil {
-		if err == jwt.ErrSignatureInvalid {
-			middleware.ErrorHandler(c, http.StatusUnauthorized, "Unauthorized User")
-			return
-		}
-		middleware.ErrorHandler(c, http.StatusBadRequest, "Bad Request")
-		return
-	}
-
-	// Invalid token
-	if !token.Valid {
-		middleware.ErrorHandler(c, http.StatusUnauthorized, "Unauthorized User, invalid cookie")
-		return
-	}
-	welcome := fmt.Sprintf("Welcome %s!", claims.Username)
-	c.JSON(200, welcome)
-
-	// Request for Bearer Token through authorization
 
 }

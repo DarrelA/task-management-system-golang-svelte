@@ -22,6 +22,8 @@ func main() {
 	router.Use(cors.Default())
 
 	router.POST("/login", route.Login)
+
+	router.POST("/admin-update-user", middleware.CheckCookie, route.AdminUpdateUser)
 	router.POST("/admin-create-user", route.AdminCreateUser)
 	router.POST("/admin-update-user", route.AdminUpdateUser)
 	router.GET("/get-users", route.GetUsers)
