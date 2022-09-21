@@ -1,7 +1,7 @@
 package route
 
 import (
-	"api/middleware"
+	"backend/api/middleware"
 	"database/sql"
 	"fmt"
 	"log"
@@ -93,7 +93,7 @@ func Login(c *gin.Context) {
 			c.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
-		
+
 		// Set cookie
 		c.SetCookie("token", tokenString, 10, "/", "localhost", false, true)
 
@@ -119,13 +119,12 @@ func Welcome(c *gin.Context) {
 		return
 	}
 
-
 	// ParsewithClaims
 	// Parse JWT string and store results in claims
 	// Pass in jwt key as well
 	claims := &Claims{}
 
-	token, err := jwt.ParseWithClaims(cookie, claims, func(token *jwt.Token)(interface{}, error){
+	token, err := jwt.ParseWithClaims(cookie, claims, func(token *jwt.Token) (interface{}, error) {
 		return jwtKey, nil
 	})
 
@@ -148,13 +147,4 @@ func Welcome(c *gin.Context) {
 
 	// Request for Bearer Token through authorization
 
-}
-
-func main() {
-	router := gin.Default()
-
-	router.POST("/login", login)
-	router.POST("/welcome", welcome)
-
-	router.Run(":5000")
 }

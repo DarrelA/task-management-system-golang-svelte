@@ -12,7 +12,7 @@ import (
 	"github.com/joho/godotenv"
 
 	// import middleware pkg
-	"api/middleware"
+	"backend/api/middleware"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -48,7 +48,7 @@ type ExistingUser struct {
 	Timestamp      string `json:"created"`
 }
 
-func adminCreateUser(c *gin.Context) {
+func AdminCreateUser(c *gin.Context) {
 	var newUser User
 
 	if err := c.BindJSON(&newUser); err != nil {
@@ -75,7 +75,7 @@ func adminCreateUser(c *gin.Context) {
 		middleware.ErrorHandler(c, 400, "Username should not be empty")
 		return
 	}
-	
+
 	// Check if username exist before creating
 	checkUsername := "SELECT username FROM accounts WHERE username = ?"
 
@@ -84,7 +84,7 @@ func adminCreateUser(c *gin.Context) {
 
 	// Switch between different error case
 	switch err := result.Scan(&newUser.Username); err {
-	
+
 	// New user
 	case sql.ErrNoRows:
 		// Validation of password, email
@@ -163,7 +163,7 @@ func adminCreateUser(c *gin.Context) {
 
 }
 
-func getUsers(c *gin.Context) {
+func GetUsers(c *gin.Context) {
 	rows, err := db.Query("SELECT username, email, admin_privilege, user_group, status, timestamp FROM accounts")
 	if err != nil {
 		panic(err)
@@ -195,7 +195,7 @@ func getUsers(c *gin.Context) {
 	}
 }
 
-func connectionToDatabase () {
+func connectionToDatabase() {
 	var err error
 	db, err = sql.Open("mysql", "root:admin123@/c3_database")
 	if err != nil {
@@ -210,10 +210,10 @@ func main() {
 
 	// Start db connection
 	connectionToDatabase()
-	defer db.Close() 
+	defer db.Close()
 
 	router := gin.Default()
-	router.POST("/admin-create-user", adminCreateUser)
+	router.POST("/admin-create-user", AdminCreateUser)
 
 	// Testing route
 	router.GET("/ping", func(c *gin.Context) {
@@ -223,7 +223,7 @@ func main() {
 		})
 	})
 
-	router.GET("/get-users", getUsers)
+	router.GET("/get-users", GetUsers)
 
 	// using env variables
 	port := loadENV("SERVER_PORT")

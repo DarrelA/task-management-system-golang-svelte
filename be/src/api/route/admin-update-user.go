@@ -1,23 +1,20 @@
-package main
+package route
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 
-	"api/middleware"
+	"backend/api/middleware"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/joho/godotenv"
 	"golang.org/x/crypto/bcrypt"
 )
 
 // Go struct in the form of JSON
-type User struct {
+type UpdateUser struct {
 	Username   string `json:"username"`
 	Password   string `json:"password"`
 	Email      string `json:"email"`
@@ -25,33 +22,13 @@ type User struct {
 	Status     string `json:"status"`
 }
 
-var db *sql.DB
 var err error
 
-// Function to load env file values based on key param
-func loadENV(key string) string {
-	err := godotenv.Load("../../../config/jiewei.env")
-	checkError(err)
-	return os.Getenv(key)
-}
 
-func main() {
 
-	connectionToMySQL()
-	defer db.Close()
+func AdminUpdateUserController(c *gin.Context) {
 
-	router := gin.Default()
-	router.POST("/admin-update-user", adminUpdateUserController)
-
-	port := loadENV("SERVER_PORT")
-	server := fmt.Sprintf(":%v", port)
-
-	router.Run(server)
-}
-
-func adminUpdateUserController(c *gin.Context) {
-
-	var updateUser User
+	var updateUser UpdateUser
 
 	if err := c.BindJSON(&updateUser); err != nil {
 		checkError(err)
@@ -201,17 +178,6 @@ func hashAndSaltPassword(pwd []byte) string {
 	checkError(err)
 
 	return string(hash)
-}
-
-func connectionToMySQL() {
-	// db, err := sql.Open(driver, dataSourceName)
-	dataSourceName := fmt.Sprintf("%s:%s@tcp(localhost:%s)/%s", loadENV("MYSQL_USERNAME"), loadENV("MYSQL_PASSWORD"), loadENV("MYSQL_PORT"), loadENV("MYSQL_DATABASE"))
-	db, err = sql.Open("mysql", dataSourceName)
-	checkError(err)
-
-	err = db.Ping()
-	checkError(err)
-	fmt.Println("Connected to MySQL Database!")
 }
 
 func checkError(err error) {
