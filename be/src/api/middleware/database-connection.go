@@ -4,12 +4,17 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
-func ConnectionToDatabase() {
+var db *sql.DB
+
+func ConnectionToDatabase() *sql.DB {
 	// db, err := sql.Open(driver, dataSourceName)
 	dataSourceName := fmt.Sprintf("%s:%s@/%s", LoadENV("SERVER_USER"), LoadENV("SERVER_PASSWORD"), LoadENV("SERVER_DB"))
-	db, err := sql.Open("mysql", dataSourceName)
+	var err error
+	db, err = sql.Open("mysql", dataSourceName)
 	if err != nil {
 		log.Fatalln("Some other error occurred", err)
 	}
@@ -19,4 +24,6 @@ func ConnectionToDatabase() {
 		log.Fatalln("Some other error occurred", err)
 	}
 	fmt.Println("Connected to MySQL Database!")
+
+	return db
 }

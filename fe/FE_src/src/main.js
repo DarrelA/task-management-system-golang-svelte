@@ -1,9 +1,9 @@
-import App from './AdminUpdateUser.svelte';
+import App from './App.svelte';
 
 const app = new App({
 	target: document.body,
 	props: {
-		username: ''
+		name: 'world'
 	}
 });
 

@@ -16,7 +16,6 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var db *sql.DB
 
 // Function to load env file values based on key param
 func LoadENV(key string) string {

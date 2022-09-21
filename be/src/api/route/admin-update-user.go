@@ -22,9 +22,7 @@ type UpdateUser struct {
 	Status     string `json:"status"`
 }
 
-var err error
-
-
+// var err error
 
 func AdminUpdateUserController(c *gin.Context) {
 
@@ -40,10 +38,13 @@ func AdminUpdateUserController(c *gin.Context) {
 }
 
 func adminUpdateUser(username string, password string, email string, user_group string, status string, c *gin.Context) {
-
 	if username != "" {
 		rows, err := db.Query(`SELECT * FROM accounts WHERE username = ?;`, username)
-		checkError(err)
+
+		if err != nil {
+			panic(err)
+		}
+		// checkError(err)
 		if rows.Next() {
 			adminUpdateUserPassword(username, password, email, user_group, status, c)
 		} else {
@@ -121,18 +122,22 @@ func adminUpdateAccountsTable(username string, hashedPassword string, email stri
 func getCurrentUserData(username string) map[string]string {
 	var password, email, user_group, status string
 	rows, err := db.Query(`SELECT password, email, user_group, status FROM accounts WHERE username = ?`,
-		username)
+		&username)
 	checkError(err)
 
 	currentUserData := make(map[string]string)
 	for rows.Next() {
 		err = rows.Scan(&password, &email, &user_group, &status)
 		checkError(err)
+		// if err != nil {
+		// 	panic(err)
+		// }
 		currentUserData["password"] = password
 		currentUserData["email"] = email
 		currentUserData["user_group"] = user_group
 		currentUserData["status"] = status
 	}
+
 	return currentUserData
 }
 
