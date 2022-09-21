@@ -5,11 +5,12 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "start": "sirv public --no-clear"
+    "start": "sirv public --no-clear --port 3000"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-node-resolve": "^11.0.0",
+    "@zerodevx/svelte-toast": "^0.7.2",
     "rollup": "^2.3.4",
     "rollup-plugin-css-only": "^3.1.0",
     "rollup-plugin-livereload": "^2.0.0",
@@ -18,6 +19,8 @@
     "svelte": "^3.0.0"
   },
   "dependencies": {
-    "sirv-cli": "^2.0.0"
+    "axios": "^0.27.2",
+    "sirv-cli": "^2.0.0",
+    "sveltestrap": "^5.9.0"
   }
 }

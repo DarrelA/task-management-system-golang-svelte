@@ -5,6 +5,7 @@ import (
 	"backend/api/route"
 	"fmt"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,6 +19,7 @@ func main() {
 	defer db.Close()
 
 	router := gin.Default()
+	router.Use(cors.Default())
 
 	router.POST("/admin-update-user", route.AdminUpdateUserController)
 	router.POST("/admin-create-user", route.AdminCreateUser)

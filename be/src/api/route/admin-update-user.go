@@ -48,10 +48,10 @@ func adminUpdateUser(username string, password string, email string, user_group 
 		if rows.Next() {
 			adminUpdateUserPassword(username, password, email, user_group, status, c)
 		} else {
-			middleware.ErrorHandler(c, http.StatusNotFound, "Username does not exist. Please try again.")
+			middleware.ErrorHandler(c, 200, "Username does not exist. Please try again.")
 		}
 	} else {
-		middleware.ErrorHandler(c, http.StatusNotAcceptable, "Please enter a username")
+		middleware.ErrorHandler(c, 200, "Please enter a username")
 	}
 }
 
@@ -62,7 +62,7 @@ func adminUpdateUserPassword(username string, password string, email string, use
 			hashedPassword := hashAndSaltPassword([]byte(password))
 			adminUpdateUserEmail(username, hashedPassword, email, user_group, status, c)
 		} else {
-			middleware.ErrorHandler(c, http.StatusBadRequest, "Password length must be between length 8 - 10 with alphabets, numbers and special characters.")
+			middleware.ErrorHandler(c, 200, "Password length must be between length 8 - 10 with alphabets, numbers and special characters.")
 		}
 	} else {
 		password = getCurrentUserData(username)["password"]
@@ -80,7 +80,7 @@ func adminUpdateUserEmail(username string, hashedPassword string, email string, 
 			rows, err := db.Query(`SELECT * FROM accounts WHERE email = ?;`, email)
 			checkError(err)
 			if rows.Next() {
-				middleware.ErrorHandler(c, http.StatusNotAcceptable, "Email already exists in database. Please try again.")
+				middleware.ErrorHandler(c, 200, "Email already exists in database. Please try again.")
 			} else {
 				adminUpdateUserGroup(username, hashedPassword, email, user_group, status, c)
 			}
@@ -116,7 +116,7 @@ func adminUpdateAccountsTable(username string, hashedPassword string, email stri
 		username, hashedPassword, email, user_group, status, username)
 	checkError(err)
 
-	c.JSON(http.StatusOK, gin.H{"code": 200, "message": "User was successfully updated!"})
+	c.JSON(http.StatusCreated, gin.H{"code": 201, "message": "User was successfully updated!"})
 }
 
 func getCurrentUserData(username string) map[string]string {
