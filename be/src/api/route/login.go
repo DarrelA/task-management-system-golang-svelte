@@ -34,12 +34,6 @@ func Login(c *gin.Context) {
 	var username string
 	var password string
 
-	// db, err := sql.Open("mysql", "root:admin123@/c3_database")
-	// defer db.Close()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
 	// Decode JSON body to credentials struct
 	if err := c.BindJSON(&credentials); err != nil {
 		fmt.Println(err)

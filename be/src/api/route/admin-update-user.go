@@ -24,7 +24,7 @@ type UpdateUser struct {
 
 // var err error
 
-func AdminUpdateUserController(c *gin.Context) {
+func AdminUpdateUser(c *gin.Context) {
 
 	var updateUser UpdateUser
 
@@ -39,12 +39,9 @@ func AdminUpdateUserController(c *gin.Context) {
 
 func adminUpdateUser(username string, password string, email string, user_group string, status string, c *gin.Context) {
 	if username != "" {
+		fmt.Println("0")
 		rows, err := db.Query(`SELECT * FROM accounts WHERE username = ?;`, username)
-
-		if err != nil {
-			panic(err)
-		}
-		// checkError(err)
+		checkError(err)
 		if rows.Next() {
 			adminUpdateUserPassword(username, password, email, user_group, status, c)
 		} else {
@@ -94,7 +91,6 @@ func adminUpdateUserEmail(username string, hashedPassword string, email string, 
 func adminUpdateUserGroup(username string, hashedPassword string, email string, user_group string, status string, c *gin.Context) {
 	if user_group != "" {
 		user_group = appendNewUserGroup(username, user_group)
-		fmt.Println("1", user_group)
 		adminUpdateUserStatus(username, hashedPassword, email, user_group, status, c)
 	} else {
 		user_group = getCurrentUserData(username)["user_group"]
@@ -112,11 +108,11 @@ func adminUpdateUserStatus(username string, hashedPassword string, email string,
 }
 
 func adminUpdateAccountsTable(username string, hashedPassword string, email string, user_group string, status string, c *gin.Context) {
-	_, err := db.Query(`UPDATE accounts SET username = ?, password = ?, email = ?, user_group = ?, status = ? WHERE username = ?`,
-		username, hashedPassword, email, user_group, status, username)
+	_, err := db.Query(`UPDATE accounts SET password = ?, email = ?, user_group = ?, status = ? WHERE username = ?`,
+		hashedPassword, email, user_group, status, username)
 	checkError(err)
-
-	c.JSON(http.StatusCreated, gin.H{"code": 201, "message": "User was successfully updated!"})
+	successMessage := fmt.Sprintf("User %s was successfully updated!", username)
+	c.JSON(http.StatusCreated, gin.H{"code": 201, "message": successMessage})
 }
 
 func getCurrentUserData(username string) map[string]string {
@@ -129,9 +125,6 @@ func getCurrentUserData(username string) map[string]string {
 	for rows.Next() {
 		err = rows.Scan(&password, &email, &user_group, &status)
 		checkError(err)
-		// if err != nil {
-		// 	panic(err)
-		// }
 		currentUserData["password"] = password
 		currentUserData["email"] = email
 		currentUserData["user_group"] = user_group

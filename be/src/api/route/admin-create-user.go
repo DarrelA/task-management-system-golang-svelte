@@ -16,7 +16,6 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-
 // Function to load env file values based on key param
 func LoadENV(key string) string {
 	err := godotenv.Load()
@@ -156,6 +155,8 @@ func AdminCreateUser(c *gin.Context) {
 
 func GetUsers(c *gin.Context) {
 	var existingUser ExistingUser
+	var data []ExistingUser
+
 	rows, err := db.Query("SELECT username, email, status, admin_privilege, user_group FROM accounts")
 	if err != nil {
 		panic(err)
@@ -163,17 +164,7 @@ func GetUsers(c *gin.Context) {
 	defer rows.Close()
 	for rows.Next() {
 
-		// var (
-		// 	username        string
-		// 	email           string
-		// 	admin_privilege int
-		// 	usergroup       string
-		// 	status          string
-		// 	timestamp       string
-		// )
-
 		err = rows.Scan(&existingUser.Username, &existingUser.Email, &existingUser.Status, &existingUser.AdminPrivilege, &existingUser.Usergroup)
-		// err = rows.Scan(username, email, admin_privilege, usergroup, status, timestamp)
 		if err != nil {
 			panic(err)
 		}
@@ -188,8 +179,12 @@ func GetUsers(c *gin.Context) {
 			Timestamp:      existingUser.Timestamp,
 		}
 
-		c.JSON(200, response)
+		// append response into slice
+		data = append(data, response)
 	}
+
+	// send data as array of JSON obj
+	c.JSON(200, data)
 
 	err = rows.Err()
 	if err != nil {
