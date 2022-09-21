@@ -21,7 +21,9 @@ func main() {
 	router := gin.Default()
 	router.Use(cors.Default())
 
-	router.POST("/admin-update-user", route.AdminUpdateUserController)
+	router.POST("/login", route.Login)
+
+	router.POST("/admin-update-user", middleware.CheckCookie, route.AdminUpdateUserController)
 	router.POST("/admin-create-user", route.AdminCreateUser)
 	router.GET("/get-users", route.GetUsers)
 
