@@ -63,9 +63,6 @@
 		color: mediumseagreen;
 		font-weight: bold;
 	}
-	.back-button {
-		margin-top: 2px;
-	}
 </style>
 
 <h1>Accounts Table</h1>
@@ -86,7 +83,7 @@
 		  <td>{userData.email}</td>
 		  <td>{userData.user_group}</td>
 		  <td class:active={userData.status === "Active"} class:inactive={userData.status === "Inactive"}>{userData.status}</td>
-		  <td><Button color="primary" on:click={() => editUserData(userData.username, userData.email, userData.user_group, userData.status)}>Edit User</Button></td>
+		  <td><Button color="primary" on:click={() => editUserData(userData.username, userData.email, userData.user_group, userData.status)}>Update User</Button></td>
 		</tr>
 		{/each}
 

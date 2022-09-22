@@ -70,7 +70,7 @@
 <form on:submit|preventDefault={handleSubmit}>
 <FormGroup>
 	<Label for="username">Username:</Label>
-	<Input type="text" bind:value={username} disabled />
+	<Input type="text" bind:value={username} readonly />
 </FormGroup>
 <FormGroup>
 	<Label for="password">Password:</Label>

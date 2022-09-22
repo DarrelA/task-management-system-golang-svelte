@@ -92,22 +92,31 @@ func adminUpdateUserEmail(username string, hashedPassword string, email string, 
 }
 
 func adminUpdateUserGroup(username string, hashedPassword string, email string, user_group string, status string, c *gin.Context) {
+	admin_privilege := getAdminPrivilege(user_group)
 	updateUserGroupTable(username, user_group)
-	adminUpdateUserStatus(username, hashedPassword, email, user_group, status, c)
+	adminUpdateUserStatus(username, hashedPassword, email, user_group, status, admin_privilege, c)
 }
 
-func adminUpdateUserStatus(username string, hashedPassword string, email string, user_group string, status string, c *gin.Context) {
-	if status != "" {
-		adminUpdateAccountsTable(username, hashedPassword, email, user_group, status, c)
+func getAdminPrivilege(user_group string) int {
+	if strings.Contains(user_group, "Admin") {
+		return 1
 	} else {
-		status = getCurrentUserData(username)["status"]
-		adminUpdateAccountsTable(username, hashedPassword, email, user_group, status, c)
+		return 0
 	}
 }
 
-func adminUpdateAccountsTable(username string, hashedPassword string, email string, user_group string, status string, c *gin.Context) {
-	_, err := db.Query(`UPDATE accounts SET password = ?, email = ?, user_group = ?, status = ? WHERE username = ?`,
-		hashedPassword, email, user_group, status, username)
+func adminUpdateUserStatus(username string, hashedPassword string, email string, user_group string, status string, admin_privilege int, c *gin.Context) {
+	if status != "" {
+		adminUpdateAccountsTable(username, hashedPassword, email, user_group, status, admin_privilege, c)
+	} else {
+		status = getCurrentUserData(username)["status"]
+		adminUpdateAccountsTable(username, hashedPassword, email, user_group, status, admin_privilege, c)
+	}
+}
+
+func adminUpdateAccountsTable(username string, hashedPassword string, email string, user_group string, status string, admin_privilege int, c *gin.Context) {
+	_, err := db.Query(`UPDATE accounts SET password = ?, email = ?, admin_privilege = ?, user_group = ?, status = ? WHERE username = ?`,
+		hashedPassword, email, admin_privilege, user_group, status, username)
 	checkError(err)
 	successMessage := fmt.Sprintf("User %s was successfully updated!", username)
 	c.JSON(http.StatusCreated, gin.H{"code": 201, "message": successMessage})
