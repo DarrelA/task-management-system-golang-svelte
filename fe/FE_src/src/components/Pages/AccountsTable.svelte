@@ -1,9 +1,15 @@
 <script>
-	import Axios from "axios"
-    import { SvelteToast } from '@zerodevx/svelte-toast'
-	import {Table} from "sveltestrap"
-	import {Button,Modal,ModalBody,ModalFooter,ModalHeader} from 'sveltestrap';
-	import AdminUpdateUser from "./AdminUpdateUser.svelte"
+	import Axios from 'axios'
+    import { toast } from '@zerodevx/svelte-toast'
+	import {
+		Button,
+		Modal,
+		ModalBody,
+		ModalFooter,
+		ModalHeader, 
+		Table 
+	} from 'sveltestrap'
+	import AdminUpdateUser from './AdminUpdateUser.svelte'
 
 	let usersData = [];
 	let open = false;
@@ -42,10 +48,6 @@
 		getSelectedUserData()
 	}
 </script>
-
-<main>
-	<SvelteToast />
-</main>
 
 <style>
 	h1 {

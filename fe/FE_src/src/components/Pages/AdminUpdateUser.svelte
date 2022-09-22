@@ -1,9 +1,15 @@
 <script>
-	import Axios from "axios"
+	import Axios from 'axios'
 	import { toast } from '@zerodevx/svelte-toast'
-	import { SvelteToast } from '@zerodevx/svelte-toast'
 	import MultiSelect from "svelte-multiselect"
-	import { Button, Form, FormGroup, FormText, Input, Label } from 'sveltestrap';
+	import { 
+		Button, 
+		Form, 
+		FormGroup, 
+		FormText, 
+		Input, 
+		Label 
+	} from 'sveltestrap'
 
 	let username = "";
 	let password = "";
@@ -35,11 +41,6 @@
 		}
 	}
 </script>
-
-<main>
-	<SvelteToast />
-
-</main>
 
 <style>
 	.disabled {
