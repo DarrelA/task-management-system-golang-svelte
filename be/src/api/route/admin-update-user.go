@@ -72,6 +72,14 @@ func adminUpdateUserPassword(username string, password string, email string, use
 }
 
 func adminUpdateUserEmail(username string, hashedPassword string, email string, user_group string, status string, c *gin.Context) {
+	validEmail := middleware.CheckEmail(email)
+
+	// Invalid email format
+	if !validEmail {
+		middleware.ErrorHandler(c, 400, "Invalid email format")
+		return
+	}
+
 	if email != "" {
 		currentEmail := getCurrentUserData(username)["email"]
 		if email == currentEmail {
