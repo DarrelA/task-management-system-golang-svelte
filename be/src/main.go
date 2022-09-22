@@ -24,8 +24,8 @@ func main() {
 	router.POST("/login", route.Login)
 	// router.POST("/admin-update-user", middleware.CheckCookie, route.AdminUpdateUser)
 	router.POST("/admin-update-user", route.AdminUpdateUser)
-	// router.POST("/get-selected-users", route.GetSelectedUser)
 	router.POST("/admin-create-user", route.AdminCreateUser)
+	router.POST("/admin-create-group", route.AdminCreateGroup)
 	router.GET("/get-users", route.GetUsers)
 	router.GET("/get-user-groups", middleware.GetUserGroup)
 

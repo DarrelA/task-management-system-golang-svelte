@@ -2,7 +2,7 @@
   import axios from 'axios'
   import { toast } from '@zerodevx/svelte-toast'
   import Navbar from '../Navbar/IsLoggedInAdmin.svelte'
-  import AccountsTable from './AccountsTable.svelte'
+  import AdminUpdateUser from './AdminUpdateUser.svelte'
 
 </script>
 
@@ -12,4 +12,4 @@
 
 <Navbar/>
 <br/>
-<AccountsTable/>
+<AdminUpdateUser/>

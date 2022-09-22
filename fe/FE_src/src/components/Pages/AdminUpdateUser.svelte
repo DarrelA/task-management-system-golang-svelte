@@ -1,76 +1,104 @@
 <script>
-	import Axios from 'axios'
-	import { toast } from '@zerodevx/svelte-toast'
-	import MultiSelect from "svelte-multiselect"
-	import { 
-		Button, 
-		Form, 
-		FormGroup, 
-		FormText, 
-		Input, 
-		Label 
-	} from 'sveltestrap'
+	import axios from "axios"
+    import { SvelteToast } from '@zerodevx/svelte-toast'
+	import {Table} from "sveltestrap"
+	import {Button,Modal,ModalBody,ModalHeader} from 'sveltestrap';
+	import AdminUpdateUser from "./AdminUpdateUserForm.svelte"
 
-	let username = "";
-	let password = "";
-	let email = "";
-	let status = "";
-	export let selectedUsername;
+	let usersData = [];
+	let open = false;
 
-	let code = ""
-	let message = "";
+	let username = ""
+	let email = ""
+	let user_group = ""
+	let status = ""
+	let status_color = ""
 
-	const user_groups = ["Project Lead", "Project Manager", "Team Member"]
-	let selected = []
-
-	async function handleSubmit() {
-		let user_group = selected.toString()
-		console.log(user_group)
-		const json = {username, password, email, user_group, status}
-
+    $: getUsers()
+	
+	async function getUsers() {
 		try {
-			const response = await Axios.post("http://localhost:4000/admin-update-user", json)
+			const response = await axios.get("http://localhost:4000/get-users")
 			if (response) {
-				message = response.data.message
-				code = response.data.code
-				toast.push(message)
-				username = "", password = "", email = "", status = "", selected = []
+				usersData = response.data
 			}
 		} catch (error) {
 			console.log(error)
 		}
 	}
+
+	function editUserData(selectedUsername, selectedEmail, selectedUserGroup, selectedStatus) {
+		open = !open
+		username = selectedUsername
+		email = selectedEmail
+		if (selectedUserGroup != "") {
+			user_group = selectedUserGroup.split(",")
+		} else {
+			user_group = selectedUserGroup
+		}
+		status = selectedStatus
+	}
+
+	const modalBack = () => {
+		open = !open
+		getUsers()
+	}
 </script>
 
+<main>
+	<SvelteToast />
+</main>
+
 <style>
-	.disabled {
-		background-color: yellow;
+	h1 {
+		color: blueviolet;
+		text-align: center;
+		font-family:cursive;
+	}
+	.inactive {
+		color: red;
+		font-weight: bold;
+	}
+	.active {
+		color: mediumseagreen;
+		font-weight: bold;
 	}
 </style>
 
-<Form>
-<FormGroup>
-	<Label for="username">Username:</Label>
-	<Input type="text" bind:value={selectedUsername} class="disabled" disabled />
-</FormGroup>
-<FormGroup>
-	<Label for="password">Password:</Label>
-	<Input type="password" bind:value={password} placeholder="Password" />
-</FormGroup>
-<FormGroup>
-	<Label for="email">Email:</Label>
-	<Input type="email" bind:value={email} placeholder="Email" />
-</FormGroup>
-<FormGroup>
-	<Label for="usergroup">User Group(s):</Label>
-	<MultiSelect bind:selected options={user_groups} />
-</FormGroup>
-<FormGroup>
-    <Label for="status">Status</Label>
-    <Input type="select" bind:value={status} placeholder="Status">
-      <option>Inactive</option>
-      <option>Active</option>
-    </Input>
-</FormGroup>
-<Button on:submit="{handleSubmit}">Update User</Button>
-</Form>
+<h1>Accounts Table</h1>
+<Table bordered>
+	<thead>
+		<tr>
+		  <th>Username</th>
+		  <th>Email</th>
+		  <th>User Group(s)</th>
+		  <th>Status</th>
+		  <th>Edit</th>
+		</tr>
+	  </thead>
+	  <tbody>
+		{#each usersData as userData}
+		<tr>
+		  <td>{userData.username}</td>
+		  <td>{userData.email}</td>
+		  <td>{userData.user_group}</td>
+		  <td class:active={userData.status === "Active"} class:inactive={userData.status === "Inactive"}>{userData.status}</td>
+		  <td><Button color="primary" on:click={() => editUserData(userData.username, userData.email, userData.user_group, userData.status)}>Update User</Button></td>
+		</tr>
+		{/each}
+
+		<div>
+			<Modal isOpen={open} {editUserData}>
+			  <ModalHeader {editUserData}>Update User</ModalHeader>
+			  <ModalBody>
+				<AdminUpdateUser username={username} email={email} user_group={user_group} status={status}  />
+				<Button class="back-button" color="dark" on:click={modalBack}>Back</Button>
+			  </ModalBody>
+			</Modal>
+		  </div>
+	  </tbody>
+</Table>
+
+
+
+
