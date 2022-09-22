@@ -7,9 +7,6 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-// JWT secret key
-var jwtKey = []byte("this_is_my_secret_key")
-
 type Claims struct {
 	Username string `json:"username"`
 	jwt.StandardClaims
@@ -33,7 +30,7 @@ func CheckCookie(c *gin.Context) {
 	// Parse JWT string and store results in claims
 	// Pass in jwt key as well
 	token, err := jwt.ParseWithClaims(cookie, &jwt.RegisteredClaims{}, func(*jwt.Token) (interface{}, error) {
-		return []byte(jwtKey), nil
+		return []byte(LoadENV("JWT_SECRET")), nil
 	})
 
 	if err != nil {

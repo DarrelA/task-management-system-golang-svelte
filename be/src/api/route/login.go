@@ -12,9 +12,6 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-// JWT secret key
-var jwtKey = []byte("this_is_my_secret_key")
-
 // User login details: username, password
 type LoginCredentials struct {
 	Username string `json:"username"`
@@ -23,7 +20,7 @@ type LoginCredentials struct {
 
 type Claims struct {
 	Username string `json:"username"`
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 
 // After user login, generate JWT and set cookie
@@ -56,33 +53,24 @@ func Login(c *gin.Context) {
 		correctPassword := middleware.CompareHash(credentials.Password, password)
 
 		// Incorrect password
-		if correctPassword == false {
+		if !correctPassword {
 			middleware.ErrorHandler(c, http.StatusUnauthorized, "Unauthorized User")
 			return
 		}
 
-		// Correct password
-		// Generate JWT and set cookie
-
-		// Set expiration of token to 5mins
-		expirationTime := time.Now().Add(time.Hour * 1)
-
-		// Create JWT claims
-		claims := Claims{
-			Username: credentials.Username,
-			StandardClaims: jwt.StandardClaims{
-
-				// JWT expiration is express as unix milliseconds
-				ExpiresAt: expirationTime.Unix(),
-			},
-		}
+		nowTime := time.Now()
+		expireTime := nowTime.Add(1 * time.Hour)
 
 		// New token with signing method and claims
-		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
+			Issuer:    username, // MySQL > Accounts Table > username
+			ExpiresAt: jwt.NewNumericDate(expireTime),
+		})
 
-		tokenString, err := token.SignedString(jwtKey)
+		tokenString, err := token.SignedString([]byte(middleware.LoadENV("JWT_SECRET")))
 
 		if err != nil {
+			fmt.Println(err)
 			c.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
