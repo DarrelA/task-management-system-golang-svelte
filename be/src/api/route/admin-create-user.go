@@ -182,7 +182,6 @@ func GetUsers(c *gin.Context) {
 		// append response into slice
 		data = append(data, response)
 	}
-
 	// send data as array of JSON obj
 	c.JSON(200, data)
 

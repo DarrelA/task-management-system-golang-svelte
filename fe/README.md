@@ -14,10 +14,12 @@ npm run dev
 
 1. Go to package.json file
 1. Look for "scripts"
-1. Add a `--port` flag: `"dev": "rollup -c -w --port 3000"`
+1. Add a `--port` flag: `"start": "sirv public --no-clear --port 3000"`
 
 # MultiSelect
 
 - We are using Svelte MultiSelect
 - To install
     - `npm install -D svelte-multiselect`
+
+

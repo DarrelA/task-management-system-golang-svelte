@@ -43,7 +43,6 @@ func AdminUpdateUser(c *gin.Context) {
 
 func adminUpdateUser(username string, password string, email string, user_group string, status string, c *gin.Context) {
 	if username != "" {
-		fmt.Println("0")
 		rows, err := db.Query(`SELECT * FROM accounts WHERE username = ?;`, username)
 		checkError(err)
 		if rows.Next() {
@@ -93,13 +92,8 @@ func adminUpdateUserEmail(username string, hashedPassword string, email string, 
 }
 
 func adminUpdateUserGroup(username string, hashedPassword string, email string, user_group string, status string, c *gin.Context) {
-	if user_group != "" {
-		user_group = appendNewUserGroup(username, user_group)
-		adminUpdateUserStatus(username, hashedPassword, email, user_group, status, c)
-	} else {
-		user_group = getCurrentUserData(username)["user_group"]
-		adminUpdateUserStatus(username, hashedPassword, email, user_group, status, c)
-	}
+	updateUserGroupTable(username, user_group)
+	adminUpdateUserStatus(username, hashedPassword, email, user_group, status, c)
 }
 
 func adminUpdateUserStatus(username string, hashedPassword string, email string, user_group string, status string, c *gin.Context) {
@@ -138,39 +132,19 @@ func getCurrentUserData(username string) map[string]string {
 	return currentUserData
 }
 
-func appendNewUserGroup(username string, user_group string) string {
-	currentUserGroup := getCurrentUserData(username)["user_group"]
-	currentUserGroupSplit := strings.Split(currentUserGroup, ",")
-	newUserGroupSplit := strings.Split(user_group, ",")
-
-	userGroupSlice := []string{currentUserGroup}
-	for _, i := range newUserGroupSplit {
-		if !contains(currentUserGroupSplit, i) {
-			updateUserGroupTable(username, i)
-			userGroupSlice = append(userGroupSlice, i)
-		}
-	}
-	user_group = strings.Join(userGroupSlice, ",")
-	return user_group
-}
-
-func contains(s []string, str string) bool {
-	for _, i := range s {
-		if i == str {
-			return true
-		}
-	}
-	return false
-}
-
 func updateUserGroupTable(username string, user_group string) {
-	rows, err := db.Query(`SELECT * FROM usergroup WHERE username = ? AND user_group = ?;`,
-		username, user_group)
-	checkError(err)
+	if user_group != "" {
+		userGroupSlice := strings.Split(user_group, ",")
+		for _, v := range userGroupSlice {
+			rows, err := db.Query(`SELECT * FROM usergroup WHERE username = ? AND user_group = ?;`,
+				username, v)
+			checkError(err)
 
-	if !rows.Next() {
-		_, err := db.Query(`INSERT INTO usergroup VALUES (?,?)`, username, user_group)
-		checkError(err)
+			if !rows.Next() {
+				_, err := db.Query(`INSERT INTO usergroup VALUES (?,?)`, username, v)
+				checkError(err)
+			}
+		}
 	}
 }
 
@@ -185,52 +159,5 @@ func hashAndSaltPassword(pwd []byte) string {
 func checkError(err error) {
 	if err != nil {
 		log.Fatalln("Some other error occurred", err)
-	}
-}
-
-func GetSelectedUser(c *gin.Context) {
-	var specificUser SpecificUser
-
-	if err := c.BindJSON(&specificUser); err != nil {
-		checkError(err)
-		middleware.ErrorHandler(c, http.StatusBadRequest, "Bad Request")
-		return
-	}
-
-	fmt.Println(specificUser.Username)
-
-	var existingUser ExistingUser
-	var data []ExistingUser
-
-	rows, err := db.Query("SELECT email, status, user_group FROM accounts WHERE username = ?")
-	if err != nil {
-		panic(err)
-	}
-	defer rows.Close()
-	for rows.Next() {
-
-		err = rows.Scan(&existingUser.Email, &existingUser.Status, &existingUser.Usergroup, &specificUser.Username,)
-		if err != nil {
-			panic(err)
-		}
-
-		// Using ExistingUser struct as response struct to maintain order of JSON key values
-		response := ExistingUser{
-			Username:       existingUser.Username,
-			Email:          existingUser.Email,
-			Status:         existingUser.Status,
-			Usergroup:      existingUser.Usergroup,
-		}
-
-		// append response into slice
-		data = append(data, response)
-	}
-
-	// send data as array of JSON obj
-	c.JSON(200, data)
-
-	err = rows.Err()
-	if err != nil {
-		panic(err)
 	}
 }

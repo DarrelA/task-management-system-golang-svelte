@@ -1,17 +1,12 @@
 package middleware
 
 import (
-	"database/sql"
 	"log"
+
+	"github.com/gin-gonic/gin"
 )
 
-func GetUserGroup() {
-	db, err := sql.Open("mysql", "root:admin123@/c3_database")
-	defer db.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
-
+func GetUserGroup(c *gin.Context) {
 	// SELECT * FROM usergroup
 	result, err := db.Query("SELECT * FROM groupnames")
 	if err != nil {
@@ -19,13 +14,17 @@ func GetUserGroup() {
 	}
 
 	defer result.Close()
+
+	var data []string
 	for result.Next() {
 		var usergroup string
 
 		if err := result.Scan(&usergroup); err != nil {
 			log.Fatal(err)
 		}
-		log.Println(usergroup)
+		data = append(data, usergroup)
 	}
+
+	c.JSON(200, data)
 
 }

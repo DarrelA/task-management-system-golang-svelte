@@ -1,4 +1,4 @@
-import App from './AccountsTable.svelte';
+import App from './AdminUpdateUserTable.svelte';
 
 const app = new App({
 	target: document.body,
