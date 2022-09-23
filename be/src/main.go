@@ -35,7 +35,7 @@ func main() {
 	router.POST("/login", route.Login)
 	router.POST("/logout", route.Logout)
 
-	router.GET("/check-group", middleware.CheckUserGroupController)
+	// router.GET("/check-group", middleware.CheckGroup())
 	router.POST("/user-to-group", route.AddUserToGroup)
 	router.POST("/admin-update-user", route.AdminUpdateUser)
 	router.POST("/admin-create-user", route.AdminCreateUser)
