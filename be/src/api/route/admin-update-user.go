@@ -46,7 +46,7 @@ func adminUpdateUser(username string, password string, email string, user_group 
 		switch err := result.Scan(&username); {
 		case err != sql.ErrNoRows:
 			adminUpdateUserPassword(username, password, email, user_group, status, c)
-		case err == nil:
+		case err == sql.ErrNoRows:
 			middleware.ErrorHandler(c, 200, "Username does not exist. Please try again.")
 		default:
 			checkError(err)
@@ -90,7 +90,7 @@ func adminUpdateUserEmail(username string, hashedPassword string, email string, 
 			switch err := result.Scan(&email); {
 			case err != sql.ErrNoRows:
 				middleware.ErrorHandler(c, 200, "Email already exists in database. Please try again.")
-			case err == nil:
+			case err == sql.ErrNoRows:
 				adminUpdateUserGroup(username, hashedPassword, email, user_group, status, c)
 			default:
 				checkError(err)
