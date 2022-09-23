@@ -42,6 +42,12 @@ func AdminUpdateUser(c *gin.Context) {
 
 func adminUpdateUser(username string, password string, email string, user_group string, status string, c *gin.Context) {
 	if username != "" {
+		whiteSpace := middleware.CheckWhiteSpace(username)
+		if whiteSpace {
+			middleware.ErrorHandler(c, 400, "Username should not contain whitespace")
+			return
+		}
+
 		result := middleware.SelectAccountsByUsername(username, c)
 		switch err := result.Scan(&username); {
 		case err != sql.ErrNoRows:
@@ -60,7 +66,7 @@ func adminUpdateUserPassword(username string, password string, email string, use
 
 	if password != "" {
 		if middleware.CheckPassword(password) {
-			hashedPassword := hashAndSaltPassword([]byte(password))
+			hashedPassword, _ := middleware.GenerateHash(password)
 			adminUpdateUserEmail(username, hashedPassword, email, user_group, status, c)
 		} else {
 			middleware.ErrorHandler(c, 200, "Password length must be between length 8 - 10 with alphabets, numbers and special characters.")
