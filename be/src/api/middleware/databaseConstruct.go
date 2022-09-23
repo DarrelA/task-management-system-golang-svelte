@@ -28,9 +28,9 @@ var (
 	queryUpdateAccountsAdmin = "UPDATE accounts SET password = ?, email = ?, admin_privilege = ?, user_group = ?, status = ? WHERE username = ?;"
 )
 
-func InsertUserGroup(username string, user_group string) *sql.Row {
-	result := db.QueryRow(queryInsertUserGroup, username, user_group)
-	return result
+func InsertUserGroup(username string, user_group string) (sql.Result, error) {
+	result, err := db.Exec(queryInsertUserGroup, username, user_group)
+	return result, err
 }
 
 func SelectAccountsByUsername(username string, c *gin.Context) *sql.Row {
