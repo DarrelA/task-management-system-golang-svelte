@@ -6,7 +6,11 @@
     NavbarBrand,
     Nav,
     NavItem,
-    NavLink
+    NavLink,
+    Dropdown,
+    DropdownToggle,
+    DropdownMenu,
+    DropdownItem
   } from 'sveltestrap'
 
   let isOpen = false;
@@ -25,9 +29,13 @@
   <NavbarToggler on:click={() => (isOpen = !isOpen)} />
   <Collapse {isOpen} navbar expand="md" on:update={handleUpdate}>
     <Nav class="ms-auto" navbar>
-      <NavItem>
-        <NavLink href="/user-management">User Management</NavLink>
-      </NavItem>
+      <Dropdown nav inNavbar>
+        <DropdownToggle nav caret>User Management</DropdownToggle>
+        <DropdownMenu end>
+          <DropdownItem href="/user-management">Accounts Table</DropdownItem>
+          <DropdownItem href="/user-to-group">Add Users To Group</DropdownItem>
+        </DropdownMenu>
+      </Dropdown>
       <NavItem>
         <NavLink href="/group-management">Group Management</NavLink>
       </NavItem>
