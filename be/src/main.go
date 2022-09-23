@@ -41,7 +41,8 @@ func main() {
 	router.POST("/admin-create-user", route.AdminCreateUser)
 	router.POST("/admin-create-group", route.AdminCreateGroup)
 	router.GET("/get-users", route.GetUsers)
-	router.GET("/get-user-groups", middleware.GetUserGroup)
+	router.GET("/get-user-groups", route.GetUserGroup)
+	router.POST("/update-user", route.UpdateUserFunction)
 
 	port := middleware.LoadENV("SERVER_PORT")
 	server := fmt.Sprintf(":%v", port)
