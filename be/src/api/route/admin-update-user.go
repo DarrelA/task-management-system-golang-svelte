@@ -1,6 +1,7 @@
 package route
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -26,8 +27,6 @@ type SpecificUser struct {
 	Username string `json:"username"`
 }
 
-// var err error
-
 func AdminUpdateUser(c *gin.Context) {
 
 	var updateUser UpdateUser
@@ -43,9 +42,9 @@ func AdminUpdateUser(c *gin.Context) {
 
 func adminUpdateUser(username string, password string, email string, user_group string, status string, c *gin.Context) {
 	if username != "" {
-		rows, err := db.Query(`SELECT * FROM accounts WHERE username = ?;`, username)
-		checkError(err)
-		if rows.Next() {
+		result := middleware.SelectAccountsByUsername(username, c)
+		err := result.Scan(&username)
+		if err != sql.ErrNoRows {
 			adminUpdateUserPassword(username, password, email, user_group, status, c)
 		} else {
 			middleware.ErrorHandler(c, 200, "Username does not exist. Please try again.")
@@ -65,7 +64,7 @@ func adminUpdateUserPassword(username string, password string, email string, use
 			middleware.ErrorHandler(c, 200, "Password length must be between length 8 - 10 with alphabets, numbers and special characters.")
 		}
 	} else {
-		password = getCurrentUserData(username)["password"]
+		password = getCurrentUserData(username, c)["password"]
 		adminUpdateUserEmail(username, password, email, user_group, status, c)
 	}
 
@@ -81,20 +80,20 @@ func adminUpdateUserEmail(username string, hashedPassword string, email string, 
 	}
 
 	if email != "" {
-		currentEmail := getCurrentUserData(username)["email"]
+		currentEmail := getCurrentUserData(username, c)["email"]
 		if email == currentEmail {
 			adminUpdateUserGroup(username, hashedPassword, currentEmail, user_group, status, c)
 		} else {
-			rows, err := db.Query(`SELECT * FROM accounts WHERE email = ?;`, email)
-			checkError(err)
-			if rows.Next() {
+			result := middleware.SelectAccountsByEmail(email, c)
+			err := result.Scan(&email)
+			if err != sql.ErrNoRows {
 				middleware.ErrorHandler(c, 200, "Email already exists in database. Please try again.")
 			} else {
 				adminUpdateUserGroup(username, hashedPassword, email, user_group, status, c)
 			}
 		}
 	} else {
-		email = getCurrentUserData(username)["email"]
+		email = getCurrentUserData(username, c)["email"]
 		adminUpdateUserGroup(username, hashedPassword, email, user_group, status, c)
 	}
 }
@@ -117,48 +116,46 @@ func adminUpdateUserStatus(username string, hashedPassword string, email string,
 	if status != "" {
 		adminUpdateAccountsTable(username, hashedPassword, email, user_group, status, admin_privilege, c)
 	} else {
-		status = getCurrentUserData(username)["status"]
+		status = getCurrentUserData(username, c)["status"]
 		adminUpdateAccountsTable(username, hashedPassword, email, user_group, status, admin_privilege, c)
 	}
 }
 
 func adminUpdateAccountsTable(username string, hashedPassword string, email string, user_group string, status string, admin_privilege int, c *gin.Context) {
-	_, err := db.Query(`UPDATE accounts SET password = ?, email = ?, admin_privilege = ?, user_group = ?, status = ? WHERE username = ?`,
-		hashedPassword, email, admin_privilege, user_group, status, username)
+	_, err := middleware.UpdateAccountsAdmin(hashedPassword, email, admin_privilege, user_group, status, username, c)
 	checkError(err)
 	successMessage := fmt.Sprintf("User %s was successfully updated!", username)
 	c.JSON(http.StatusCreated, gin.H{"code": 201, "message": successMessage})
 }
 
-func getCurrentUserData(username string) map[string]string {
-	var password, email, user_group, status string
-	rows, err := db.Query(`SELECT password, email, user_group, status FROM accounts WHERE username = ?`,
-		&username)
-	checkError(err)
+func getCurrentUserData(username string, c *gin.Context) map[string]string {
+	var password, email, user_group, status, timestamp string
+	var admin_privilege int
+	result := middleware.SelectAccountsByUsername(username, c)
 
 	currentUserData := make(map[string]string)
-	for rows.Next() {
-		err = rows.Scan(&password, &email, &user_group, &status)
-		checkError(err)
+	err := result.Scan(&username, &password, &email, &user_group, &admin_privilege, &status, &timestamp)
+	if err != sql.ErrNoRows {
 		currentUserData["password"] = password
 		currentUserData["email"] = email
 		currentUserData["user_group"] = user_group
 		currentUserData["status"] = status
+	} else if err != nil {
+		checkError(err)
 	}
-
 	return currentUserData
 }
 
 func updateUserGroupTable(username string, user_group string) {
 	if user_group != "" {
 		userGroupSlice := strings.Split(user_group, ",")
-		for _, v := range userGroupSlice {
-			rows, err := db.Query(`SELECT * FROM usergroup WHERE username = ? AND user_group = ?;`,
-				username, v)
-			checkError(err)
+		for _, value := range userGroupSlice {
+			result := middleware.SelectUserGroupByUsernameUserGroup(username, value)
+			err := result.Scan(&username, &value)
 
-			if !rows.Next() {
-				_, err := db.Query(`INSERT INTO usergroup VALUES (?,?)`, username, v)
+			if err == sql.ErrNoRows {
+				middleware.InsertUserGroup(username, value)
+			} else if err != nil {
 				checkError(err)
 			}
 		}
