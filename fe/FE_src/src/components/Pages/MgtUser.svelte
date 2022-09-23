@@ -1,15 +1,16 @@
 <script>
-  import axios from 'axios'
-  import { toast } from '@zerodevx/svelte-toast'
-  import Navbar from '../Navbar/IsLoggedInAdmin.svelte'
-  import AdminUpdateUser from './AdminUpdateUser.svelte'
+  import axios from "axios";
 
+  import Navbar from "../Navbar/IsLoggedInAdmin.svelte";
+  import AdminUpdateUser from "./AdminUpdateUser.svelte";
+  import AdminCreateUserForm from "./AdminCreateUserForm.svelte";
 </script>
 
+<Navbar />
+<br />
+
+<AdminCreateUserForm />
+<AdminUpdateUser />
+
 <style>
-
 </style>
-
-<Navbar/>
-<br/>
-<AdminUpdateUser/>
