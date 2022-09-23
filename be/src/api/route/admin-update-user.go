@@ -43,11 +43,13 @@ func AdminUpdateUser(c *gin.Context) {
 func adminUpdateUser(username string, password string, email string, user_group string, status string, c *gin.Context) {
 	if username != "" {
 		result := middleware.SelectAccountsByUsername(username, c)
-		err := result.Scan(&username)
-		if err != sql.ErrNoRows {
+		switch err := result.Scan(&username); {
+		case err != sql.ErrNoRows:
 			adminUpdateUserPassword(username, password, email, user_group, status, c)
-		} else {
+		case err == nil:
 			middleware.ErrorHandler(c, 200, "Username does not exist. Please try again.")
+		default:
+			checkError(err)
 		}
 	} else {
 		middleware.ErrorHandler(c, 200, "Please enter a username")
@@ -85,11 +87,13 @@ func adminUpdateUserEmail(username string, hashedPassword string, email string, 
 			adminUpdateUserGroup(username, hashedPassword, currentEmail, user_group, status, c)
 		} else {
 			result := middleware.SelectAccountsByEmail(email, c)
-			err := result.Scan(&email)
-			if err != sql.ErrNoRows {
+			switch err := result.Scan(&email); {
+			case err != sql.ErrNoRows:
 				middleware.ErrorHandler(c, 200, "Email already exists in database. Please try again.")
-			} else {
+			case err == nil:
 				adminUpdateUserGroup(username, hashedPassword, email, user_group, status, c)
+			default:
+				checkError(err)
 			}
 		}
 	} else {

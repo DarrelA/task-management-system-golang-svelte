@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	queryInsertAccounts = "INSERT INTO acocunts (username, password, email, admin_privilege, user_group, status, timestamp) VALUES (?,?,?,?,?,?,now());"
+	queryInsertAccounts = "INSERT INTO accounts (username, password, email, admin_privilege, user_group, status, timestamp) VALUES (?,?,?,?,?,?,now());"
 
 	queryInsertUserGroup  = "INSERT INTO usergroup (username, user_group) VALUES (?,?);"
 	queryInsertGroupnames = "INSERT INTO groupnames (user_group) VALUES (?,?);"
