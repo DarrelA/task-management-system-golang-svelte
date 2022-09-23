@@ -7,6 +7,7 @@
 	import Home from "./components/Pages/Home.svelte"
 	import MgtUser from "./components/Pages/MgtUser.svelte"
 	import MgtGroup from "./components/Pages/MgtGroup.svelte"
+  import AddUserToGroup from "./components/Pages/AddUserToGroup.svelte";
 </script>
 
 <SvelteToast/>

@@ -2,6 +2,9 @@
   import axios from 'axios'
   import { toast } from '@zerodevx/svelte-toast'
   import Navbar from '../Navbar/IsLoggedInAdmin.svelte'
+  import AdminUpdateUser from './AdminUpdateUser.svelte';
+  import AddUserToGroup from './AddUserToGroup.svelte';
+  import AdminUpdateUserForm from './AdminUpdateUserForm.svelte';
 
 	let groupname = ""
   let message = ""
@@ -35,3 +38,4 @@
 <input type="text" bind:value={groupname}>
 
 <button on:click={CreateGroup}>Calculate</button>
+<AdminUpdateUserForm />
