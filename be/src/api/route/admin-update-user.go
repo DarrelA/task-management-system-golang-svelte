@@ -15,7 +15,7 @@ import (
 )
 
 // Go struct in the form of JSON
-type JsonUser struct {
+type UserData struct {
 	Username   string `json:"username"`
 	Password   string `json:"password"`
 	Email      string `json:"email"`
@@ -29,7 +29,7 @@ type SpecificUser struct {
 
 func AdminUpdateUser(c *gin.Context) {
 
-	var updateUser JsonUser
+	var updateUser UserData
 
 	if err := c.BindJSON(&updateUser); err != nil {
 		checkError(err)
