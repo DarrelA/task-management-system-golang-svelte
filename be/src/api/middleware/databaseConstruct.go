@@ -15,6 +15,7 @@ var (
 
 var (
 	querySelectAccounts           = "SELECT username, password, email, admin_privilege, user_group, status, timestamp FROM accounts;"
+	querySelectAccountByLogin     = "SELECT username, password, status FROM accounts WHERE username = ?;"
 	querySelectAccountsByUsername = "SELECT username, password, email, admin_privilege, user_group, status, timestamp FROM accounts WHERE username = ?;"
 	querySelectAccountsByEmail    = "SELECT username, password, email, admin_privilege, user_group, status, timestamp FROM accounts WHERE email = ?;"
 
@@ -31,6 +32,11 @@ var (
 func InsertUserGroup(username string, user_group string) (sql.Result, error) {
 	result, err := db.Exec(queryInsertUserGroup, username, user_group)
 	return result, err
+}
+
+func SelectAccountByLogin(username string, c *gin.Context) *sql.Row {
+	result := db.QueryRow(querySelectAccountByLogin, username)
+	return result
 }
 
 func SelectAccountsByUsername(username string, c *gin.Context) *sql.Row {
