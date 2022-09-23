@@ -31,7 +31,7 @@ type user struct {
 
 //var db *sql.DB
 
-func UpdateUserFunction(c *gin.Context) {
+func UpdateUser(c *gin.Context) {
 	var u user
 	if err := c.BindJSON(&u); err != nil {
 		return
