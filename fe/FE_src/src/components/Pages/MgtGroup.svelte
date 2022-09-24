@@ -18,7 +18,6 @@
       console.log(response.data);
       if (response.data) {
         message = response.data.message;
-        // toast.push(message);
         successToast(message);
       }
     } catch (e) {
@@ -32,7 +31,5 @@
 <AddUserToGroup />
 
 <style>
-  /* input {
-    color: purple;
-  } */
+
 </style>

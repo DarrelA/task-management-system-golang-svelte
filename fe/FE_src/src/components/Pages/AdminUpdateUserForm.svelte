@@ -16,10 +16,12 @@
   let selected = [];
   selected.push(...user_group);
 
+  const loggedInUser = localStorage.getItem("username");
+
   async function handleSubmit(e) {
     e.preventDefault();
     let user_group = selected.join(",");
-    const json = { username, password, email, user_group, status };
+    const json = {loggedInUser, username, password, email, user_group, status };
 
     try {
       const response = await axios.post("http://localhost:4000/admin-update-user", json);
@@ -31,7 +33,7 @@
         password = "";
       }
     } catch (error) {
-      errorToast("Unauthorized.");
+      errorToast(error.response.data.message);
     }
   }
 

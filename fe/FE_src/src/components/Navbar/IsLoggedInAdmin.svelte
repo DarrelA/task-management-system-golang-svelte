@@ -1,4 +1,5 @@
 <script>
+  import { navigate } from 'svelte-routing';
   import {
     Collapse,
     Navbar,
@@ -20,6 +21,11 @@
   }
 
   // Need to do handleLogout
+  const handleLogOut = (e) =>{
+    e.preventDefault()
+    localStorage.removeItem("username")
+    navigate("/")
+  }
 
   // handled/disabled go back functionality in browser
 </script>
@@ -40,7 +46,7 @@
         <NavLink href="/group-management">Group Management</NavLink>
       </NavItem>
       <NavItem>
-        <NavLink href="/">Log out</NavLink>
+        <NavLink href="/" on:click={handleLogOut}>Log out</NavLink>
       </NavItem>
     </Nav>
   </Collapse>
