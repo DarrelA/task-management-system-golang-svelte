@@ -38,4 +38,3 @@
 <input type="text" bind:value={groupname}>
 
 <button on:click={CreateGroup}>Calculate</button>
-<AdminUpdateUserForm />

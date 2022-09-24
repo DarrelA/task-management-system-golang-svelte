@@ -6,10 +6,11 @@
 
 </script>
 
-<style>
 
-</style>
 
 <Navbar/>
 <br/>
 <AdminUpdateUser/>
+
+<style>
+</style>

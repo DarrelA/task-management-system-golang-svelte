@@ -17,6 +17,7 @@
 		<Route path="/" component={Login} />
 
 		<!-- Need to change on protected route -->
+		<ProtectedRoute path="user-to-group" component={AddUserToGroup} />
 		<ProtectedRoute path="/home" component={Home}/>
 		<ProtectedRoute path="/user-management" component={MgtUser} />
 		<ProtectedRoute path="/group-management" component={MgtGroup} />
