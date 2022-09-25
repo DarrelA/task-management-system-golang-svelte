@@ -18,7 +18,7 @@
 
   const loggedInUser = localStorage.getItem("username");
 
-  async function handleSubmit(e) {
+  export async function handleClick(e) {
     e.preventDefault();
     let user_group = selected.join(",");
     const json = {loggedInUser, username, password, email, user_group, status };
@@ -58,7 +58,7 @@
   $: GetUserGroups();
 </script>
 
-<Form on:submit={handleSubmit}>
+<Form>
   <Row>
     <Col>
       <FormGroup>
@@ -82,24 +82,24 @@
         <Input type="email" bind:value={email} placeholder="Email" />
       </FormGroup>
     </Col>
-
-    <Col />
+    
+    <Col>
+      <FormGroup>
+        <Label for="status">Status</Label>
+        <Input type="select" bind:value={status} placeholder="Status">
+          <option>Inactive</option>
+          <option>Active</option>
+        </Input>
+      </FormGroup>
+    </Col>
   </Row>
 
   <FormGroup>
     <Label for="usergroup">User Group(s):</Label>
     <MultiSelect bind:selected options={groupsArray} />
   </FormGroup>
-
-  <FormGroup>
-    <Label for="status">Status</Label>
-    <Input type="select" bind:value={status} placeholder="Status">
-      <option>Inactive</option>
-      <option>Active</option>
-    </Input>
-  </FormGroup>
-
-  <Button color="primary">Update User</Button>
+  
+  <!-- <Button color="primary" on:click={handleClick}>Update User</Button> -->
 </Form>
 
 <style>
