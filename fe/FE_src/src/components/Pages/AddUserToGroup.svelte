@@ -5,7 +5,7 @@
 	import MultiSelect from "svelte-multiselect"
    import { Button, Badge, Form, FormGroup, FormText, Input, Label } from 'sveltestrap'
    import Navbar from '../Navbar/IsLoggedInAdmin.svelte'
-  import ProtectedRoute from '../ProtectedRoute.svelte';
+   import ProtectedRoute from '../ProtectedRoute.svelte';
 
    let message = ""
 	let code = ""
@@ -40,15 +40,14 @@
 
 	async function GetUserData() {
 		try {
-			const responses = await axios.get(
+			const response = await axios.get(
 				"http://localhost:4000/get-users"
 			);
 
-			if (responses.data.error) {
-				console.log(responses.data.error);
-			} else if (!responses.data.error) {
-				const usernamedata = responses.data;
-
+			if (response.data.error) {
+				console.log(response.data.error);
+			} else if (!response.data.error) {
+				const usernamedata = response.data.username;
 				usernamedata.forEach((user) => {
 					userArray.push(user)
 				});
