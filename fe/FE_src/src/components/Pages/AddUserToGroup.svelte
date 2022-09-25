@@ -24,7 +24,7 @@
 		const json = {username, user_group}
 
 		try {
-			const response = await axios.post("http://localhost:4000/user-to-group", json)
+			const response = await axios.post("http://localhost:4000/add-user-to-group", json)
 			if (response) {
 				message = response.data.message
 				code = response.data.code
