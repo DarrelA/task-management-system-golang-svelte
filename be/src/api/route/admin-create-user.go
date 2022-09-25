@@ -45,20 +45,40 @@ func AdminCreateUser(c *gin.Context) {
 
 	checkGroup := middleware.CheckGroup(newUser.LoggedInUser, "Admin")
 	if !checkGroup {
-		middleware.ErrorHandler(c, 200, "Unauthorized actions")
+		middleware.ErrorHandler(c, 400, "Unauthorized actions")
 		return
 	}
 
 	whiteSpace := middleware.CheckWhiteSpace(newUser.Username)
 	if whiteSpace {
-		middleware.ErrorHandler(c, 200, "Username should not contain whitespace")
+		middleware.ErrorHandler(c, 400, "Username should not contain whitespace")
 		return
 	}
 
 	minLength := middleware.CheckLength(newUser.Username)
 	if minLength {
-		middleware.ErrorHandler(c, 200, "Username should not be empty")
+		middleware.ErrorHandler(c, 400, "Username should not be empty")
 		return
+	}
+
+	// Validation of password, email
+	validPassword := middleware.CheckPassword(newUser.Password)
+
+	// Invalid password format
+	if !validPassword {
+		middleware.ErrorHandler(c, 400, "Password length should be between length 8 - 10 with numbers and special characters")
+		return
+	}
+
+	if len(newUser.Email) != 0 {
+		emailExist := middleware.CheckEmail(newUser.Email)
+		fmt.Print(emailExist)
+
+		// Invalid email format
+		if !emailExist {
+			middleware.ErrorHandler(c, 400, "Invalid email")
+			return
+		}
 	}
 
 	// Check if username exist before creating
@@ -71,27 +91,18 @@ func AdminCreateUser(c *gin.Context) {
 
 	// New user
 	case sql.ErrNoRows:
-		// Validation of password, email
-		validPassword := middleware.CheckPassword(newUser.Password)
-
-		// Invalid password format
-		if !validPassword {
-			middleware.ErrorHandler(c, 200, "Password length should be between length 8 - 10 with numbers and special characters")
-			return
-		}
 
 		hash, _ := middleware.GenerateHash(newUser.Password)
 
-		validEmail := middleware.CheckEmail(newUser.Email)
-
-		// Invalid email format
-		if !validEmail {
-			middleware.ErrorHandler(c, 200, "Invalid email format")
-			return
-		}
-
 		// Convert slice of strings into a single string using strings pkg
 		usergroupStr := strings.Join(newUser.Usergroup, ",")
+
+		// Check admin privilege
+		if strings.Contains(usergroupStr, "Admin") {
+			newUser.AdminPrivilege = 1
+		} else {
+			newUser.AdminPrivilege = 0
+		}
 
 		// INSERT into accounts table
 		_, err := db.Exec("INSERT INTO accounts (username, password, email, admin_privilege, user_group, status, timestamp) VALUES (?, ?, ?, ?, ?, ?, NOW())",
@@ -136,7 +147,7 @@ func AdminCreateUser(c *gin.Context) {
 
 	// Username exist
 	case nil:
-		middleware.ErrorHandler(c, 200, "Existing username")
+		middleware.ErrorHandler(c, 400, "Existing username")
 		return
 	}
 

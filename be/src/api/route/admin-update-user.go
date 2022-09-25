@@ -16,11 +16,12 @@ import (
 
 // Go struct in the form of JSON
 type UserData struct {
-	Username   string `json:"username"`
-	Password   string `json:"password"`
-	Email      string `json:"email"`
-	User_group string `json:"user_group"`
-	Status     string `json:"status"`
+	LoggedInUser string `json:"loggedInUser"`
+	Username     string `json:"username"`
+	Password     string `json:"password"`
+	Email        string `json:"email"`
+	User_group   string `json:"user_group"`
+	Status       string `json:"status"`
 }
 
 type SpecificUser struct {
@@ -34,6 +35,12 @@ func AdminUpdateUser(c *gin.Context) {
 	if err := c.BindJSON(&updateUser); err != nil {
 		checkError(err)
 		middleware.ErrorHandler(c, http.StatusBadRequest, "Bad Request")
+		return
+	}
+
+	checkGroup := middleware.CheckGroup(updateUser.LoggedInUser, "Admin")
+	if !checkGroup {
+		middleware.ErrorHandler(c, 200, "Unauthorized actions")
 		return
 	}
 
@@ -83,7 +90,7 @@ func adminUpdateUserEmail(username string, hashedPassword string, email string, 
 
 	// Invalid email format
 	if !validEmail {
-		middleware.ErrorHandler(c, 400, "Invalid email format")
+		middleware.ErrorHandler(c, 400, "Invalid email")
 		return
 	}
 

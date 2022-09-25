@@ -18,7 +18,6 @@
       if (response) {
         navigate("http://localhost:3000/home");
         const token = response.data.token;
-        localStorage.setItem("token", token);
         localStorage.setItem("username", json.username);
       }
     } catch (e) {

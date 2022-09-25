@@ -8,7 +8,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
-	"golang.org/x/crypto/bcrypt"
 )
 
 const (
@@ -19,17 +18,10 @@ const (
 )
 
 type user struct {
-	Username  string `json:"username"`
-	Password  string `json:"password"`
-	Email     string `json:"email"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Email    string `json:"email"`
 }
-
-// var users = []user{
-// 	{Username: "user", Password: "Passw0rd#", Email: "user@abc.com"},
-// 	{Username: "tom", Password: "Passw9rd#", Email: "tom@abc.com"},
-// } 
-
-//var db *sql.DB
 
 func UpdateUser(c *gin.Context) {
 	var u user
@@ -38,23 +30,22 @@ func UpdateUser(c *gin.Context) {
 	}
 
 	currentData := getSelect(u.Username)
-	//fmt.Println(currentData["password"], currentData["email"])
-	
-	if (u.Password != "" && u.Email == "") {
+
+	if u.Password != "" && u.Email == "" {
 		newPassword := prePassword(u.Username, u.Password, c)
 		updateToDB(u.Username, newPassword, currentData["email"], c)
-	} else if (u.Password == "" && u.Email != "") {
+	} else if u.Password == "" && u.Email != "" {
 		check := preEmail(u.Username, u.Email, c)
-		if (check) {
+		if check {
 			//fmt.Println("email check ok!")
 			updateToDB(u.Username, currentData["password"], u.Email, c)
 		} else {
 			middleware.ErrorHandler(c, 400, "Invalid email format")
 		}
-	} else if (u.Password != "" && u.Email != "") {
+	} else if u.Password != "" && u.Email != "" {
 		newPassword := prePassword(u.Username, u.Password, c)
 		check := preEmail(u.Username, u.Email, c)
-		if (check) {
+		if check {
 			updateToDB(u.Username, newPassword, u.Email, c)
 		} else {
 			middleware.ErrorHandler(c, 400, "Invalid email format")
@@ -68,44 +59,6 @@ func dsn() string {
 	// username:password@tcp(127.0.0.1:3306)/database-name")
 	//return fmt.Sprintf("%s:%s@/%s", LoadENV("SERVER_USER"), LoadENV("SERVER_PASSWORD"), LoadENV("SERVER_DB"))
 	return fmt.Sprintf("%s:%s@/%s", username, password, database)
-}
-
-func PingDB(db *sql.DB) {
-	err := db.Ping()
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func printSelect() {
-	db, err := sql.Open("mysql", dsn())
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer db.Close()
-
-	res, err := db.Query("SELECT username, password, email FROM accounts")
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer res.Close()
-
-	for res.Next() {
-		var u user
-
-		err := res.Scan(&u.Username, &u.Password, &u.Email)
-
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		fmt.Printf("%v\n", u)
-	}
-
 }
 
 func getSelect(username string) map[string]string {
@@ -143,20 +96,20 @@ func getSelect(username string) map[string]string {
 }
 
 func hashPassword(password string) string {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	hashedPassword, err := middleware.GenerateHash(password)
 	if err != nil {
 		panic(err)
 	}
+
 	return string(hashedPassword)
 }
 
 func prePassword(username string, password string, c *gin.Context) string {
 	var hPassword string
-	if (username != "" && password != "") {
+	if username != "" && password != "" {
 		check := middleware.CheckPassword(password)
-		if (check) {
+		if check {
 			hPassword = hashPassword(password)
-			//fmt.Println("pw check ok!") 
 		} else {
 			middleware.ErrorHandler(c, 400, "Password requirement not met!")
 		}
@@ -168,7 +121,7 @@ func prePassword(username string, password string, c *gin.Context) string {
 
 func preEmail(username string, email string, c *gin.Context) bool {
 	var check bool
-	if (username != "" && email != "") {
+	if username != "" && email != "" {
 		check = middleware.CheckEmail(email)
 	} else {
 		middleware.ErrorHandler(c, 400, "Field(s) is empty")
@@ -181,8 +134,7 @@ func updateToDB(username string, newPassword string, newEmail string, c *gin.Con
 	if err != nil {
 		log.Fatal(err)
 	}
-	
-	PingDB(db)
+
 	//update statement
 	stmt, err := db.Prepare("UPDATE accounts SET password = ?, email = ? WHERE username = ?")
 	if err != nil {
@@ -201,5 +153,5 @@ func updateToDB(username string, newPassword string, newEmail string, c *gin.Con
 	}
 
 	fmt.Println("Rows affected: ", a)
-	middleware.ErrorHandler(c, 200, "Update success!")	
+	middleware.ErrorHandler(c, 200, "Update success!")
 }
