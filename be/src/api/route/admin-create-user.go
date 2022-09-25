@@ -3,12 +3,9 @@ package route
 import (
 	"database/sql"
 	"fmt"
-	"net/http"
-	"os"
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 
 	// import middleware pkg
 	"backend/api/middleware"
@@ -16,17 +13,9 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-// Function to load env file values based on key param
-func LoadENV(key string) string {
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Println("Error loading .env file")
-	}
-	return os.Getenv(key)
-}
-
 // Struct tags for key names when serialized into JSON
 type User struct {
+	LoggedInUser   string   `json:"loggedInUser"`
 	Username       string   `json:"username"`
 	Password       string   `json:"password"`
 	Email          string   `json:"email"`
@@ -50,7 +39,13 @@ func AdminCreateUser(c *gin.Context) {
 
 	if err := c.BindJSON(&newUser); err != nil {
 		fmt.Println(err)
-		middleware.ErrorHandler(c, http.StatusBadRequest, "Bad Request")
+		middleware.ErrorHandler(c, 400, "Bad Request")
+		return
+	}
+
+	checkGroup := middleware.CheckGroup(newUser.LoggedInUser, "Admin")
+	if !checkGroup {
+		middleware.ErrorHandler(c, 400, "Unauthorized actions")
 		return
 	}
 
@@ -66,10 +61,29 @@ func AdminCreateUser(c *gin.Context) {
 		return
 	}
 
+	// Validation of password, email
+	validPassword := middleware.CheckPassword(newUser.Password)
+
+	// Invalid password format
+	if !validPassword {
+		middleware.ErrorHandler(c, 400, "Password length should be between length 8 - 10 with numbers and special characters")
+		return
+	}
+
+	if len(newUser.Email) != 0 {
+		emailExist := middleware.CheckEmail(newUser.Email)
+		fmt.Print(emailExist)
+
+		// Invalid email format
+		if !emailExist {
+			middleware.ErrorHandler(c, 400, "Invalid email")
+			return
+		}
+	}
+
 	// Check if username exist before creating
 	checkUsername := "SELECT username FROM accounts WHERE username = ?"
 
-	// Expects a single row result. Returns the first result
 	result := db.QueryRow(checkUsername, newUser.Username)
 
 	// Switch between different error case
@@ -77,27 +91,18 @@ func AdminCreateUser(c *gin.Context) {
 
 	// New user
 	case sql.ErrNoRows:
-		// Validation of password, email
-		validPassword := middleware.CheckPassword(newUser.Password)
-
-		// Invalid password format
-		if !validPassword {
-			middleware.ErrorHandler(c, 400, "Password length should be between length 8 - 10 with numbers and special characters")
-			return
-		}
 
 		hash, _ := middleware.GenerateHash(newUser.Password)
 
-		validEmail := middleware.CheckEmail(newUser.Email)
-
-		// Invalid email format
-		if !validEmail {
-			middleware.ErrorHandler(c, 400, "Invalid email format")
-			return
-		}
-
 		// Convert slice of strings into a single string using strings pkg
-		usergroupStr := strings.Join(newUser.Usergroup, ", ")
+		usergroupStr := strings.Join(newUser.Usergroup, ",")
+
+		// Check admin privilege
+		if strings.Contains(usergroupStr, "Admin") {
+			newUser.AdminPrivilege = 1
+		} else {
+			newUser.AdminPrivilege = 0
+		}
 
 		// INSERT into accounts table
 		_, err := db.Exec("INSERT INTO accounts (username, password, email, admin_privilege, user_group, status, timestamp) VALUES (?, ?, ?, ?, ?, ?, NOW())",
@@ -108,7 +113,7 @@ func AdminCreateUser(c *gin.Context) {
 			middleware.ErrorHandler(c, 400, "Invalid field")
 			return
 		}
-		c.JSON(200, gin.H{"code": 200, "message": "New user created"})
+		c.JSON(201, gin.H{"code": 201, "message": "New user created"})
 
 		// LOOP through Usergroup slice and validate
 		for _, group := range newUser.Usergroup {
@@ -144,11 +149,6 @@ func AdminCreateUser(c *gin.Context) {
 	case nil:
 		middleware.ErrorHandler(c, 400, "Existing username")
 		return
-
-	default:
-		fmt.Println(err)
-		middleware.ErrorHandler(c, 400, "Invalid field")
-		return
 	}
 
 }
@@ -181,6 +181,7 @@ func GetUsers(c *gin.Context) {
 		// append response into slice
 		data = append(data, response)
 	}
+
 	// send data as array of JSON obj
 	c.JSON(200, data)
 

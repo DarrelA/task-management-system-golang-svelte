@@ -1,20 +1,20 @@
 <script>
-	//export let name;
-	import {Router, Route} from "svelte-routing"
-	import { SvelteToast } from "@zerodevx/svelte-toast"
-	import ProtectedRoute from "./components/ProtectedRoute.svelte"
-	import Login from "./components/Pages/Login.svelte"
-	import Home from "./components/Pages/Home.svelte"
-	import MgtUser from "./components/Pages/MgtUser.svelte"
-	import MgtGroup from "./components/Pages/MgtGroup.svelte"
+  //export let name;
+  import { Router, Route } from "svelte-routing";
+  import { SvelteToast } from "@zerodevx/svelte-toast";
+  import ProtectedRoute from "./components/ProtectedRoute.svelte";
+  import Login from "./components/Pages/Login.svelte";
+  import Home from "./components/Pages/Home.svelte";
+  import MgtUser from "./components/Pages/MgtUser.svelte";
+  import MgtGroup from "./components/Pages/MgtGroup.svelte";
   import AddUserToGroup from "./components/Pages/AddUserToGroup.svelte";
 </script>
 
-<SvelteToast/>
+<SvelteToast />
 
 <main>
-	<Router>
-		<Route path="/" component={Login} />
+  <Router>
+    <Route path="/" component={Login} />
 
 		<!-- Need to change on protected route -->
 		<ProtectedRoute path="/add-user-to-group" component={AddUserToGroup} />
@@ -25,7 +25,7 @@
 </main>
 
 <style>
-	/* main {
+  /* main {
 		text-align: center;
 		padding: 1em;
 		max-width: 240px;

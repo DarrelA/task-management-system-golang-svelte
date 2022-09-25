@@ -25,6 +25,7 @@ func Login(c *gin.Context) {
 	// Placeholder for results from db query
 	var username string
 	var password string
+	var status string
 
 	// Decode JSON body to credentials struct
 	if err := c.BindJSON(&credentials); err != nil {
@@ -34,15 +35,19 @@ func Login(c *gin.Context) {
 	}
 
 	// Fetch username and password from db
-	getUser := "SELECT username, password FROM accounts WHERE username = ?"
-	result := db.QueryRow(getUser, credentials.Username)
+	result := middleware.SelectAccountByLogin(credentials.Username, c)
 
-	switch err := result.Scan(&username, &password); err {
+	switch err := result.Scan(&username, &password, &status); err {
 	case sql.ErrNoRows:
 		fmt.Println("Invalid Credentials")
 		middleware.ErrorHandler(c, http.StatusBadRequest, "Invalid Credentials")
 
 	case nil:
+		if status != "Active" {
+			middleware.ErrorHandler(c, http.StatusUnauthorized, "Unauthorized User")
+			return
+		}
+
 		// Username found
 		// Compare password hash
 		correctPassword := middleware.CompareHash(credentials.Password, password)
