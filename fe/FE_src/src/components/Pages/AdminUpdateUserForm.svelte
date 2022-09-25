@@ -24,9 +24,8 @@
     const json = {loggedInUser, username, password, email, user_group, status };
 
     try {
-      const response = await axios.post("http://localhost:4000/admin-update-user", json);
+      const response = await axios.post("http://localhost:4000/admin-update-user", json, { withCredentials: true });
       if (response) {
-        console.log("POST BACK");
         message = response.data.message;
         code = response.data.code;
         successToast(message);
