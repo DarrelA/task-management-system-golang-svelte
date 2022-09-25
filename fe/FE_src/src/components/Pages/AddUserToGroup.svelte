@@ -21,17 +21,14 @@
 
 	async function handleSubmit() {
 		let user_group = selected.join(",")
-		const json = {username, password, email, user_group, status}
+		const json = {username, user_group}
 
 		try {
-			const response = await axios.post("http://localhost:4000/user-to-group", json, {
-				withCredentials: true,
-			})
+			const response = await axios.post("http://localhost:4000/user-to-group", json)
 			if (response) {
 				message = response.data.message
 				code = response.data.code
 				toast.push(message)
-				password = ""
 			}
 		} catch (error) {
 			console.log(error)
@@ -43,13 +40,12 @@
 			const response = await axios.get(
 				"http://localhost:4000/get-users"
 			);
-
+			console.log(response)
 			if (response.data.error) {
 				console.log(response.data.error);
 			} else if (!response.data.error) {
-				const usernamedata = response.data.username;
-				usernamedata.forEach((user) => {
-					userArray.push(user)
+				response.data.forEach((user) => {
+					userArray.push(user.username)
 				});
 
 			userArray = userArray
@@ -66,6 +62,7 @@
           "http://localhost:4000/get-user-groups"
         );
 
+		  console.log(response)
         if (response.data.error) {
           console.log(response.data.error);
         } else if (!response.data.error) {
@@ -102,5 +99,5 @@
 		<Label for="usergroup">User Group(s):</Label>
 		<MultiSelect bind:selected options={groupsArray} />
 	</FormGroup>
-   
+   <Button color="primary" >Add User</Button>
 </form>
