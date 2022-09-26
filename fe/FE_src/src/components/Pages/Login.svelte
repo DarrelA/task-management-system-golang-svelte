@@ -43,28 +43,13 @@
               <Form on:submit={handleSubmit}>
                 <FormGroup>
                   <div class="form-group mb-3">
-                    <Input
-                      autofocus
-                      id="username"
-                      type="text"
-                      placeholder="Username"
-                      required=""
-                      class="form-control rounded-pill border-0 shadow-sm px-4"
-                      bind:value={username}
-                    />
+                    <Input autofocus id="username" type="text" placeholder="Username" required="" class="form-control rounded-pill border-0 shadow-sm px-4" bind:value={username} />
                   </div>
                 </FormGroup>
 
                 <FormGroup>
                   <div class="form-group mb-3">
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="Password"
-                      required=""
-                      class="form-control rounded-pill border-0 shadow-sm px-4 text-primary"
-                      bind:value={password}
-                    />
+                    <Input id="password" type="password" placeholder="Password" required="" class="form-control rounded-pill border-0 shadow-sm px-4 text-primary" bind:value={password} />
                   </div>
                 </FormGroup>
                 <Button type="submit" class="btn btn-primary btn-block text-uppercase mb-2 rounded-pill shadow-sm" color="success">Sign in</Button>
@@ -86,7 +71,7 @@
 
   .bg-image {
     min-height: 98vh;
-    background-image:  url("https://blog.trello.com/hs-fs/Kanban-101-final-1.png");
+    background-image: url("https://blog.trello.com/hs-fs/Kanban-101-final-1.png");
     background-repeat: no-repeat;
     background-size: 110% 100%;
     background-position: center center;
