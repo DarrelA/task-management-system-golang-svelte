@@ -2,22 +2,20 @@ package middleware
 
 import (
 	"database/sql"
-	"fmt"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 // Takes in username, user_group to check as params of the function and return a bool
-func CheckGroup(username string, usergroup string) bool {
+func CheckGroup(username string, user_group string) bool {
 
 	var (
 		checkgroup = false
 	)
-	queryCheck := "SELECT username, user_group FROM usergroup WHERE username = ? AND user_group = ?"
+	
+	result := SelectCheckGroupFromAccounts(username, user_group)
 
-	rows := db.QueryRow(queryCheck, username, usergroup)
-
-	switch err := rows.Scan(&username, &usergroup); err {
+	switch err := result.Scan(&username, &user_group); err {
 
 	// Username/Usergroup does not exist in database
 	case sql.ErrNoRows:
@@ -27,8 +25,6 @@ func CheckGroup(username string, usergroup string) bool {
 	case nil:
 		checkgroup = true
 	}
-
-	fmt.Println("iosdahjgiodfg", checkgroup)
 
 	return checkgroup
 }

@@ -86,9 +86,7 @@ func AdminCreateUser(c *gin.Context) {
 	}
 
 	// Check if username exist before creating
-	checkUsername := "SELECT username FROM accounts WHERE username = ?"
-
-	result := db.QueryRow(checkUsername, newUser.Username)
+	result := middleware.SelectUsernameFromAccountsByUsername(newUser.Username)
 
 	// Switch between different error case
 	switch err := result.Scan(&newUser.Username); err {
