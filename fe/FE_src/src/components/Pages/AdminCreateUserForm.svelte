@@ -17,6 +17,8 @@
 
   let loading = false;
 
+  let loggedInUser = localStorage.getItem("username")
+
   $: getUsers();
 
   async function getUsers() {
