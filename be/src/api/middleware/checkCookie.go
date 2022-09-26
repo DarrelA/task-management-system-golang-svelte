@@ -27,8 +27,12 @@ func CheckCookie(c *gin.Context) {
 		return
 	}
 
-	// Ignore this for now
-	token.Claims.Valid()
+	// set `claims` variable to be a type of .RegisteredClaims`
+	// so we can access `claims.Issuer`
+	claims := token.Claims.(*jwt.RegisteredClaims)
 
+	// basically issuer is our user id
+	// Refer to middleware.Login
+	c.Set("username", claims.Issuer)
 	c.Next()
 }
