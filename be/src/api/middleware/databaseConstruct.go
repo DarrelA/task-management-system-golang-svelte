@@ -14,7 +14,7 @@ var (
 )
 
 var (
-	querySelectAccounts           = "SELECT username, password, email, admin_privilege, user_group, status, timestamp FROM accounts;"
+	querySelectAccounts           = "SELECT username, email, user_group, status FROM accounts;"
 	querySelectAccountByLogin     = "SELECT username, password, status FROM accounts WHERE username = ?;"
 	querySelectAccountsByUsername = "SELECT username, password, email, admin_privilege, user_group, status, timestamp FROM accounts WHERE username = ?;"
 
@@ -44,7 +44,6 @@ func InsertGroupnames(user_group string) (sql.Result, error) {
 	return result, err
 }
 
-
 // SELECT
 func SelectAccounts() (*sql.Rows, error) {
 	result, err := db.Query(querySelectAccounts)
@@ -71,13 +70,8 @@ func SelectGroupnamesbyUserGroup(user_group string) *sql.Row {
 	return result
 }
 
-
 // UPDATE
 func UpdateAccountsAdmin(password string, email string, admin_privilege int, user_group string, status string, username string, c *gin.Context) (*sql.Rows, error) {
 	result, err := db.Query(queryUpdateAccountsAdmin, password, email, admin_privilege, user_group, status, username)
 	return result, err
 }
-
-
-
-
