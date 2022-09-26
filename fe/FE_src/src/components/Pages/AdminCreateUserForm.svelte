@@ -1,7 +1,22 @@
 <script>
   import axios from "axios";
   import { onMount } from "svelte";
-  import { Form, FormGroup, Input, Label, Button, Modal, ModalHeader, ModalFooter, Col, Row, Spinner, ModalBody, Styles } from "sveltestrap";
+  import {
+
+    Form,
+    FormGroup,
+    Input,
+    Label,
+    Button,
+    Modal,
+    ModalHeader,
+    ModalFooter,
+    Col,
+    Row,
+    Spinner,
+    ModalBody,
+    Styles,
+  } from "sveltestrap";
   import MultiSelect from "svelte-multiselect";
 
   import { errorToast, successToast } from "../toast";
@@ -15,6 +30,8 @@
   let selected = [];
 
   let loading = false;
+
+  let selectedGroup = "";
 
   async function CreateUser(e) {
     e.preventDefault();
@@ -92,11 +109,16 @@
   <Modal isOpen={openModal} {toggle} {size}>
     <ModalHeader {toggle}>Add user</ModalHeader>
 
-    {#if loading}
-      <Spinner size="sm" />
-    {/if}
+    <!-- {#if loading} -->
+    <div class="loading-spinner">
+      <Spinner size="xl" />
+    </div>
+    <!-- {/if} -->
 
     <ModalBody>
+      <div class="loading-spinner">
+        <Spinner size="xl" />
+      </div>
       <Form>
         <Row>
           <Col>
@@ -137,14 +159,6 @@
                 <option>Inactive</option>
                 <option>Active</option>
               </Input>
-              <!-- <select bind:value={status}>
-                  {#if statusPlaceholder}
-                    <option value="" disabled selected>{statusPlaceholder}</option>
-                  {/if}
-  
-                  <option value="Active">Active</option>
-                  <option value="Inactive">Inactive</option>
-                </select> -->
             </FormGroup>
           </Col>
         </Row>
@@ -161,4 +175,9 @@
 </div>
 
 <style>
+  .loading-spinner {
+    position: relative;
+    left: 50%;
+    top: 50%;
+  }
 </style>

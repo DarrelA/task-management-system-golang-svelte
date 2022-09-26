@@ -1,5 +1,5 @@
 <script>
-  import { navigate } from 'svelte-routing';
+  import { navigate } from "svelte-routing";
   import {
     Collapse,
     Navbar,
@@ -11,8 +11,8 @@
     Dropdown,
     DropdownToggle,
     DropdownMenu,
-    DropdownItem
-  } from 'sveltestrap'
+    DropdownItem,
+  } from "sveltestrap";
 
   import axios from "axios";
 
@@ -28,10 +28,10 @@
     localStorage.removeItem("username")
     localStorage.removeItem("isAdmin")
     await axios.get("http://localhost:4000/logout", {
-        withCredentials: true,
-      });
-    navigate("/")
-  }
+      withCredentials: true,
+    });
+    navigate("/");
+  };
 
   // handled/disabled go back functionality in browser
 </script>
@@ -41,13 +41,7 @@
   <NavbarToggler on:click={() => (isOpen = !isOpen)} />
   <Collapse {isOpen} navbar expand="md" on:update={handleUpdate}>
     <Nav class="ms-auto" navbar>
-      <Dropdown nav inNavbar>
-        <DropdownToggle nav caret>User Management</DropdownToggle>
-        <DropdownMenu end>
-          <DropdownItem href="/user-management">Accounts Table</DropdownItem>
-          <DropdownItem href="/add-user-to-group">Add Users To Group</DropdownItem>
-        </DropdownMenu>
-      </Dropdown>
+      <NavLink href="/user-management">User Management</NavLink>
       <NavItem>
         <NavLink href="/group-management">Group Management</NavLink>
       </NavItem>
