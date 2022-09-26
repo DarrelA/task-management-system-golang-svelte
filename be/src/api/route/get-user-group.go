@@ -1,13 +1,14 @@
 package route
 
 import (
+	"fmt"
 	"log"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
 
 func GetUserGroup(c *gin.Context) {
-	// SELECT * FROM usergroup
 	result, err := db.Query("SELECT user_group FROM groupnames")
 	if err != nil {
 		log.Fatal(err)
@@ -34,26 +35,45 @@ type usersGroup struct {
 }
 
 func GetUsersInGroup(c *gin.Context) {
-	// SELECT * FROM usergroup
-	result, err := db.Query("SELECT groupnames.user_group, COUNT(usergroup.username) FROM groupnames LEFT JOIN usergroup ON groupnames.user_group = usergroup.user_group GROUP BY groupnames.user_group")
+	var data []usersGroup
+	var groupname string
+	var count int
+	var usergroup string
+	var groups string
+
+	result, err := db.Query("SELECT user_group FROM accounts GROUP BY username")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	defer result.Close()
 
-	var data []usersGroup
 	for result.Next() {
-		var username int
-		var usergroup string
+		if err := result.Scan(&usergroup); err != nil {
+			log.Fatal(err)
+		}
+			
+		groups +=  "," + usergroup;
 
-		if err := result.Scan(&usergroup, &username); err != nil {
+		fmt.Println(groups)
+	}
+
+	rows, err := db.Query("SELECT user_group FROM groupnames")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for rows.Next() {
+		if err := rows.Scan(&groupname); err != nil {
 			log.Fatal(err)
 		}
 
+		count = strings.Count(groups, groupname)
+		fmt.Println(count)
+
 		response := usersGroup{
-			Groupname: usergroup,
-			Usercount: username,
+			Groupname: groupname,
+			Usercount: count,
 		}
 
 		data = append(data, response)
