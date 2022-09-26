@@ -18,7 +18,7 @@ type User struct {
 	LoggedInUser   string   `json:"loggedInUser"`
 	Username       string   `json:"username"`
 	Password       string   `json:"password"`
-	Email          string   `json:"email"`
+	Email          string   `json:"email" validate:"omitempty,email"`
 	AdminPrivilege int      `json:"admin_privilege"`
 	Usergroup      []string `json:"user_group"`
 	Status         string   `json:"status"`
@@ -43,12 +43,14 @@ func AdminCreateUser(c *gin.Context) {
 		return
 	}
 
+	// Check user group
 	checkGroup := middleware.CheckGroup(newUser.LoggedInUser, "Admin")
 	if !checkGroup {
 		middleware.ErrorHandler(c, 400, "Unauthorized actions")
 		return
 	}
 
+	// Username Validations
 	whiteSpace := middleware.CheckWhiteSpace(newUser.Username)
 	if whiteSpace {
 		middleware.ErrorHandler(c, 400, "Username should not contain whitespace")
@@ -61,21 +63,23 @@ func AdminCreateUser(c *gin.Context) {
 		return
 	}
 
-	// Validation of password, email
+	// Password Validations
 	validPassword := middleware.CheckPassword(newUser.Password)
 
-	// Invalid password format
 	if !validPassword {
 		middleware.ErrorHandler(c, 400, "Password length should be between length 8 - 10 with numbers and special characters")
 		return
 	}
 
+	// Email Validations
 	if len(newUser.Email) != 0 {
-		emailExist := middleware.CheckEmail(newUser.Email)
-		fmt.Print(emailExist)
+
+		// email entered
+		checkEmail := middleware.CheckEmail(newUser.Email)
 
 		// Invalid email format
-		if !emailExist {
+		if !checkEmail {
+			fmt.Println("Invalid email")
 			middleware.ErrorHandler(c, 400, "Invalid email")
 			return
 		}
@@ -105,8 +109,7 @@ func AdminCreateUser(c *gin.Context) {
 		}
 
 		// INSERT into accounts table
-		_, err := db.Exec("INSERT INTO accounts (username, password, email, admin_privilege, user_group, status, timestamp) VALUES (?, ?, ?, ?, ?, ?, NOW())",
-			newUser.Username, hash, newUser.Email, newUser.AdminPrivilege, usergroupStr, newUser.Status)
+		_, err := middleware.InsertNewAccount(newUser.Username, hash, newUser.Email, newUser.AdminPrivilege, usergroupStr, newUser.Status)
 
 		if err != nil {
 			fmt.Println(err)
@@ -120,29 +123,26 @@ func AdminCreateUser(c *gin.Context) {
 			// LOOP to validate group name
 			var user_group string
 
-			getGroupname := "SELECT user_group FROM groupnames WHERE user_group = ?"
-			result := db.QueryRow(getGroupname, group)
+			result := middleware.SelectGroupnamesbyUserGroup(user_group)
 
 			switch err := result.Scan(&user_group); err {
 
 			// New group name
 			case sql.ErrNoRows:
 				// INSERT user_group into groupnames table
-				_, err := db.Exec("INSERT INTO groupnames (user_group) VALUES (?)", group)
+				_, err := middleware.InsertGroupnames(group)
 				if err != nil {
-					fmt.Println(err)
 					middleware.ErrorHandler(c, 400, "Invalid field")
 					return
 				}
 			}
 
 			// Create a composite key for usergroup table
-			_, err := db.Exec("INSERT INTO usergroup (username, user_group) VALUES (?, ?)", newUser.Username, group)
+			_, err := middleware.InsertUserGroup(newUser.Username, group)
 			if err != nil {
 				fmt.Println(err)
 				return
 			}
-			fmt.Printf("Added new composite key %v to %v \n", newUser.Username, group)
 		}
 
 	// Username exist
@@ -157,13 +157,13 @@ func GetUsers(c *gin.Context) {
 	var existingUser ExistingUser
 	var data []ExistingUser
 
-	rows, err := db.Query("SELECT username, email, status, admin_privilege, user_group FROM accounts")
+	rows, err := middleware.SelectAccounts()
 	if err != nil {
 		panic(err)
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err = rows.Scan(&existingUser.Username, &existingUser.Email, &existingUser.Status, &existingUser.AdminPrivilege, &existingUser.Usergroup)
+		err = rows.Scan(&existingUser.Username, &existingUser.Email, &existingUser.Usergroup, &existingUser.Status)
 		if err != nil {
 			panic(err)
 		}

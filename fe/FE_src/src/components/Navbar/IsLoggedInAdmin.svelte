@@ -14,6 +14,8 @@
     DropdownItem
   } from 'sveltestrap'
 
+  import axios from "axios";
+
   let isOpen = false;
 
   function handleUpdate(event) {
@@ -21,9 +23,12 @@
   }
 
   // Need to do handleLogout
-  const handleLogOut = (e) =>{
+  const handleLogOut = async (e) =>{
     e.preventDefault()
     localStorage.removeItem("username")
+    await axios.get("http://localhost:4000/logout", {
+        withCredentials: true,
+      });
     navigate("/")
   }
 
