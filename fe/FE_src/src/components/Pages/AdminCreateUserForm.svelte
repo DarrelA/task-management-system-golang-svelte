@@ -54,7 +54,7 @@
   onMount(() => {
     async function GetUserGroups() {
       try {
-        const response = await axios.get("http://localhost:4000/get-user-groups");
+        const response = await axios.get("http://localhost:4000/get-user-groups", {loggedInUser});
 
         if (response.data.error) {
           console.error(response.data.error);

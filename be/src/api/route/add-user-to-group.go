@@ -10,8 +10,9 @@ import (
 )
 
 type CompositeKey struct {
-	Username  string `json:"username"`
-	Groupname []string `json:"groupname"`
+	LoggedInUser string   `json:"loggedInUser"`
+	Username     string   `json:"username"`
+	Groupname    []string `json:"groupname"`
 }
 
 func AddUserToGroup(c *gin.Context) {
@@ -24,7 +25,7 @@ func AddUserToGroup(c *gin.Context) {
 	}
 
 	// Check user group
-	checkGroup := middleware.CheckGroup(newUser.LoggedInUser, "Admin")
+	checkGroup := middleware.CheckGroup(newComposite.LoggedInUser, "Admin")
 	if !checkGroup {
 		middleware.ErrorHandler(c, 400, "Unauthorized actions")
 		return
@@ -33,7 +34,7 @@ func AddUserToGroup(c *gin.Context) {
 	// insert groupname
 	// check composite
 	// update accounts user_group
-	
+
 	for _, group := range newComposite.Groupname {
 		// LOOP to validate group name
 		var user_group string
@@ -45,11 +46,11 @@ func AddUserToGroup(c *gin.Context) {
 		// New group name
 		case sql.ErrNoRows:
 			// INSERT user_group into groupnames table
-			_,err := middleware.InsertGroupnames(group)
+			_, err := middleware.InsertGroupnames(group)
 			if err != nil {
 				middleware.ErrorHandler(c, 400, "Invalid field")
 				return
-			}	
+			}
 			fmt.Println("New group name")
 		}
 
@@ -89,7 +90,7 @@ func AddUserToGroup(c *gin.Context) {
 	}
 
 	c.JSON(201, gin.H{
-		"code" : 201,
+		"code":    201,
 		"message": "Added user to group",
-	})	
+	})
 }

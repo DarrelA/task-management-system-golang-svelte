@@ -19,4 +19,3 @@
 {/if}
 
 <h3>Welcome to TMS</h3>
-<button>Create Appliation</button>
