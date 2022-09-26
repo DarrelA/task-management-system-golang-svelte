@@ -12,7 +12,7 @@ func CheckCookie(c *gin.Context) {
 	cookie, err := c.Cookie("jwt-cookie")
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized,
-			gin.H{"code": http.StatusUnauthorized, "message": "Unauthorized User, cookie not found"})
+			gin.H{"code": http.StatusUnauthorized, "message": "Unauthorized User"})
 		return
 	}
 

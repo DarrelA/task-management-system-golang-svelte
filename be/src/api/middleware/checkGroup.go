@@ -30,13 +30,6 @@ func CheckGroup(username string, usergroup string) bool {
 	return checkgroup
 }
 
-// func main() {
-// 	c1 := CheckGroup("admin", "Admin")
-// 	c2 := CheckGroup("admin", "Team Member")
-// 	fmt.Println(c1)
-// 	fmt.Println(c2)
-// }
-
 // check if an array contains a given value
 // fetch user_group where username = ?
 // for loop user_group, append into slice []

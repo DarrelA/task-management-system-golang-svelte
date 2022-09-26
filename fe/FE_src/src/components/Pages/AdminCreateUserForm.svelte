@@ -1,21 +1,7 @@
 <script>
   import axios from "axios";
   import { onMount } from "svelte";
-  import {
-    Form,
-    FormGroup,
-    Input,
-    Label,
-    Button,
-    Modal,
-    ModalHeader,
-    ModalFooter,
-    Col,
-    Row,
-    Spinner,
-    ModalBody,
-    Styles,
-  } from "sveltestrap";
+  import { Form, FormGroup, Input, Label, Button, Modal, ModalHeader, ModalFooter, Col, Row, Spinner, ModalBody, Styles } from "sveltestrap";
   import MultiSelect from "svelte-multiselect";
 
   import { errorToast, successToast } from "../toast";
@@ -43,11 +29,7 @@
       status,
     };
     try {
-      const response = await axios.post(
-        "http://localhost:4000/admin-create-user",
-        json,
-        { withCredentials: true }
-      );
+      const response = await axios.post("http://localhost:4000/admin-create-user", json, { withCredentials: true });
       loading = true;
 
       setTimeout(() => {
@@ -70,9 +52,7 @@
   onMount(() => {
     async function GetUserGroups() {
       try {
-        const response = await axios.get(
-          "http://localhost:4000/get-user-groups"
-        );
+        const response = await axios.get("http://localhost:4000/get-user-groups");
 
         if (response.data.error) {
           console.error(response.data.error);
@@ -129,7 +109,7 @@
           <Col>
             <FormGroup>
               <Label>Password:</Label>
-              <Input placeholder="password" bind:value={password} />
+              <Input type="password" placeholder="password" bind:value={password} />
             </FormGroup>
           </Col>
         </Row>
@@ -145,11 +125,7 @@
           <Col>
             <FormGroup>
               <Label>User group(s)</Label>
-              <MultiSelect
-                bind:selected
-                options={groupsArray}
-                allowUserOptions={true}
-              />
+              <MultiSelect bind:selected options={groupsArray} allowUserOptions={true} />
             </FormGroup>
           </Col>
         </Row>
@@ -175,10 +151,7 @@
 
         <ModalFooter>
           <Col>
-            <Button
-              on:click={CreateUser}
-              style="background-color: #FCA311; border: none;">Create</Button
-            >
+            <Button on:click={CreateUser} style="background-color: #FCA311; border: none;">Create</Button>
             <Button color="danger" on:click={toggle}>Cancel</Button>
           </Col>
         </ModalFooter>
