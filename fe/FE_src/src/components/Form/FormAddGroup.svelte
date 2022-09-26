@@ -5,10 +5,11 @@
     
     export let groupname;
 
+    let loggedInUser = localStorage.getItem("username")
 
     export async function handleAddGroup(e) {
       e.preventDefault();
-      const json = { user_group: groupname };
+      const json = { loggedInUser, user_group: groupname };
 
       try {
         const response = await axios.post("http://localhost:4000/admin-create-group", json, { withCredentials: true });

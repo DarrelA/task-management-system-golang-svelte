@@ -1,22 +1,7 @@
 <script>
   import axios from "axios";
   import { onMount } from "svelte";
-  import {
-
-    Form,
-    FormGroup,
-    Input,
-    Label,
-    Button,
-    Modal,
-    ModalHeader,
-    ModalFooter,
-    Col,
-    Row,
-    Spinner,
-    ModalBody,
-    Styles,
-  } from "sveltestrap";
+  import { Form, FormGroup, Input, Label, Button, Modal, ModalHeader, ModalFooter, Col, Row, Spinner, ModalBody, Styles } from "sveltestrap";
   import MultiSelect from "svelte-multiselect";
 
   import { errorToast, successToast } from "../toast";
@@ -69,7 +54,7 @@
   onMount(() => {
     async function GetUserGroups() {
       try {
-        const response = await axios.get("http://localhost:4000/get-user-groups");
+        const response = await axios.get("http://localhost:4000/get-user-groups", {loggedInUser});
 
         if (response.data.error) {
           console.error(response.data.error);
@@ -109,11 +94,11 @@
   <Modal isOpen={openModal} {toggle} {size}>
     <ModalHeader {toggle}>Add user</ModalHeader>
 
-    <!-- {#if loading} -->
-    <div class="loading-spinner">
-      <Spinner size="xl" />
-    </div>
-    <!-- {/if} -->
+    {#if loading}
+      <div class="loading-spinner">
+        <Spinner size="xl" />
+      </div>
+    {/if}
 
     <ModalBody>
       <div class="loading-spinner">

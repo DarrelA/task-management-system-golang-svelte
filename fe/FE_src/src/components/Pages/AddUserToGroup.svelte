@@ -18,11 +18,13 @@
   let selectedUser = "";
   //   selected.push(...user_group);
 
+  const loggedInUser = localStorage.getItem("username");
+
   async function handleSubmit() {
     // let user_group = selected.join(",");
     console.log(username);
     username = username.toString();
-    const json = { username: selectedUser, groupname: selected };
+    const json = { loggedInUser, username: selectedUser, groupname: selected };
     console.log(json);
 
     try {
