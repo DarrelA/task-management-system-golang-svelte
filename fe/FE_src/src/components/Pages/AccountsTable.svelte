@@ -48,22 +48,6 @@
   };
 </script>
 
-<style>
-  h1 {
-    color: blueviolet;
-    text-align: center;
-    font-family: "Montserrat";
-  }
-  .inactive {
-    color: red;
-    font-weight: bold;
-  }
-  .active {
-    color: mediumseagreen;
-    font-weight: bold;
-  }
-</style>
-
 <div>
   <h1>Users Database</h1>
   <Table bordered style="margin:0 auto;width:95%">
@@ -84,7 +68,11 @@
           <td style="width:35%">{userData.user_group}</td>
           <td class:active={userData.status === "Active"} class:inactive={userData.status === "Inactive"}>{userData.status}</td>
 
-          <td><Button color="primary" on:click={() => editUserData(userData.username, userData.email, userData.user_group, userData.status)}>Update User</Button></td>
+          <td
+            ><Button color="primary" on:click={() => editUserData(userData.username, userData.email, userData.user_group, userData.status)}
+              >Update User</Button
+            ></td
+          >
         </tr>
       {/each}
     </tbody>
@@ -102,3 +90,19 @@
     </ModalFooter>
   </Modal>
 </div>
+
+<style>
+  h1 {
+    color: blueviolet;
+    text-align: center;
+    font-family: "Montserrat";
+  }
+  .inactive {
+    color: red;
+    font-weight: bold;
+  }
+  .active {
+    color: mediumseagreen;
+    font-weight: bold;
+  }
+</style>
