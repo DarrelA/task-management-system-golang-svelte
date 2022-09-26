@@ -99,7 +99,6 @@
     <MultiSelect bind:selected options={groupsArray} />
   </FormGroup>
   
-  <!-- <Button color="primary" on:click={handleClick}>Update User</Button> -->
 </Form>
 
 <style>

@@ -42,6 +42,7 @@ func main() {
 	router.POST("/admin-create-group", route.AdminCreateGroup)
 	router.GET("/get-users", route.GetUsers)
 	router.GET("/get-user-groups", route.GetUserGroup)
+	router.GET("/get-users-in-group", route.GetUsersInGroup)
 	router.POST("/update-user", route.UpdateUser)
 
 	port := middleware.LoadENV("SERVER_PORT")

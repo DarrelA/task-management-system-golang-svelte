@@ -11,7 +11,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
-	"golang.org/x/crypto/bcrypt"
 )
 
 // Go struct in the form of JSON
@@ -78,6 +77,13 @@ func adminUpdateUserEmail(username string, hashedPassword string, email string, 
 			middleware.ErrorHandler(c, 400, "Invalid Email")
 			return
 		}
+		whiteSpace := middleware.CheckWhiteSpace(email)
+		if whiteSpace {
+			fmt.Println("Reached here!")
+			middleware.ErrorHandler(c, 400, "Email should not contain whitespace")
+			return
+		}
+		fmt.Println("Here")
 		adminUpdateUserGroup(username, hashedPassword, email, user_group, status, c)
 	} else {
 		email = getCurrentUserData(username, c)["email"]
@@ -147,14 +153,6 @@ func updateUserGroupTable(username string, user_group string) {
 			}
 		}
 	}
-}
-
-func hashAndSaltPassword(pwd []byte) string {
-	pwdCost := 10
-	hash, err := bcrypt.GenerateFromPassword(pwd, pwdCost)
-	checkError(err)
-
-	return string(hash)
 }
 
 func checkError(err error) {
