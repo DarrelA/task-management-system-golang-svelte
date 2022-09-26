@@ -7,6 +7,7 @@
     export let component;
 
     const user = Boolean(localStorage.getItem("isAdmin"))
+    $: console.log(user)
 
 </script>
 

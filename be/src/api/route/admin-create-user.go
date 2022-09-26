@@ -161,6 +161,7 @@ func GetUsers(c *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
+
 	defer rows.Close()
 	for rows.Next() {
 		err = rows.Scan(&existingUser.Username, &existingUser.Email, &existingUser.Usergroup, &existingUser.Status)

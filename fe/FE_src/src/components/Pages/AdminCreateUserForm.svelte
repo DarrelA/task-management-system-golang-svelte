@@ -13,15 +13,25 @@
 
   let groupsArray = [];
   let selected = [];
+  let usersData = [];
 
   let loading = false;
 
-  let selectedGroup = "";
+  $: getUsers();
+
+  async function getUsers() {
+    try {
+      const response = await axios.get("http://localhost:4000/get-users");
+      if (response) {
+        usersData = response.data;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   async function CreateUser(e) {
     e.preventDefault();
-
-    const loggedInUser = localStorage.getItem("username");
     const json = {
       loggedInUser,
       username,
@@ -44,6 +54,7 @@
           email = "";
           selected = [];
           status = "Active";
+          getUsers();
         }
       }, 500);
     } catch (error) {
@@ -54,7 +65,7 @@
   onMount(() => {
     async function GetUserGroups() {
       try {
-        const response = await axios.get("http://localhost:4000/get-user-groups", {loggedInUser});
+        const response = await axios.get("http://localhost:4000/get-user-groups", { loggedInUser });
 
         if (response.data.error) {
           console.error(response.data.error);
@@ -77,6 +88,7 @@
   let size;
   const toggle = (e) => {
     e.preventDefault();
+    getUsers();
     openModal = !openModal;
     size = "xl";
 
@@ -101,9 +113,6 @@
     {/if}
 
     <ModalBody>
-      <div class="loading-spinner">
-        <Spinner size="xl" />
-      </div>
       <Form>
         <Row>
           <Col>
