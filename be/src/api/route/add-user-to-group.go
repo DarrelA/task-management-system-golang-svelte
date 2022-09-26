@@ -47,6 +47,7 @@ func AddUserToGroup(c *gin.Context) {
 	// Check if usergroup exist
 
 	var user_group string
+	fmt.Println("1", newComposite.Groupname)
 	getGroupname := "SELECT user_group FROM groupnames WHERE user_group = ?"
 	group := db.QueryRow(getGroupname, newComposite.Groupname)
 
@@ -66,6 +67,7 @@ func AddUserToGroup(c *gin.Context) {
 	// Create a composite key for usergroup table
 	_, err := db.Exec("INSERT INTO usergroup (username, user_group) VALUES (?, ?)", newComposite.Username, newComposite.Groupname)
 	if err != nil {
+		fmt.Println("Here")
 		fmt.Println(err)
 		return
 	}

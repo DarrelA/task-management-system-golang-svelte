@@ -88,27 +88,7 @@ func adminUpdateUserPassword(username string, password string, email string, use
 func adminUpdateUserEmail(username string, hashedPassword string, email string, user_group string, status string, c *gin.Context) {
 
 	if email != "" {
-		// validEmail := middleware.CheckEmail(email)
-
-		// // Invalid email format
-		// if !validEmail {
-		// 	middleware.ErrorHandler(c, 400, "Invalid email")
-		// 	return
-		// }
-		currentEmail := getCurrentUserData(username, c)["email"]
-		if email == currentEmail {
-			adminUpdateUserGroup(username, hashedPassword, currentEmail, user_group, status, c)
-		} else {
-			result := middleware.SelectAccountsByEmail(email, c)
-			switch err := result.Scan(&email); {
-			case err != sql.ErrNoRows:
-				middleware.ErrorHandler(c, 400, "Email already exists in database. Please try again.")
-			case err == sql.ErrNoRows:
-				adminUpdateUserGroup(username, hashedPassword, email, user_group, status, c)
-			default:
-				checkError(err)
-			}
-		}
+		adminUpdateUserGroup(username, hashedPassword, email, user_group, status, c)
 	} else {
 		email = getCurrentUserData(username, c)["email"]
 		adminUpdateUserGroup(username, hashedPassword, email, user_group, status, c)
@@ -142,7 +122,7 @@ func adminUpdateAccountsTable(username string, hashedPassword string, email stri
 	_, err := middleware.UpdateAccountsAdmin(hashedPassword, email, admin_privilege, user_group, status, username, c)
 	checkError(err)
 	successMessage := fmt.Sprintf("User %s was successfully updated!", username)
-	c.JSON(http.StatusCreated, gin.H{"code": 201, "message": successMessage})
+	c.JSON(http.StatusCreated, gin.H{"code": 200, "message": successMessage})
 }
 
 func getCurrentUserData(username string, c *gin.Context) map[string]string {

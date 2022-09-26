@@ -17,7 +17,6 @@ var (
 	querySelectAccounts           = "SELECT username, password, email, admin_privilege, user_group, status, timestamp FROM accounts;"
 	querySelectAccountByLogin     = "SELECT username, password, status FROM accounts WHERE username = ?;"
 	querySelectAccountsByUsername = "SELECT username, password, email, admin_privilege, user_group, status, timestamp FROM accounts WHERE username = ?;"
-	querySelectAccountsByEmail    = "SELECT username, password, email, admin_privilege, user_group, status, timestamp FROM accounts WHERE email = ?;"
 
 	querySelectUserGroup                    = "SELECT user_group FROM usergroup;"
 	querySelectUserGroupByUsernameUserGroup = "SELECT username, user_group FROM usergroup WHERE username = ? AND user_group = ?;"
@@ -41,11 +40,6 @@ func SelectAccountByLogin(username string, c *gin.Context) *sql.Row {
 
 func SelectAccountsByUsername(username string, c *gin.Context) *sql.Row {
 	result := db.QueryRow(querySelectAccountsByUsername, username)
-	return result
-}
-
-func SelectAccountsByEmail(email string, c *gin.Context) *sql.Row {
-	result := db.QueryRow(querySelectAccountsByEmail, email)
 	return result
 }
 

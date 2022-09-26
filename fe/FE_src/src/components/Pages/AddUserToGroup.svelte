@@ -21,11 +21,13 @@
 
 	async function handleSubmit() {
 		let user_group = selected.join(",")
+		console.log(username)
 		username = username.toString()
 		const json = {username, user_group}
+		console.log(json)
 
 		try {
-			const response = await axios.post("http://localhost:4000/add-user-to-group", json)
+			const response = await axios.post("http://localhost:4000/add-user-to-group", json, { withCredentials: true })
 			if (response) {
 				message = response.data.message
 				code = response.data.code
