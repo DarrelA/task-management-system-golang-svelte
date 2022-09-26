@@ -163,7 +163,7 @@ func GetUsers(c *gin.Context) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err = rows.Scan(&existingUser.Username, &existingUser.Email, &existingUser.Status, &existingUser.AdminPrivilege, &existingUser.Usergroup)
+		err = rows.Scan(&existingUser.Username, &existingUser.Email, &existingUser.Status, &existingUser.Usergroup)
 		if err != nil {
 			panic(err)
 		}

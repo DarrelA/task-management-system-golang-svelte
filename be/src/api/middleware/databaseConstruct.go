@@ -14,7 +14,7 @@ var (
 )
 
 var (
-	querySelectAccounts           = "SELECT username, password, email, admin_privilege, user_group, status, timestamp FROM accounts;"
+	querySelectAccounts           = "SELECT username, email, user_group, status FROM accounts;"
 	querySelectAccountByLogin     = "SELECT username, password, status FROM accounts WHERE username = ?;"
 	querySelectAccountsByUsername = "SELECT username, password, email, admin_privilege, user_group, status, timestamp FROM accounts WHERE username = ?;"
 
@@ -22,6 +22,8 @@ var (
 	querySelectUserGroupByUsernameUserGroup = "SELECT username, user_group FROM usergroup WHERE username = ? AND user_group = ?;"
 
 	querySelectGroupnamesByUserGroup = "SELECT user_group FROM groupnames WHERE user_group = ?;"
+
+	querySelectCompositeKey = "SELECT username, user_group FROM usergroup WHERE username = ? AND user_group = ?"
 )
 
 var (
@@ -70,6 +72,12 @@ func SelectGroupnamesbyUserGroup(user_group string) *sql.Row {
 	result := db.QueryRow(querySelectGroupnamesByUserGroup, user_group)
 	return result
 }
+
+func SelectCompositeKey(username string,user_group string) *sql.Row {
+	result := db.QueryRow(querySelectCompositeKey, username, user_group)
+	return result
+}
+
 
 
 // UPDATE
