@@ -130,7 +130,7 @@ func AdminCreateUser(c *gin.Context) {
 			// New group name
 			case sql.ErrNoRows:
 				// INSERT user_group into groupnames table
-				_,err := middleware.InsertGroupnames(group)
+				_, err := middleware.InsertGroupnames(group)
 				if err != nil {
 					middleware.ErrorHandler(c, 400, "Invalid field")
 					return
@@ -163,7 +163,7 @@ func GetUsers(c *gin.Context) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err = rows.Scan(&existingUser.Username, &existingUser.Email, &existingUser.Status, &existingUser.Usergroup)
+		err = rows.Scan(&existingUser.Username, &existingUser.Email, &existingUser.Usergroup, &existingUser.Status)
 		if err != nil {
 			panic(err)
 		}
