@@ -40,7 +40,7 @@ func AdminUpdateUser(c *gin.Context) {
 
 	checkGroup := middleware.CheckGroup(updateUser.LoggedInUser, "Admin")
 	if !checkGroup {
-		middleware.ErrorHandler(c, 200, "Unauthorized actions")
+		middleware.ErrorHandler(c, 400, "Unauthorized actions")
 		return
 	}
 
@@ -49,23 +49,23 @@ func AdminUpdateUser(c *gin.Context) {
 
 func adminUpdateUser(username string, password string, email string, user_group string, status string, c *gin.Context) {
 	if username != "" {
-		whiteSpace := middleware.CheckWhiteSpace(username)
-		if whiteSpace {
-			middleware.ErrorHandler(c, 400, "Username should not contain whitespace")
-			return
-		}
+		// whiteSpace := middleware.CheckWhiteSpace(username)
+		// if whiteSpace {
+		// 	middleware.ErrorHandler(c, 400, "Username should not contain whitespace")
+		// 	return
+		// }
 
 		result := middleware.SelectAccountsByUsername(username, c)
 		switch err := result.Scan(&username); {
 		case err != sql.ErrNoRows:
 			adminUpdateUserPassword(username, password, email, user_group, status, c)
 		case err == sql.ErrNoRows:
-			middleware.ErrorHandler(c, 200, "Username does not exist. Please try again.")
+			middleware.ErrorHandler(c, 400, "Username does not exist. Please try again.")
 		default:
 			checkError(err)
 		}
 	} else {
-		middleware.ErrorHandler(c, 200, "Please enter a username")
+		middleware.ErrorHandler(c, 400, "Please enter a username")
 	}
 }
 
@@ -76,7 +76,7 @@ func adminUpdateUserPassword(username string, password string, email string, use
 			hashedPassword, _ := middleware.GenerateHash(password)
 			adminUpdateUserEmail(username, hashedPassword, email, user_group, status, c)
 		} else {
-			middleware.ErrorHandler(c, 200, "Password length must be between length 8 - 10 with alphabets, numbers and special characters.")
+			middleware.ErrorHandler(c, 400, "Password length must be between length 8 - 10 with alphabets, numbers and special characters.")
 		}
 	} else {
 		password = getCurrentUserData(username, c)["password"]
@@ -102,7 +102,7 @@ func adminUpdateUserEmail(username string, hashedPassword string, email string, 
 			result := middleware.SelectAccountsByEmail(email, c)
 			switch err := result.Scan(&email); {
 			case err != sql.ErrNoRows:
-				middleware.ErrorHandler(c, 200, "Email already exists in database. Please try again.")
+				middleware.ErrorHandler(c, 400, "Email already exists in database. Please try again.")
 			case err == sql.ErrNoRows:
 				adminUpdateUserGroup(username, hashedPassword, email, user_group, status, c)
 			default:
