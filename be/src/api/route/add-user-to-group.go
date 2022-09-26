@@ -23,24 +23,12 @@ func AddUserToGroup(c *gin.Context) {
 		return
 	}
 
-	// Check if usergroup exist
-	// var user_group string
-	// fmt.Println("1", newComposite.Groupname)
-	// getGroupname := "SELECT user_group FROM groupnames WHERE user_group = ?"
-	// group := db.QueryRow(getGroupname, newComposite.Groupname)
-
-	// switch err := group.Scan(&user_group); err {
-
-	// // New group name
-	// case sql.ErrNoRows:
-	// 	// INSERT user_group into groupnames table
-	// 	_, err := db.Exec("INSERT INTO groupnames (user_group) VALUES (?)", newComposite.Groupname)
-	// 	if err != nil {
-	// 		fmt.Println(err)
-	// 		middleware.ErrorHandler(c, 400, "Invalid field")
-	// 		return
-	// 	}
-	// }
+	// Check user group
+	checkGroup := middleware.CheckGroup(newUser.LoggedInUser, "Admin")
+	if !checkGroup {
+		middleware.ErrorHandler(c, 400, "Unauthorized actions")
+		return
+	}
 
 	// insert groupname
 	// check composite
