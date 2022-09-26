@@ -33,7 +33,7 @@ func main() {
 	}))
 
 	router.POST("/login", route.Login)
-	router.POST("/logout", route.Logout)
+	router.GET("/logout", route.Logout)
 
 	// Dont use checkgroup like this. Refer to admin-create-user line 46-50
 	// router.GET("/check-group", middleware.CheckGroup)

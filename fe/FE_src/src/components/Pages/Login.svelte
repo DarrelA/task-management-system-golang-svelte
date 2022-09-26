@@ -21,8 +21,7 @@
         localStorage.setItem("username", json.username);
       }
     } catch (e) {
-      errorToast("Invalid login");
-      e.response && e.response.data.message ? console.log(e.response.data.message) : console.log(e.message);
+      e.response && e.response.data.message ? errorToast(e.response.data.message) : errorToast(e.message);
     }
   }
 </script>
