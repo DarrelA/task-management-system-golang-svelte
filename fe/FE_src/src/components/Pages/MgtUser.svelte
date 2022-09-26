@@ -10,6 +10,7 @@
 
 <Navbar/>
 <br/>
+<AdminCreateUserForm />
 <AdminUpdateUser/>
 
 <style>

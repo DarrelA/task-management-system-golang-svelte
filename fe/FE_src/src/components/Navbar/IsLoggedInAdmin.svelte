@@ -39,7 +39,7 @@
         <DropdownToggle nav caret>User Management</DropdownToggle>
         <DropdownMenu end>
           <DropdownItem href="/user-management">Accounts Table</DropdownItem>
-          <DropdownItem href="/user-to-group">Add Users To Group</DropdownItem>
+          <DropdownItem href="/add-user-to-group">Add Users To Group</DropdownItem>
         </DropdownMenu>
       </Dropdown>
       <NavItem>

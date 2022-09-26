@@ -21,6 +21,7 @@
 
 	async function handleSubmit() {
 		let user_group = selected.join(",")
+		username = username.toString()
 		const json = {username, user_group}
 
 		try {
