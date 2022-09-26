@@ -12,7 +12,7 @@ func CheckGroup(username string, usergroup string) bool {
 	var (
 		checkgroup = false
 	)
-	queryCheck := "SELECT username, user_group FROM usergroup WHERE username = ? AND user_group = ?"
+	queryCheck := "SELECT username, user_group FROM accounts WHERE username = ? AND user_group = ?"
 
 	rows := db.QueryRow(queryCheck, username, usergroup)
 
