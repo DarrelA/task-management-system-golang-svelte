@@ -22,6 +22,8 @@ var (
 	querySelectUserGroupByUsernameUserGroup = "SELECT username, user_group FROM usergroup WHERE username = ? AND user_group = ?;"
 
 	querySelectGroupnamesByUserGroup = "SELECT user_group FROM groupnames WHERE user_group = ?;"
+
+	querySelectCompositeKey = "SELECT username, user_group FROM usergroup WHERE username = ? AND user_group = ?"
 )
 
 var (
@@ -69,6 +71,13 @@ func SelectGroupnamesbyUserGroup(user_group string) *sql.Row {
 	result := db.QueryRow(querySelectGroupnamesByUserGroup, user_group)
 	return result
 }
+
+func SelectCompositeKey(username string,user_group string) *sql.Row {
+	result := db.QueryRow(querySelectCompositeKey, username, user_group)
+	return result
+}
+
+
 
 // UPDATE
 func UpdateAccountsAdmin(password string, email string, admin_privilege int, user_group string, status string, username string, c *gin.Context) (*sql.Rows, error) {

@@ -28,6 +28,13 @@ func AdminCreateGroup(context *gin.Context) {
 		return
 	}
 
+	// Check user group
+	checkGroup := middleware.CheckGroup(newUser.LoggedInUser, "Admin")
+	if !checkGroup {
+		middleware.ErrorHandler(c, 400, "Unauthorized actions")
+		return
+	}
+
 	// check if groupname field has whitespace
 	whiteSpace := middleware.CheckWhiteSpace(newGroup.Name)
 	if whiteSpace {
