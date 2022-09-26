@@ -1,8 +1,8 @@
 <script>
-  import { navigate } from 'svelte-routing';
-  import AdminNavbar from '../Navbar/IsLoggedInAdmin.svelte'
-  import UserNavbar from '../Navbar/IsLoggedInUser.svelte'
-  import Login from './Login.svelte';
+  import { navigate } from "svelte-routing";
+  import AdminNavbar from "../Navbar/IsLoggedInAdmin.svelte";
+  import UserNavbar from "../Navbar/IsLoggedInUser.svelte";
+  import Login from "./Login.svelte";
 
   const isAdmin = localStorage.getItem("isAdmin");
   // if (isAdmin === null) {
@@ -10,19 +10,13 @@
   // }
 </script>
 
-{#if isAdmin==="true"} 
-<AdminNavbar/>
-{:else if isAdmin==="false"}
-<UserNavbar/>
-<!-- {:else}
+{#if isAdmin === "true"}
+  <AdminNavbar />
+{:else if isAdmin === "false"}
+  <UserNavbar />
+  <!-- {:else}
 <Login/> -->
 {/if}
 
-<<<<<<< Updated upstream
-<Navbar/>
-
-<h3>Welcome to TMS</h3>
-=======
 <h3>Welcome to TMS</h3>
 <button>Create Appliation</button>
->>>>>>> Stashed changes
