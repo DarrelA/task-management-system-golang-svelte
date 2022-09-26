@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -54,9 +55,12 @@ func Login(c *gin.Context) {
 
 		// Incorrect password
 		if !correctPassword {
-			middleware.ErrorHandler(c, http.StatusUnauthorized, "Unauthorized User")
+			middleware.ErrorHandler(c, http.StatusBadRequest, "Invalid Credentials")
 			return
 		}
+
+		// Check if user is admin
+		isAdmin := strconv.FormatBool(middleware.CheckGroup(credentials.Username, "Admin"))
 
 		expireTime := time.Now().Add(1 * time.Hour)
 		// New token with signing method and claims
@@ -74,7 +78,7 @@ func Login(c *gin.Context) {
 
 		// Set cookie (MaxAge: 1 hour = 3600)
 		c.SetCookie("jwt-cookie", tokenString, 3600, "/", "localhost", false, true)
-		c.JSON(200, gin.H{"code": 200, "message": "success"})
+		c.JSON(200, gin.H{"code": 200, "message": "success", "isAdmin": isAdmin})
 	}
 
 }

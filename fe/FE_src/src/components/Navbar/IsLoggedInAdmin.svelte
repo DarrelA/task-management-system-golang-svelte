@@ -23,9 +23,10 @@
   }
 
   // Need to do handleLogout
-  const handleLogOut = async (e) => {
-    e.preventDefault();
-    localStorage.removeItem("username");
+  const handleLogOut = async (e) =>{
+    e.preventDefault()
+    localStorage.removeItem("username")
+    localStorage.removeItem("isAdmin")
     await axios.get("http://localhost:4000/logout", {
       withCredentials: true,
     });
