@@ -1,23 +1,32 @@
 <script>
-   import axios from 'axios'
-   import { toast } from '@zerodevx/svelte-toast'
-   import { SvelteToast } from '@zerodevx/svelte-toast'
+  import axios from 'axios'
+  import { toast } from '@zerodevx/svelte-toast'
+  import { SvelteToast } from '@zerodevx/svelte-toast'
 	import MultiSelect from "svelte-multiselect"
-   import { Button, Badge, Form, FormGroup, FormText, Input, Label } from 'sveltestrap'
-   import Navbar from '../Navbar/IsLoggedInAdmin.svelte'
-   import ProtectedRoute from '../ProtectedRoute.svelte';
+  import {
+	  Button, 
+		FormGroup,   
+		Label,
+		DropdownItem,
+		DropdownMenu,
+		DropdownToggle,
+		Dropdown,
+		Input
+	} from 'sveltestrap'
 
-   let message = ""
+	let isOpen = false;
+
+  import Navbar from '../Navbar/IsLoggedInAdmin.svelte'
+
+  let message = ""
 	let code = ""
-   export let username = [];
+  export let username = "";
 	export let user_group = [];
-
+  
 	let groupsArray = [];
 	let userArray = [];
 	let selected = []
-	let selectedOptions = []
 	selected.push(...user_group)
-	selectedOptions.push(...username)
 
 	async function handleSubmit() {
 		let user_group = selected.join(",")
@@ -25,7 +34,7 @@
 		const json = {username, user_group}
 
 		try {
-			const response = await axios.post("http://localhost:4000/add-user-to-group", json)
+			const response = await axios.post("http://localhost:4000/add-user-to-group", json, {withCredentials: true})
 			if (response) {
 				message = response.data.message
 				code = response.data.code
@@ -92,11 +101,26 @@
 <Navbar />
 
 <form on:submit|preventDefault={handleSubmit}>
-   <FormGroup>
-      <label for="username">Username(s)</label>
-      <MultiSelect bind:selectedOptions options={userArray} />
-   </FormGroup>
+	<Label for="username">Username</Label>
+	<select name="username" bind:value={username}>
+		{#each userArray as username}
+		<option>{username}</option>
+		{/each}
+	</select>
+
+	<!-- <Dropdown {isOpen} toggle={() => (isOpen = !isOpen)}>
+		<DropdownToggle tag="div" class="d-inline-block">
+			<Input />
+		</DropdownToggle>
+		<DropdownMenu>
+			{#each userArray as username}
+			<DropdownItem bind:value={username}>{username}</DropdownItem>
+			{/each}
+		</DropdownMenu>
+	</Dropdown> -->
+
 	<FormGroup>
+		<br />
 		<Label for="usergroup">User Group(s):</Label>
 		<MultiSelect bind:selected options={groupsArray} />
 	</FormGroup>

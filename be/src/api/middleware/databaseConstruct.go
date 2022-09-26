@@ -23,6 +23,7 @@ var (
 	querySelectUserGroupByUsernameUserGroup = "SELECT username, user_group FROM usergroup WHERE username = ? AND user_group = ?;"
 
 	querySelectGroupnamesByUserGroup = "SELECT user_group FROM groupnames WHERE user_group = ?;"
+	queryCheckUserGroup = "SELECT username, user_group FROM usergroup WHERE username = ? AND user_group = ?"
 )
 
 var (
@@ -32,6 +33,11 @@ var (
 func InsertUserGroup(username string, user_group string) (sql.Result, error) {
 	result, err := db.Exec(queryInsertUserGroup, username, user_group)
 	return result, err
+}
+
+func QuerySpecificGroup(username string, user_group string) *sql.Row {
+	result := db.QueryRow(queryCheckUserGroup, username, user_group)
+	return result
 }
 
 func SelectAccountByLogin(username string, c *gin.Context) *sql.Row {
