@@ -18,11 +18,4 @@
 <Login/> -->
 {/if}
 
-<<<<<<< Updated upstream
-<Navbar/>
-
 <h3>Welcome to TMS</h3>
-=======
-<h3>Welcome to TMS</h3>
-<button>Create Appliation</button>
->>>>>>> Stashed changes
