@@ -8,6 +8,7 @@
   import MgtUser from "./components/Pages/MgtUser.svelte";
   import MgtGroup from "./components/Pages/MgtGroup.svelte";
   import AddUserToGroup from "./components/Pages/AddUserToGroup.svelte";
+  import AccessDenied from "./components/Pages/AccessDenied.svelte";
 </script>
 
 <SvelteToast />
@@ -21,6 +22,7 @@
 		<ProtectedRoute path="/home" component={Home} />
 		<ProtectedRoute path="/user-management" component={MgtUser} />
 		<ProtectedRoute path="/group-management" component={MgtGroup} />
+		<ProtectedRoute path="*" component={AccessDenied} />
 	</Router>
 </main>
 

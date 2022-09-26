@@ -18,6 +18,7 @@
       if (response) {
         navigate("http://localhost:3000/home");
         localStorage.setItem("username", json.username);
+        localStorage.setItem("isAdmin", response.data.isAdmin);
       }
     } catch (e) {
       e.response && e.response.data.message ? errorToast(e.response.data.message) : errorToast(e.message);
