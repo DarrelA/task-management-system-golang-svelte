@@ -37,7 +37,8 @@ func AdminUpdateUser(c *gin.Context) {
 		return
 	}
 
-	checkGroup := middleware.CheckGroup(updateUser.LoggedInUser, "Admin")
+	// Check user group
+	checkGroup := middleware.CheckGroup(c.GetString("username"), "Admin")
 	if !checkGroup {
 		middleware.ErrorHandler(c, 400, "Unauthorized actions")
 		return

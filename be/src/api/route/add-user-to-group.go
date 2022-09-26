@@ -25,15 +25,11 @@ func AddUserToGroup(c *gin.Context) {
 	}
 
 	// Check user group
-	checkGroup := middleware.CheckGroup(newComposite.LoggedInUser, "Admin")
+	checkGroup := middleware.CheckGroup(c.GetString("username"), "Admin")
 	if !checkGroup {
 		middleware.ErrorHandler(c, 400, "Unauthorized actions")
 		return
 	}
-
-	// insert groupname
-	// check composite
-	// update accounts user_group
 
 	for _, group := range newComposite.Groupname {
 		// LOOP to validate group name

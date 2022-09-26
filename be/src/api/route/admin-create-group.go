@@ -30,7 +30,7 @@ func AdminCreateGroup(context *gin.Context) {
 	}
 
 	// Check user group
-	checkGroup := middleware.CheckGroup(newGroup.LoggedInUser, "Admin")
+	checkGroup := middleware.CheckGroup(context.GetString("username"), "Admin")
 	if !checkGroup {
 		middleware.ErrorHandler(context, 400, "Unauthorized actions")
 		return
