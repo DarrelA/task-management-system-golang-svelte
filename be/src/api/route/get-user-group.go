@@ -35,6 +35,14 @@ type usersGroup struct {
 }
 
 func GetUsersInGroup(c *gin.Context) {
+
+	// Check user group
+	checkGroup := middleware.CheckGroup(newUser.LoggedInUser, "Admin")
+	if !checkGroup {
+		middleware.ErrorHandler(c, 400, "Unauthorized actions")
+		return
+	}
+	
 	var data []usersGroup
 	var groupname string
 	var count int
