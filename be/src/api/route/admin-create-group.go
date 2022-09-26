@@ -15,7 +15,8 @@ import (
 
 type Groupnames struct {
 	// json tag to de-serialize json body
-	Name string `json:"user_group"`
+	LoggedInUser string `json:"loggedInUser"`
+	Name         string `json:"user_group"`
 }
 
 func AdminCreateGroup(context *gin.Context) {
@@ -29,9 +30,9 @@ func AdminCreateGroup(context *gin.Context) {
 	}
 
 	// Check user group
-	checkGroup := middleware.CheckGroup(newUser.LoggedInUser, "Admin")
+	checkGroup := middleware.CheckGroup(newGroup.LoggedInUser, "Admin")
 	if !checkGroup {
-		middleware.ErrorHandler(c, 400, "Unauthorized actions")
+		middleware.ErrorHandler(context, 400, "Unauthorized actions")
 		return
 	}
 
