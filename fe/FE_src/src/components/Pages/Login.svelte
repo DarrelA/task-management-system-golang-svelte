@@ -80,13 +80,14 @@
 
 <style>
   .login {
-    min-height: 100vh;
+    min-height: 98vh;
   }
 
   .bg-image {
-    min-height: 100vh;
-    background-image: url("https://res.cloudinary.com/mhmd/image/upload/v1555917661/art-colorful-contemporary-2047905_dxtao7.jpg");
-    background-size: cover;
+    min-height: 98vh;
+    background-image:  url("https://blog.trello.com/hs-fs/Kanban-101-final-1.png");
+    background-repeat: no-repeat;
+    background-size: 110% 100%;
     background-position: center center;
   }
 </style>

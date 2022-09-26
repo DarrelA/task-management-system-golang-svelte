@@ -24,21 +24,21 @@ func AdminCreateGroup(context *gin.Context) {
 	// call BindJSON to bind the received JSON to newGroup
 	if err := context.BindJSON(&newGroup); err != nil {
 		fmt.Println(err)
-		middleware.ErrorHandler(context, 200, "Bad Request")
+		middleware.ErrorHandler(context, 400, "Bad Request")
 		return
 	}
 
 	// check if groupname field has whitespace
 	whiteSpace := middleware.CheckWhiteSpace(newGroup.Name)
 	if whiteSpace {
-		middleware.ErrorHandler(context, 200, "Groupname should not contain whitespace")
+		middleware.ErrorHandler(context, 400, "Groupname should not contain whitespace")
 		return
 	}
 
 	// check if groupname field is empty
 	minLength := middleware.CheckLength(newGroup.Name)
 	if minLength {
-		middleware.ErrorHandler(context, 200, "Groupname should not be empty")
+		middleware.ErrorHandler(context, 400, "Groupname should not be empty")
 		return
 	}
 
@@ -58,7 +58,7 @@ func AdminCreateGroup(context *gin.Context) {
 
 		if err != nil {
 			fmt.Println(err)
-			middleware.ErrorHandler(context, 200, "Unable to create new group")
+			middleware.ErrorHandler(context, 400, "Unable to create new group")
 			return
 		}
 
@@ -67,12 +67,12 @@ func AdminCreateGroup(context *gin.Context) {
 
 	// Existing groupname
 	case nil:
-		middleware.ErrorHandler(context, 200, "Existing Groupname")
+		middleware.ErrorHandler(context, 400, "Existing Groupname")
 		return
 
 	// Invalid Field
 	default:
-		middleware.ErrorHandler(context, 200, "Invalid Field")
+		middleware.ErrorHandler(context, 400, "Invalid Field")
 		return
 	}
 }
