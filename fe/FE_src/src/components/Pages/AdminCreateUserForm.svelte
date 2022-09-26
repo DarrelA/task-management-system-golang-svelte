@@ -32,8 +32,6 @@
 
   async function CreateUser(e) {
     e.preventDefault();
-
-    const loggedInUser = localStorage.getItem("username");
     const json = {
       loggedInUser,
       username,

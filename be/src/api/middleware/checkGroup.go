@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"database/sql"
+	"fmt"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -26,6 +27,8 @@ func CheckGroup(username string, usergroup string) bool {
 	case nil:
 		checkgroup = true
 	}
+
+	fmt.Println("iosdahjgiodfg", checkgroup)
 
 	return checkgroup
 }
