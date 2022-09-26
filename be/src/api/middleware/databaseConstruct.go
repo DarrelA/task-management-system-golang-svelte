@@ -72,7 +72,6 @@ func SelectGroupnamesbyUserGroup(user_group string) *sql.Row {
 	return result
 }
 
-<<<<<<< HEAD
 func SelectCompositeKey(username string,user_group string) *sql.Row {
 	result := db.QueryRow(querySelectCompositeKey, username, user_group)
 	return result
@@ -80,8 +79,6 @@ func SelectCompositeKey(username string,user_group string) *sql.Row {
 
 
 
-=======
->>>>>>> main
 // UPDATE
 func UpdateAccountsAdmin(password string, email string, admin_privilege int, user_group string, status string, username string, c *gin.Context) (*sql.Rows, error) {
 	result, err := db.Query(queryUpdateAccountsAdmin, password, email, admin_privilege, user_group, status, username)
