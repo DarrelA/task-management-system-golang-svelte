@@ -33,7 +33,7 @@ func main() {
 	}))
 
 	router.POST("/login", route.Login)
-	router.POST("/logout", route.Logout)
+	router.GET("/logout", route.Logout)
 
 	// router.GET("/check-group", middleware.CheckGroup())
 	router.POST("/add-user-to-group", route.AddUserToGroup)
