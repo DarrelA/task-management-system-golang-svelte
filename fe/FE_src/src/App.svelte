@@ -16,11 +16,12 @@
   <Router>
     <Route path="/" component={Login} />
 
-    <!-- Need to change on protected route -->
-    <ProtectedRoute path="/home" component={Home} />
-    <ProtectedRoute path="/user-management" component={MgtUser} />
-    <ProtectedRoute path="/group-management" component={MgtGroup} />
-  </Router>
+		<!-- Need to change on protected route -->
+		<ProtectedRoute path="/add-user-to-group" component={AddUserToGroup} />
+		<ProtectedRoute path="/home" component={Home} />
+		<ProtectedRoute path="/user-management" component={MgtUser} />
+		<ProtectedRoute path="/group-management" component={MgtGroup} />
+	</Router>
 </main>
 
 <style>

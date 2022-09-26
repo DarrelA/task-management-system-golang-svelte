@@ -35,11 +35,10 @@ func main() {
 	router.POST("/login", route.Login)
 	router.POST("/logout", route.Logout)
 
-	// Dont use checkgroup like this. Refer to admin-create-user line 46-50
-	// router.GET("/check-group", middleware.CheckGroup)
-	router.POST("/user-to-group", route.AddUserToGroup)
-	router.POST("/admin-update-user", middleware.CheckCookie, route.AdminUpdateUser)
-	router.POST("/admin-create-user", middleware.CheckCookie, route.AdminCreateUser)
+	// router.GET("/check-group", middleware.CheckGroup())
+	router.POST("/add-user-to-group", route.AddUserToGroup)
+	router.POST("/admin-update-user", route.AdminUpdateUser)
+	router.POST("/admin-create-user", route.AdminCreateUser)
 	router.POST("/admin-create-group", route.AdminCreateGroup)
 	router.GET("/get-users", route.GetUsers)
 	router.GET("/get-user-groups", route.GetUserGroup)

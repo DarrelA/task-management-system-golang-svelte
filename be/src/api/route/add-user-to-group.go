@@ -45,6 +45,7 @@ func AddUserToGroup(c *gin.Context) {
 	// c.JSON(200, data)
 
 	// Check if usergroup exist
+
 	var user_group string
 	getGroupname := "SELECT user_group FROM groupnames WHERE user_group = ?"
 	group := db.QueryRow(getGroupname, newComposite.Groupname)

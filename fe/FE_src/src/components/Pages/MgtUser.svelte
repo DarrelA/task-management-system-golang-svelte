@@ -6,11 +6,12 @@
   import AdminCreateUserForm from "./AdminCreateUserForm.svelte";
 </script>
 
-<Navbar />
-<br />
 
+
+<Navbar/>
+<br/>
 <AdminCreateUserForm />
-<AdminUpdateUser />
+<AdminUpdateUser/>
 
 <style>
 </style>
