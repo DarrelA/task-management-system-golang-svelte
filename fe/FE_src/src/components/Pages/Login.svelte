@@ -1,8 +1,7 @@
 <script>
-  import axios from "axios";
-  import { Form, FormGroup, Input, Button } from "sveltestrap";
-  import { navigate } from "svelte-routing";
-  import { errorToast } from "../toast";
+  import axios from 'axios';
+  import { Form, FormGroup, Input, Button } from 'sveltestrap';
+  import { errorToast } from '../toast';
 
   let username;
   let password;
@@ -12,18 +11,27 @@
     const json = { username, password };
 
     try {
-      const response = await axios.post("http://localhost:4000/login", json, {
+      const response = await axios.post('http://localhost:4000/login', json, {
         withCredentials: true,
       });
       if (response) {
-        navigate("http://localhost:3000/home");
-        localStorage.setItem("username", json.username);
-        localStorage.setItem("isAdmin", response.data.isAdmin);
+        localStorage.setItem('username', json.username);
+        localStorage.setItem('isAdmin', response.data.isAdmin);
+        response.data.isAdmin === 'true'
+          ? window.location.replace('/user-management')
+          : window.location.replace('/user');
       }
     } catch (e) {
-      e.response && e.response.data.message ? errorToast(e.response.data.message) : errorToast(e.message);
+      e.response && e.response.data.message
+        ? errorToast(e.response.data.message)
+        : errorToast(e.message);
     }
   }
+
+  const user = localStorage.getItem('isAdmin');
+  $: if (user === 'true') {
+    window.location.replace('/user-management');
+  } else if (user === 'false') window.location.replace('/user');
 </script>
 
 <div class="container-fluid">
@@ -67,7 +75,11 @@
                     />
                   </div>
                 </FormGroup>
-                <Button type="submit" class="btn btn-primary btn-block text-uppercase mb-2 rounded-pill shadow-sm" color="success">Sign in</Button>
+                <Button
+                  type="submit"
+                  class="btn btn-primary btn-block text-uppercase mb-2 rounded-pill shadow-sm"
+                  color="success">Sign in</Button
+                >
               </Form>
             </div>
           </div>
@@ -86,7 +98,7 @@
 
   .bg-image {
     min-height: 98vh;
-    background-image:  url("https://blog.trello.com/hs-fs/Kanban-101-final-1.png");
+    background-image: url('https://blog.trello.com/hs-fs/Kanban-101-final-1.png');
     background-repeat: no-repeat;
     background-size: 110% 100%;
     background-position: center center;

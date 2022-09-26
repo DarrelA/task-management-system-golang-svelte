@@ -1,18 +1,16 @@
 <script>
-    import { navigate, Route } from 'svelte-routing';
-    import AccessDenied from './Pages/AccessDenied.svelte';
-    import Login from './Pages/Login.svelte';
+  import { navigate, Route } from 'svelte-routing';
+  import Login from './Pages/Login.svelte';
 
-    export let path;
-    export let component;
+  export let path;
+  export let component;
 
-    const user = Boolean(localStorage.getItem("isAdmin"))
-    $: console.log(user)
-
+  const user = localStorage.getItem('isAdmin');
+  $: if (user === null) navigate('/');
 </script>
 
 {#if user}
-    <Route path={path} component={component} />
+  <Route {path} {component} />
 {:else}
-    <Route path={path} component={AccessDenied} />
+  <Route {path} component={Login} />
 {/if}

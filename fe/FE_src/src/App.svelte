@@ -1,14 +1,13 @@
 <script>
   //export let name;
-  import { Router, Route } from "svelte-routing";
-  import { SvelteToast } from "@zerodevx/svelte-toast";
-  import ProtectedRoute from "./components/ProtectedRoute.svelte";
-  import Login from "./components/Pages/Login.svelte";
-  import Home from "./components/Pages/Home.svelte";
-  import MgtUser from "./components/Pages/MgtUser.svelte";
-  import MgtGroup from "./components/Pages/MgtGroup.svelte";
-  import AddUserToGroup from "./components/Pages/AddUserToGroup.svelte";
-  import AccessDenied from "./components/Pages/AccessDenied.svelte";
+  import { SvelteToast } from '@zerodevx/svelte-toast';
+  import { Route, Router } from 'svelte-routing';
+  import AddUserToGroup from './components/Pages/AddUserToGroup.svelte';
+  import Login from './components/Pages/Login.svelte';
+  import MgtGroup from './components/Pages/MgtGroup.svelte';
+  import MgtUser from './components/Pages/MgtUser.svelte';
+  import User from './components/Pages/User.svelte';
+  import ProtectedRoute from './components/ProtectedRoute.svelte';
 </script>
 
 <SvelteToast />
@@ -17,13 +16,13 @@
   <Router>
     <Route path="/" component={Login} />
 
-		<!-- Need to change on protected route -->
-		<ProtectedRoute path="/add-user-to-group" component={AddUserToGroup} />
-		<ProtectedRoute path="/home" component={Home} />
-		<ProtectedRoute path="/user-management" component={MgtUser} />
-		<ProtectedRoute path="/group-management" component={MgtGroup} />
-		<ProtectedRoute path="*" component={AccessDenied} />
-	</Router>
+    <!-- Need to change on protected route -->
+    <ProtectedRoute path="/add-user-to-group" component={AddUserToGroup} />
+    <ProtectedRoute path="/user" component={User} />
+    <ProtectedRoute path="/user-management" component={MgtUser} />
+    <ProtectedRoute path="/group-management" component={MgtGroup} />
+    <ProtectedRoute path="*" component={Login} />
+  </Router>
 </main>
 
 <style>
