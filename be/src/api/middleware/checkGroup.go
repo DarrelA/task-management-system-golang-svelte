@@ -31,6 +31,5 @@ func CheckGroup(username string, groupname string) bool {
 			checkgroup = false
 		}
 	}
-
 	return checkgroup
 }
