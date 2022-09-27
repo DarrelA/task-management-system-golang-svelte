@@ -38,12 +38,16 @@ var (
 	querySelectUserGroup = "SELECT user_group FROM groupnames"
 
 	querySelectUserGroupFromAccountsGroupByUsername = "SELECT user_group FROM accounts GROUP BY username"
+
+	querySelectPasswordEmailFromAccountsByUsername = "SELECT password, email FROM accounts WHERE username = ?"
 )
 
 var (
 	queryUpdateAccountsAdmin = "UPDATE accounts SET password = ?, email = ?, admin_privilege = ?, user_group = ?, status = ? WHERE username = ?;"
 
 	queryUpdateAccountsSetUsernameByUserGroup = "UPDATE accounts SET user_group = ? WHERE username = ?"
+
+	queryUpdateUserToDb = "UPDATE accounts SET password = ?, email = ? WHERE username = ?"
 )
 
 // INSERT
@@ -65,6 +69,11 @@ func InsertGroupnames(user_group string) (sql.Result, error) {
 // SELECT
 func SelectUserGroup() (*sql.Rows, error) {
 	result, err := db.Query(querySelectUserGroup)
+	return result, err
+}
+
+func SelectPasswordEmailFromAccountsByUsername(username string) (*sql.Rows, error) {
+	result, err := db.Query(querySelectPasswordEmailFromAccountsByUsername, username)
 	return result, err
 }
 
@@ -131,5 +140,10 @@ func UpdateAccountsAdmin(password string, email string, admin_privilege int, use
 
 func UpdateAccountsSetUsernameByUsergroup(user_group string, username string) (*sql.Rows, error) {
 	result, err := db.Query(queryUpdateAccountsSetUsernameByUserGroup, user_group, username)
+	return result, err
+}
+
+func UpdateUserToDb(password string, email string, username string) (sql.Result, error) {
+	 result, err := db.Exec(queryUpdateUserToDb, password, email, username)
 	return result, err
 }
