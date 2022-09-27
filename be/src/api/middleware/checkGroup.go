@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"database/sql"
-	"fmt"
 	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -32,7 +31,5 @@ func CheckGroup(username string, groupname string) bool {
 			checkgroup = false
 		}
 	}
-
-	fmt.Println("Its's here", checkgroup)
 	return checkgroup
 }

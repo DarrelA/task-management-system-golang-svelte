@@ -16,29 +16,17 @@ var (
 
 var (
 	querySelectAccounts           = "SELECT username, email, user_group, status FROM accounts;"
-
 	querySelectAccountByLogin     = "SELECT username, password, status FROM accounts WHERE username = ?;"
-
 	querySelectAccountsByUsername = "SELECT username, password, email, admin_privilege, user_group, status, timestamp FROM accounts WHERE username = ?;"
-
 	querySelectUserGroupByUsernameUserGroup = "SELECT username, user_group FROM usergroup WHERE username = ? AND user_group = ?;"
-
 	querySelectGroupnamesByUserGroup = "SELECT user_group FROM groupnames WHERE user_group = ?;"
-
 	querySelectCompositeKey = "SELECT username, user_group FROM usergroup WHERE username = ? AND user_group = ?"
-
 	querySelectCheckGroupFromAccounts = "SELECT username, user_group FROM accounts WHERE username = ?"
-
 	querySelectUserFromUserGroupByUsername = "SELECT user_group FROM accounts WHERE username = ?"
-
 	querySelectUserGroupFromGroupnamesByUserGroup = "SELECT user_group FROM groupnames WHERE user_group = ?"
-
 	querySelectUsernameFromAccountsByUsername = "SELECT username FROM accounts WHERE username = ?"
-
 	querySelectUserGroup = "SELECT user_group FROM groupnames"
-
 	querySelectUserGroupFromAccountsGroupByUsername = "SELECT user_group FROM accounts GROUP BY username"
-
 	querySelectPasswordEmailFromAccountsByUsername = "SELECT password, email FROM accounts WHERE username = ?"
 )
 
