@@ -140,8 +140,8 @@ func UpdateAccountsAdmin(password string, email string, admin_privilege int, use
 	return result, err
 }
 
-func UpdateAccountsSetUsernameByUsergroup(user_group string, username string) (*sql.Rows, error) {
-	result, err := db.Query(queryUpdateAccountsSetUsernameByUserGroup, user_group, username)
+func UpdateAccountsSetUsernameByUsergroup(user_group string, username string) (sql.Result, error) {
+	result, err := db.Exec(queryUpdateAccountsSetUsernameByUserGroup, user_group, username)
 	return result, err
 }
 
