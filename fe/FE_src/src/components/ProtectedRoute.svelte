@@ -14,5 +14,5 @@
 {#if user}
     <Route path={path} component={component} />
 {:else}
-    <Route path={path} component={AccessDenied} />
+    <!-- <Route path={path} component={AccessDenied} /> -->
 {/if}

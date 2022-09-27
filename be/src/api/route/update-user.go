@@ -59,7 +59,7 @@ func UpdateUser(c *gin.Context) {
 
 func dsn() string {
 	// username:password@tcp(127.0.0.1:3306)/database-name")
-	return fmt.Sprintf("%s:%s@/%s", LoadENV("SERVER_USER"), LoadENV("SERVER_PASSWORD"), LoadENV("SERVER_DB"))
+	return fmt.Sprintf("%s:%s@/%s", middleware.LoadENV("SERVER_USER"), middleware.LoadENV("SERVER_PASSWORD"), middleware.LoadENV("SERVER_DB"))
 	//return fmt.Sprintf("%s:%s@/%s", username, password, database)
 }
 
