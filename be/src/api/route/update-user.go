@@ -72,7 +72,7 @@ func getSelect(username string) map[string]string {
 
 	defer db.Close()
 
-	res, err := db.Query("SELECT password, email FROM accounts WHERE username = ?", username)
+	res, err := middleware.SelectPasswordEmailFromAccountsByUsername(username)
 
 	if err != nil {
 		log.Fatal(err)
@@ -139,28 +139,13 @@ func preEmail(username string, email string, c *gin.Context) bool {
 }
 
 func updateToDB(username string, newPassword string, newEmail string, c *gin.Context) {
-	db, err := sql.Open("mysql", dsn())
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	//update statement
-	stmt, err := db.Prepare("UPDATE accounts SET password = ?, email = ? WHERE username = ?")
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	//execute
-	res, err := stmt.Exec(newPassword, newEmail, username)
+	_, err := middleware.UpdateUserToDb(newPassword, newEmail, username)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	a, err := res.RowsAffected()
-	if err != nil {
-		log.Fatal(err)
-	}
 
-	fmt.Println("Rows affected: ", a)
-	middleware.ErrorHandler(c, 200, "Update success!")
+	c.JSON(200, gin.H{"code": 200, "message": "Update success!"})
 }

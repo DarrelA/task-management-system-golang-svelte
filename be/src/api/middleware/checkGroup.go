@@ -1,50 +1,38 @@
 package middleware
-
+ 
 import (
-	"database/sql"
-	"fmt"
-
-	_ "github.com/go-sql-driver/mysql"
+    "database/sql"
+    "fmt"
+    "strings"
+ 
+    _ "github.com/go-sql-driver/mysql"
 )
-
+ 
 // Takes in username, user_group to check as params of the function and return a bool
-func CheckGroup(username string, usergroup string) bool {
-
-	var (
-		checkgroup = false
-	)
-	queryCheck := "SELECT username, user_group FROM usergroup WHERE username = ? AND user_group = ?"
-
-	rows := db.QueryRow(queryCheck, username, usergroup)
-
-	switch err := rows.Scan(&username, &usergroup); err {
-
-	// Username/Usergroup does not exist in database
-	case sql.ErrNoRows:
-		checkgroup = false
-
-	// Username & Usergroup exists in database
-	case nil:
-		checkgroup = true
-	}
-
-	fmt.Println("iosdahjgiodfg", checkgroup)
-
-	return checkgroup
+func CheckGroup(username string, groupname string) bool {
+    var user_group string
+ 
+    var (
+        checkgroup = false
+    )
+ 
+    result := SelectCheckGroupFromAccounts(username)
+ 
+    switch err := result.Scan(&username, &user_group); err {
+ 
+    // Username/Usergroup does not exist in database
+    case sql.ErrNoRows:
+        checkgroup = false
+ 
+    // Username & Usergroup exists in database
+    case nil:
+        if strings.Contains(user_group, groupname) {
+            checkgroup = true
+        } else {
+            checkgroup = false
+        }
+    }
+ 
+    fmt.Println("Its's here", checkgroup)
+    return checkgroup
 }
-
-// check if an array contains a given value
-// fetch user_group where username = ?
-// for loop user_group, append into slice []
-// check contains with loop
-// func contains(s []string, str string) bool {
-
-// 	var checkGroup = false
-
-// 	for _, i := range s {
-// 		if i == str {
-// 			checkGroup = true
-// 		}
-// 	}
-// 	return checkGroup
-// }

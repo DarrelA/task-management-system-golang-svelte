@@ -22,7 +22,7 @@ func GetUserGroup(c *gin.Context) {
 		return
 	}
 
-	result, err := db.Query("SELECT user_group FROM groupnames")
+	result, err := middleware.SelectUserGroup()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -55,7 +55,7 @@ func GetUsersInGroup(c *gin.Context) {
 	var usergroup string
 	var groups string
 
-	result, err := db.Query("SELECT user_group FROM accounts GROUP BY username")
+	result, err := middleware.SelectUserGroupFromAccountsGroupByUsername()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -72,7 +72,7 @@ func GetUsersInGroup(c *gin.Context) {
 		fmt.Println(groups)
 	}
 
-	rows, err := db.Query("SELECT user_group FROM groupnames")
+	rows, err := middleware.SelectUserGroup()
 	if err != nil {
 		log.Fatal(err)
 	}
