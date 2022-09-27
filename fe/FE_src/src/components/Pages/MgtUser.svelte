@@ -6,7 +6,7 @@
 
 <Navbar />
 <br />
-<AdminCreateUserForm />
+<!-- <AdminCreateUserForm /> -->
 <AccountsTable />
 
 <style>
