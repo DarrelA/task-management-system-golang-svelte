@@ -3,6 +3,7 @@
   import { errorToast, successToast } from "../toast";
   import { Button, Form, FormGroup, Input, Label, Row, Col } from "sveltestrap";
   import { Modal, ModalBody, ModalHeader, ModalFooter, Table } from "sveltestrap";
+  import Navbar from "../Navbar/IsLoggedInUser.svelte"
 
   let password = "" 
   let email = "";
@@ -45,8 +46,21 @@
 
 </script>
 
-<h4>Update User Credentials</h4>
-<Button color="primary" on:click={openModal}>Update User</Button>
+<Navbar />
+
+<div class="container-fluid">
+  <br />
+  <div class="container-fluid">
+    <Row>
+      <Col>
+          <h3>User Management</h3>
+      </Col>
+      <Col>
+          <Button style="float:right; font-weight: bold; color: black;" color="warning" on:click={toggle}>Update User</Button>
+      </Col>
+    </Row>
+  </div>
+</div>
 
 <Modal isOpen={open} {toggle} >
   <ModalHeader>Update User</ModalHeader>
@@ -69,30 +83,7 @@
   </ModalBody>
 
   <ModalFooter>
-    <Button color="primary" on:click={handleClick}>Update User</Button>
+    <Button style="color: #fffbf0;" color="warning" on:click={handleClick}>Update User</Button>
     <Button class="back-button" color="danger" on:click={toggle}>Back</Button>
   </ModalFooter>
 </Modal>
-
-<!-- <Form>
-  <Row>
-    <Col xs={3}>
-      <FormGroup>
-        <Label for="username">Username:</Label>
-        <Input type="text" bind:value={username} placeholder="Username" readonly />
-      </FormGroup>
-
-      <FormGroup>
-        <Label for="password">Password:</Label>
-        <Input type="password" bind:value={password} placeholder="Password" />
-      </FormGroup>
-    
-      <FormGroup>
-        <Label for="email">Email:</Label>
-        <Input type="email" bind:value={email} placeholder="Email" />
-      </FormGroup>
-    </Col>
-  </Row>
-
-  <Button color="primary" on:click={handleClick}>Update</Button>
-</Form> -->

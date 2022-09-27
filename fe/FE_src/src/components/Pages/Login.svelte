@@ -16,10 +16,10 @@
         withCredentials: true,
       });
       if (response) {
-        localStorage.setItem("username", json.username);
-        localStorage.setItem("isAdmin", response.data.isAdmin);
-        if (response.data.isAdmin === "true") navigate("/user-management");
-        else navigate("/user");
+        localStorage.setItem('username', json.username);
+        localStorage.setItem('isAdmin', response.data.isAdmin);
+        if (response.data.isAdmin === 'true') navigate('/home');
+        else navigate('/user');
       }
     } catch (e) {
       e.response && e.response.data.message ? errorToast(e.response.data.message) : errorToast(e.message);
@@ -89,12 +89,12 @@
 
 <style>
   .login {
-    min-height: 98vh;
+    min-height: 100vh;
   }
 
   .bg-image {
-    min-height: 98vh;
-    background-image: url("https://blog.trello.com/hs-fs/Kanban-101-final-1.png");
+    min-height: 100vh;
+    background-image: url('https://blog.trello.com/hs-fs/Kanban-101-final-1.png');
     background-repeat: no-repeat;
     background-size: 110% 100%;
     background-position: center center;
