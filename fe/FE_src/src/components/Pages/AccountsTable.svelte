@@ -2,6 +2,7 @@
   import axios from "axios";
   import { Button, Modal, ModalBody, ModalHeader, ModalFooter, Table } from "sveltestrap";
   import AdminUpdateUserForm from "./AdminUpdateUserForm.svelte";
+  import AdminCreateUserForm from "./AdminCreateUserForm.svelte";
 
   let usersData = [];
   let open = false;
@@ -45,9 +46,26 @@
     open = !open;
     getUsers();
   };
+
+  let openModal = false;
+  let addButton;
+  const toggleAdd = (e) => {
+    e.preventDefault();
+    getUsers();
+    openModal = !openModal;
+    size = "xl";
+
+    username = "";
+    password = "";
+    email = "";
+    selected = [];
+    status = "Active";
+  };
 </script>
 
 <div>
+  <Button color="primary" on:click={toggleAdd}>Add user</Button>
+
   <h1>Users Database</h1>
   <Table bordered style="margin:0 auto;width:95%">
     <thead>
@@ -86,6 +104,18 @@
     <ModalFooter>
       <Button color="primary" on:click={(e) => updateButton.handleClick(e)}>Update User</Button>
       <Button class="back-button" color="danger" on:click={toggle}>Back</Button>
+    </ModalFooter>
+  </Modal>
+
+  <Modal isOpen={openModal} {toggleAdd} {size}>
+    <ModalHeader {toggleAdd}>Add User</ModalHeader>
+    <ModalBody>
+      <AdminCreateUserForm bind:this={addButton} />
+    </ModalBody>
+
+    <ModalFooter>
+      <Button color="primary" on:click={(e) => addButton.CreateUser(e)}>Add User</Button>
+      <Button class="back-button" color="danger" on:click={toggleAdd}>Back</Button>
     </ModalFooter>
   </Modal>
 </div>
