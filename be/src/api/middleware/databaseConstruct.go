@@ -27,7 +27,7 @@ var (
 
 	querySelectCompositeKey = "SELECT username, user_group FROM usergroup WHERE username = ? AND user_group = ?"
 
-	querySelectCheckGroupFromAccounts = "SELECT username, user_group FROM accounts WHERE username = ? AND user_group = ?"
+	querySelectCheckGroupFromAccounts = "SELECT username, user_group FROM accounts WHERE username = ?"
 
 	querySelectUserFromUserGroupByUsername = "SELECT user_group FROM accounts WHERE username = ?"
 
@@ -71,6 +71,13 @@ func SelectUserGroup() (*sql.Rows, error) {
 	result, err := db.Query(querySelectUserGroup)
 	return result, err
 }
+
+// For CheckGroup //
+func SelectCheckGroupFromAccounts(username string) *sql.Row {
+	result := db.QueryRow(querySelectCheckGroupFromAccounts, username)
+	return result
+}
+
 
 func SelectPasswordEmailFromAccountsByUsername(username string) (*sql.Rows, error) {
 	result, err := db.Query(querySelectPasswordEmailFromAccountsByUsername, username)
@@ -122,13 +129,8 @@ func SelectGroupnamesbyUserGroup(user_group string) *sql.Row {
 	return result
 }
 
-func SelectCompositeKey(username string,user_group string) *sql.Row {
+func SelectCompositeKey(username string, user_group string) *sql.Row {
 	result := db.QueryRow(querySelectCompositeKey, username, user_group)
-	return result
-}
-
-func SelectCheckGroupFromAccounts(username string, user_group string) *sql.Row {
-	result := db.QueryRow(querySelectCheckGroupFromAccounts, username, user_group)
 	return result
 }
 

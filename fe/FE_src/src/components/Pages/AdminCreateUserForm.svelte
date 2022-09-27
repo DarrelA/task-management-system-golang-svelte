@@ -13,13 +13,10 @@
 
   let groupsArray = [];
   let selected = [];
-  let usersData = [];
 
   let loading = false;
 
-  let loggedInUser = localStorage.getItem("username")
-
-  $: getUsers();
+  let loggedInUser = localStorage.getItem("username");
 
   async function getUsers() {
     try {

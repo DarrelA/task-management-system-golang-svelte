@@ -10,12 +10,12 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-const (
-	username = "user"
-	password = "test1234"
-	hostname = "127.0.0.1:3306"
-	database = "c3_database"
-)
+// const (
+// 	username = "user"
+// 	password = "test1234"
+// 	hostname = "127.0.0.1:3306"
+// 	database = "c3_database"
+// )
 
 type user struct {
 	Username string `json:"username"`
@@ -41,6 +41,7 @@ func UpdateUser(c *gin.Context) {
 			updateToDB(u.Username, currentData["password"], u.Email, c)
 		} else {
 			middleware.ErrorHandler(c, 400, "Invalid email format")
+			return
 		}
 	} else if u.Password != "" && u.Email != "" {
 		newPassword := prePassword(u.Username, u.Password, c)
@@ -49,6 +50,7 @@ func UpdateUser(c *gin.Context) {
 			updateToDB(u.Username, newPassword, u.Email, c)
 		} else {
 			middleware.ErrorHandler(c, 400, "Invalid email format")
+			return
 		}
 	} else { // extra handler
 		middleware.ErrorHandler(c, 400, "Empty fields!")
@@ -57,8 +59,8 @@ func UpdateUser(c *gin.Context) {
 
 func dsn() string {
 	// username:password@tcp(127.0.0.1:3306)/database-name")
-	//return fmt.Sprintf("%s:%s@/%s", LoadENV("SERVER_USER"), LoadENV("SERVER_PASSWORD"), LoadENV("SERVER_DB"))
-	return fmt.Sprintf("%s:%s@/%s", username, password, database)
+	return fmt.Sprintf("%s:%s@/%s", middleware.LoadENV("SERVER_USER"), middleware.LoadENV("SERVER_PASSWORD"), middleware.LoadENV("SERVER_DB"))
+	//return fmt.Sprintf("%s:%s@/%s", username, password, database)
 }
 
 func getSelect(username string) map[string]string {
@@ -90,7 +92,7 @@ func getSelect(username string) map[string]string {
 			currentUserData["password"] = u.Password
 			currentUserData["email"] = u.Email
 		}
-		fmt.Printf("%v\n", u)
+		//fmt.Printf("%v\n", u)
 	}
 	return currentUserData
 }
@@ -111,6 +113,7 @@ func prePassword(username string, password string, c *gin.Context) string {
 		if check {
 			hPassword = hashPassword(password)
 		} else {
+			fmt.Println("test pw error")
 			middleware.ErrorHandler(c, 400, "Password requirement not met!")
 		}
 	} else {
@@ -122,7 +125,13 @@ func prePassword(username string, password string, c *gin.Context) string {
 func preEmail(username string, email string, c *gin.Context) bool {
 	var check bool
 	if username != "" && email != "" {
-		check = middleware.CheckEmail(email)
+		whiteSpace := middleware.CheckWhiteSpace(email)
+		if !whiteSpace {
+			check = middleware.CheckEmail(email)
+		} else {
+			fmt.Println("test email error")
+			middleware.ErrorHandler(c, 400, "Email should not contain whitespace")
+		}
 	} else {
 		middleware.ErrorHandler(c, 400, "Field(s) is empty")
 	}
