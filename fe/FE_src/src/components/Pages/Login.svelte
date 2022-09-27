@@ -51,28 +51,13 @@
               <Form on:submit={handleSubmit}>
                 <FormGroup>
                   <div class="form-group mb-3">
-                    <Input
-                      autofocus
-                      id="username"
-                      type="text"
-                      placeholder="Username"
-                      required=""
-                      class="form-control rounded-pill border-0 shadow-sm px-4"
-                      bind:value={username}
-                    />
+                    <Input autofocus id="username" type="text" placeholder="Username" required="" class="form-control rounded-pill border-0 shadow-sm px-4" bind:value={username} />
                   </div>
                 </FormGroup>
 
                 <FormGroup>
                   <div class="form-group mb-3">
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="Password"
-                      required=""
-                      class="form-control rounded-pill border-0 shadow-sm px-4 text-primary"
-                      bind:value={password}
-                    />
+                    <Input id="password" type="password" placeholder="Password" required="" class="form-control rounded-pill border-0 shadow-sm px-4 text-primary" bind:value={password} />
                   </div>
                 </FormGroup>
                 <Button

@@ -1,18 +1,6 @@
 <script>
   import { navigate } from "svelte-routing";
-  import {
-    Collapse,
-    Navbar,
-    NavbarToggler,
-    NavbarBrand,
-    Nav,
-    NavItem,
-    NavLink,
-    Dropdown,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
-  } from "sveltestrap";
+  import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "sveltestrap";
 
   import axios from "axios";
 
@@ -23,10 +11,10 @@
   }
 
   // Need to do handleLogout
-  const handleLogOut = async (e) =>{
-    e.preventDefault()
-    localStorage.removeItem("username")
-    localStorage.removeItem("isAdmin")
+  const handleLogOut = async (e) => {
+    e.preventDefault();
+    localStorage.removeItem("username");
+    localStorage.removeItem("isAdmin");
     await axios.get("http://localhost:4000/logout", {
       withCredentials: true,
     });
