@@ -29,15 +29,18 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
+	u.Username = c.GetString("username")
+	fmt.Println("Username", u.Username)
+
 	currentData := getSelect(u.Username)
 
 	if u.Password != "" && u.Email == "" {
 		newPassword := prePassword(u.Username, u.Password, c)
 		updateToDB(u.Username, newPassword, currentData["email"], c)
+		return
 	} else if u.Password == "" && u.Email != "" {
 		check := preEmail(u.Username, u.Email, c)
 		if check {
-			//fmt.Println("email check ok!")
 			updateToDB(u.Username, currentData["password"], u.Email, c)
 		} else {
 			middleware.ErrorHandler(c, 400, "Invalid email format")
@@ -113,11 +116,8 @@ func prePassword(username string, password string, c *gin.Context) string {
 		if check {
 			hPassword = hashPassword(password)
 		} else {
-			fmt.Println("test pw error")
 			middleware.ErrorHandler(c, 400, "Password requirement not met!")
 		}
-	} else {
-		middleware.ErrorHandler(c, 400, "Field(s) is empty")
 	}
 	return hPassword
 }
@@ -126,14 +126,13 @@ func preEmail(username string, email string, c *gin.Context) bool {
 	var check bool
 	if username != "" && email != "" {
 		whiteSpace := middleware.CheckWhiteSpace(email)
+		fmt.Println(whiteSpace)
 		if !whiteSpace {
+			fmt.Println("check", check)
 			check = middleware.CheckEmail(email)
 		} else {
-			fmt.Println("test email error")
 			middleware.ErrorHandler(c, 400, "Email should not contain whitespace")
 		}
-	} else {
-		middleware.ErrorHandler(c, 400, "Field(s) is empty")
 	}
 	return check
 }
@@ -145,7 +144,6 @@ func updateToDB(username string, newPassword string, newEmail string, c *gin.Con
 	if err != nil {
 		log.Fatal(err)
 	}
-
 
 	c.JSON(200, gin.H{"code": 200, "message": "Update success!"})
 }

@@ -10,10 +10,11 @@ import (
 )
 
 type CompositeKey struct {
-	LoggedInUser string   `json:"loggedInUser"`
 	Username     string   `json:"username"`
 	Groupname    []string `json:"groupname"`
 }
+
+var existingGroup string
 
 func AddUserToGroup(c *gin.Context) {
 	// Bind request JSON
@@ -35,7 +36,9 @@ func AddUserToGroup(c *gin.Context) {
 		// LOOP to validate group name
 		var user_group string
 
+		// "SELECT user_group FROM groupnames WHERE user_group = ?;"
 		result := middleware.SelectGroupnamesbyUserGroup(group)
+		// fmt.Println(newComposite.Username, group)
 
 		switch err := result.Scan(&user_group); err {
 
@@ -47,40 +50,66 @@ func AddUserToGroup(c *gin.Context) {
 				middleware.ErrorHandler(c, 400, "Invalid field")
 				return
 			}
-			fmt.Println("New group name")
-		}
 
-		// EXISTING GROUP NAME
-		// fmt.Println("existing group name")
-
-		// Check if composite key exist
-		key := middleware.SelectCompositeKey(newComposite.Username, group)
-		switch err := key.Scan(&newComposite.Username, group); err {
-		case sql.ErrNoRows:
-			// Create a composite key for usergroup table
-			_, err := middleware.InsertUserGroup(newComposite.Username, group)
-			fmt.Println("New Composite key")
+			_, err = middleware.InsertUserGroup(newComposite.Username, group)
+			// fmt.Println("New Composite key", newComposite.Username, group)
 			if err != nil {
 				fmt.Println(err)
 				return
 			}
+		// Existing group name
+		case nil:
+			// Check if composite key exist
+			// "SELECT username, user_group FROM usergroup WHERE username = ? AND user_group = ?"
+			key := middleware.SelectCompositeKey(newComposite.Username, group)
+			switch err := key.Scan(&newComposite.Username, group); err {
+			case sql.ErrNoRows:
+				// Create a composite key for usergroup table
+				_, err := middleware.InsertUserGroup(newComposite.Username, group)
+				// fmt.Println("New Composite key", newComposite.Username, group)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}  
+			}
 		}
 
 		// Fetch user's EXISTING groups and update
-		var existingGroup string
+		
+		// SELECT user_group FROM accounts WHERE username = ?
 		result = middleware.SelectUserFromUserGroupByUsername(newComposite.Username)
-		err := result.Scan(&newComposite.Username)
+		err := result.Scan(&existingGroup)
+	
 		if err != nil {
 			panic(err)
+		}		
+	}
+
+	groupstr := strings.Join(newComposite.Groupname, ",")
+	fmt.Println(groupstr)
+
+	existingGroup = existingGroup + "," + groupstr
+
+	groupSlice := strings.Split(existingGroup, ",")
+	fmt.Println(groupSlice)
+
+	keys := make(map[string]bool )
+
+	// composite groupname slice
+	list := []string{}
+
+	for _, entry := range groupSlice {
+		if _, value := keys[entry]; !value {
+			keys[entry] = true
+			list = append(list, entry)
 		}
-		containsGroup := strings.Contains(existingGroup, group)
-		if !containsGroup {
-			newGroup := fmt.Sprintf("%s, %s", existingGroup, group)
-			_, err := middleware.UpdateAccountsSetUsernameByUsergroup(newGroup, newComposite.Username)
-			if err != nil {
-				panic(err)
-			}
-		}
+	}
+	groupstr = strings.Join(list, ",")
+	fmt.Println(groupstr)
+
+	_, err := middleware.UpdateAccountsSetUsernameByUsergroup(groupstr, newComposite.Username)
+	if err != nil {
+		panic(err)
 	}
 
 	c.JSON(201, gin.H{

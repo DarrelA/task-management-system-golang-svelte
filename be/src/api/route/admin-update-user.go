@@ -39,7 +39,6 @@ func AdminUpdateUser(c *gin.Context) {
 
 	// Check user group
 	checkGroup := middleware.CheckGroup(c.GetString("username"), "Admin")
-	fmt.Println(checkGroup)
 	if !checkGroup {
 		middleware.ErrorHandler(c, 400, "Unauthorized actions")
 		return
@@ -76,7 +75,7 @@ func adminUpdateUserEmail(username string, hashedPassword string, email string, 
 	if email != "" {
 		validEmail := middleware.CheckEmail(email)
 		if !validEmail {
-			middleware.ErrorHandler(c, 400, "Invalid Email")
+			middleware.ErrorHandler(c, 400, "Invalid Email Format")
 			return
 		}
 		whiteSpace := middleware.CheckWhiteSpace(email)
