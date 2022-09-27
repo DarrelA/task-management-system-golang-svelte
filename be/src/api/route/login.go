@@ -40,6 +40,7 @@ func Login(c *gin.Context) {
 
 	switch err := result.Scan(&username, &password, &status); err {
 	case sql.ErrNoRows:
+		fmt.Println("3")
 		fmt.Println("Invalid Credentials")
 		middleware.ErrorHandler(c, http.StatusBadRequest, "Invalid Credentials")
 
@@ -55,6 +56,7 @@ func Login(c *gin.Context) {
 
 		// Incorrect password
 		if !correctPassword {
+			fmt.Println("2")
 			middleware.ErrorHandler(c, http.StatusBadRequest, "Invalid Credentials")
 			return
 		}

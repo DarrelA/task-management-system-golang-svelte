@@ -20,7 +20,7 @@
 
   async function getUsers() {
     try {
-      const response = await axios.get("http://localhost:4000/get-users");
+      const response = await axios.get("http://localhost:4000/get-users", { withCredentials: true });
       if (response) {
         usersData = response.data;
       }

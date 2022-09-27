@@ -42,7 +42,7 @@
 
   async function GetUserData() {
     try {
-      const response = await axios.get("http://localhost:4000/get-users");
+      const response = await axios.get("http://localhost:4000/get-users", { withCredentials: true });
       console.log(response);
       if (response.data.error) {
         console.log(response.data.error);
@@ -61,7 +61,7 @@
 
   async function GetUserGroups() {
     try {
-      const response = await axios.get("http://localhost:4000/get-user-groups");
+      const response = await axios.get("http://localhost:4000/get-user-groups",{ withCredentials: true });
 
       console.log(response);
       if (response.data.error) {

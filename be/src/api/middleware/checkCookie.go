@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,6 +12,7 @@ func CheckCookie(c *gin.Context) {
 	// Request for cookie
 	cookie, err := c.Cookie("jwt-cookie")
 	if err != nil {
+		fmt.Println("4")
 		c.AbortWithStatusJSON(http.StatusBadRequest,
 			gin.H{"code": http.StatusBadRequest, "message": "Invalid Credentials"})
 		return
@@ -22,6 +24,7 @@ func CheckCookie(c *gin.Context) {
 	})
 
 	if err != nil {
+		fmt.Println("5")
 		c.AbortWithStatusJSON(http.StatusBadRequest,
 			gin.H{"code": http.StatusBadRequest, "message": "Invalid Credentials"})
 		return

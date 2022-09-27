@@ -44,6 +44,8 @@ func GetUserGroup(c *gin.Context) {
 
 func GetUsersInGroup(c *gin.Context) {
 	checkGroup := middleware.CheckGroup(c.GetString("username"), "Admin")
+	fmt.Println("1")
+	fmt.Println("getstring:", c.GetString("username"))
 	if !checkGroup {
 		middleware.ErrorHandler(c, 400, "Unauthorized actions")
 		return
