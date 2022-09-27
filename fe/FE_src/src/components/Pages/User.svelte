@@ -4,5 +4,5 @@
 </script>
 
 <Navbar/>
-<h3>User/Application Page</h3>
+<h3 style="align-text:center">User HomePage</h3>
 <UpdateUser />

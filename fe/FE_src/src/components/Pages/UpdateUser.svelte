@@ -2,19 +2,20 @@
   import axios from "axios";
   import { errorToast, successToast } from "../toast";
   import { Button, Form, FormGroup, Input, Label, Row, Col } from "sveltestrap";
+  import { Modal, ModalBody, ModalHeader, ModalFooter, Table } from "sveltestrap";
 
-  let loggedInUser = localStorage.getItem("username");
-  let username = ""; //test w/o login
   let password = "" 
   let email = "";
 
   let message = ""
   let code = ""
 
+  // For Modal
+  let open = false;
+
   async function handleClick(e) {
     e.preventDefault();
-    const json = {username, password, email};
-    //console.log("sending: " + password + ":" + email)
+    const json = {password, email};
 
     try {
       const response = await axios.post("http://localhost:4000/update-user", json, { withCredentials: true });
@@ -31,23 +32,60 @@
     }
   }
 
+  const toggle = (e) => {
+    e.preventDefault();
+    open = !open;
+  }
+
+  function openModal() {
+    open = !open
+    password = ""
+    email = ""
+  }
+
 </script>
 
-<Form>
+<h4>Update User Credentials</h4>
+<Button color="primary" on:click={openModal}>Update User</Button>
+
+<Modal isOpen={open} {toggle} >
+  <ModalHeader>Update User</ModalHeader>
+  <ModalBody>
+    <Form>
+      <Row>
+        <Col>    
+          <FormGroup>
+            <Label for="password">Password:</Label>
+            <Input type="password" bind:value={password} placeholder="Password" />
+          </FormGroup>
+        
+          <FormGroup>
+            <Label for="email">Email:</Label>
+            <Input type="email" bind:value={email} placeholder="Email" />
+          </FormGroup>
+        </Col>
+      </Row>
+    </Form>
+  </ModalBody>
+
+  <ModalFooter>
+    <Button color="primary" on:click={handleClick}>Update User</Button>
+    <Button class="back-button" color="danger" on:click={toggle}>Back</Button>
+  </ModalFooter>
+</Modal>
+
+<!-- <Form>
   <Row>
     <Col xs={3}>
       <FormGroup>
         <Label for="username">Username:</Label>
-        <Input type="text" bind:value={username} placeholder="Username" />
-        <Label>Leave input empty if not updating the required field</Label>
+        <Input type="text" bind:value={username} placeholder="Username" readonly />
       </FormGroup>
-    </Col>
-    <Col xs={3}>
+
       <FormGroup>
         <Label for="password">Password:</Label>
         <Input type="password" bind:value={password} placeholder="Password" />
       </FormGroup>
-    
     
       <FormGroup>
         <Label for="email">Email:</Label>
@@ -57,4 +95,4 @@
   </Row>
 
   <Button color="primary" on:click={handleClick}>Update</Button>
-</Form>
+</Form> -->

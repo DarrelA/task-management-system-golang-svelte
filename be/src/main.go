@@ -46,7 +46,7 @@ func main() {
 	// router.GET("/get-users-in-group", route.GetUsersInGroup)
 	router.GET("/get-users-in-group", middleware.CheckCookie, route.GetUsersInGroup)
 
-	router.POST("/update-user", route.UpdateUser)
+	router.POST("/update-user", middleware.CheckCookie, route.UpdateUser)
 
 	port := middleware.LoadENV("SERVER_PORT")
 	server := fmt.Sprintf(":%v", port)

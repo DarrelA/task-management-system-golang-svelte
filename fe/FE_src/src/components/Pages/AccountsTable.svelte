@@ -1,7 +1,6 @@
 <script>
   import axios from "axios";
-  import { ModalFooter, Table } from "sveltestrap";
-  import { Button, Modal, ModalBody, ModalHeader } from "sveltestrap";
+  import { Button, Modal, ModalBody, ModalHeader, ModalFooter, Table } from "sveltestrap";
   import AdminUpdateUserForm from "./AdminUpdateUserForm.svelte";
 
   let usersData = [];
