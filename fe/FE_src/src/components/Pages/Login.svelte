@@ -1,5 +1,6 @@
 <script>
   import axios from 'axios';
+  import { navigate } from 'svelte-routing';
   import { Form, FormGroup, Input, Button } from 'sveltestrap';
   import { errorToast } from '../toast';
 
@@ -17,9 +18,8 @@
       if (response) {
         localStorage.setItem('username', json.username);
         localStorage.setItem('isAdmin', response.data.isAdmin);
-        response.data.isAdmin === 'true'
-          ? window.location.replace('/user-management')
-          : window.location.replace('/user');
+        if (response.data.isAdmin === 'true') navigate('/user-management');
+        else navigate('/user');
       }
     } catch (e) {
       e.response && e.response.data.message
