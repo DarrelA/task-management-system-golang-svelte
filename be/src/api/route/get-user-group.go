@@ -15,19 +15,14 @@ type usersGroup struct {
 	Usercount    int    `json:"user_count"`
 }
 
-// type lol struct {
-// 	LoggedInUser string `json:"loggedInUser"`
-// }
-
 func GetUserGroup(c *gin.Context) {
-	// var lol1 lol
-	// checkGroup := middleware.CheckGroup(lol1.LoggedInUser, "Admin")
-	// if !checkGroup {
-	// 	middleware.ErrorHandler(c, 400, "Unauthorized actions")
-	// 	return
-	// }
+	checkGroup := middleware.CheckGroup(c.GetString("username"), "Admin")
+	if !checkGroup {
+		middleware.ErrorHandler(c, 400, "Unauthorized actions")
+		return
+	}
 
-	result, err := db.Query("SELECT user_group FROM groupnames")
+	result, err := middleware.SelectUserGroup()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -48,20 +43,9 @@ func GetUserGroup(c *gin.Context) {
 }
 
 func GetUsersInGroup(c *gin.Context) {
-	var usersGroups usersGroup
-	// Check user group
-	fmt.Println(usersGroups.LoggedInUser, "ZZZZZ 1")
-	if err := c.BindJSON(&usersGroups); err != nil {
-		fmt.Println(err)
-		middleware.ErrorHandler(c, 400, "Bad Request")
-		return
-	}
-
-	fmt.Println(usersGroups.LoggedInUser, "ZZZZZ 2")
-
-	checkGroup := middleware.CheckGroup(usersGroups.LoggedInUser, "Admin")
+	checkGroup := middleware.CheckGroup(c.GetString("username"), "Admin")
 	if !checkGroup {
-		middleware.ErrorHandler(c, 400, "Unauthorized actions!!!!!!!!!!!")
+		middleware.ErrorHandler(c, 400, "Unauthorized actions")
 		return
 	}
 
@@ -71,7 +55,7 @@ func GetUsersInGroup(c *gin.Context) {
 	var usergroup string
 	var groups string
 
-	result, err := db.Query("SELECT user_group FROM accounts GROUP BY username")
+	result, err := middleware.SelectUserGroupFromAccountsGroupByUsername()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -88,7 +72,7 @@ func GetUsersInGroup(c *gin.Context) {
 		fmt.Println(groups)
 	}
 
-	rows, err := db.Query("SELECT user_group FROM groupnames")
+	rows, err := middleware.SelectUserGroup()
 	if err != nil {
 		log.Fatal(err)
 	}

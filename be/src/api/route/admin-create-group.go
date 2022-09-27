@@ -30,7 +30,7 @@ func AdminCreateGroup(context *gin.Context) {
 	}
 
 	// Check user group
-	checkGroup := middleware.CheckGroup(newGroup.LoggedInUser, "Admin")
+	checkGroup := middleware.CheckGroup(context.GetString("username"), "Admin")
 	if !checkGroup {
 		middleware.ErrorHandler(context, 400, "Unauthorized actions")
 		return
@@ -51,10 +51,8 @@ func AdminCreateGroup(context *gin.Context) {
 	}
 
 	// check for existing groupname before creating
-	checkGroupname := "SELECT user_group FROM groupnames WHERE user_group = ?"
-
 	// return first result (single row result)
-	result := db.QueryRow(checkGroupname, newGroup.Name)
+	result := middleware.SelectUserGroupFromGroupnamesByUserGroup(newGroup.Name)
 
 	// Scan: scanning and reading input (texts given in standard input)
 	switch err := result.Scan(&newGroup.Name); err {
@@ -62,7 +60,7 @@ func AdminCreateGroup(context *gin.Context) {
 	// New Group
 	case sql.ErrNoRows:
 		// insert new group
-		_, err := db.Exec("INSERT INTO Groupnames (user_group) VALUES (?)", newGroup.Name)
+		_, err := middleware.InsertGroupnames(newGroup.Name)
 
 		if err != nil {
 			fmt.Println(err)

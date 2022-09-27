@@ -44,7 +44,7 @@ func AdminCreateUser(c *gin.Context) {
 	}
 
 	// Check user group
-	checkGroup := middleware.CheckGroup(newUser.LoggedInUser, "Admin")
+	checkGroup := middleware.CheckGroup(c.GetString("username"), "Admin")
 	if !checkGroup {
 		middleware.ErrorHandler(c, 400, "Unauthorized actions")
 		return
@@ -86,9 +86,7 @@ func AdminCreateUser(c *gin.Context) {
 	}
 
 	// Check if username exist before creating
-	checkUsername := "SELECT username FROM accounts WHERE username = ?"
-
-	result := db.QueryRow(checkUsername, newUser.Username)
+	result := middleware.SelectUsernameFromAccountsByUsername(newUser.Username)
 
 	// Switch between different error case
 	switch err := result.Scan(&newUser.Username); err {
@@ -156,6 +154,12 @@ func AdminCreateUser(c *gin.Context) {
 func GetUsers(c *gin.Context) {
 	var existingUser ExistingUser
 	var data []ExistingUser
+
+	checkGroup := middleware.CheckGroup(c.GetString("username"), "Admin")
+	if !checkGroup {
+		middleware.ErrorHandler(c, 400, "Unauthorized actions")
+		return
+	}
 
 	rows, err := middleware.SelectAccounts()
 	if err != nil {

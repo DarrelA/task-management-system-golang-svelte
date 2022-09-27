@@ -25,15 +25,11 @@ func AddUserToGroup(c *gin.Context) {
 	}
 
 	// Check user group
-	checkGroup := middleware.CheckGroup(newComposite.LoggedInUser, "Admin")
+	checkGroup := middleware.CheckGroup(c.GetString("username"), "Admin")
 	if !checkGroup {
 		middleware.ErrorHandler(c, 400, "Unauthorized actions")
 		return
 	}
-
-	// insert groupname
-	// check composite
-	// update accounts user_group
 
 	for _, group := range newComposite.Groupname {
 		// LOOP to validate group name
@@ -72,17 +68,15 @@ func AddUserToGroup(c *gin.Context) {
 
 		// Fetch user's EXISTING groups and update
 		var existingGroup string
-		getUser := "SELECT user_group FROM accounts WHERE username = ?"
-		user := db.QueryRow(getUser, newComposite.Username)
-		err := user.Scan(&existingGroup)
+		result = middleware.SelectUserFromUserGroupByUsername(newComposite.Username)
+		err := result.Scan(&newComposite.Username)
 		if err != nil {
 			panic(err)
 		}
 		containsGroup := strings.Contains(existingGroup, group)
 		if !containsGroup {
 			newGroup := fmt.Sprintf("%s, %s", existingGroup, group)
-
-			_, err = db.Exec("UPDATE accounts SET user_group = ? WHERE username = ?", newGroup, newComposite.Username)
+			_, err := middleware.UpdateAccountsSetUsernameByUsergroup(newGroup, newComposite.Username)
 			if err != nil {
 				panic(err)
 			}
