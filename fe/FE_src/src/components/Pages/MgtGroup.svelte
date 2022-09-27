@@ -4,24 +4,12 @@
   import TableGroup from "./TableGroup.svelte";
 </script>
 
+<style>
+</style>
+
 <Navbar />
 
-<div>
+<div class="container-fluid">
   <br />
-
-  <h3>Group Management</h3>
-  <br />
-  <!-- Table with Modal: Add Group -->
   <TableGroup />
-
-  <!-- Modal: Add User To Group  -->
-  <div class="add-user-to-group">
-    <AddUserToGroup />
-  </div>
 </div>
-
-<style>
-  .add-user-to-group {
-    margin-top: 5%;
-  }
-</style>

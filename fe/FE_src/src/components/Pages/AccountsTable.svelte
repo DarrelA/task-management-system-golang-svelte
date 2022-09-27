@@ -1,6 +1,6 @@
 <script>
   import axios from "axios";
-  import { Button, Modal, ModalBody, ModalHeader, ModalFooter, Table } from "sveltestrap";
+  import { Button, Row, Col, Modal, ModalBody, ModalHeader, ModalFooter, Table } from "sveltestrap";
   import AdminUpdateUserForm from "./AdminUpdateUserForm.svelte";
   import AdminCreateUserForm from "./AdminCreateUserForm.svelte";
 
@@ -63,11 +63,44 @@
   };
 </script>
 
-<div>
-  <Button color="primary" on:click={toggleAdd}>Add user</Button>
+<style>
+  thead { 
+      background-color: #F4BB44;
+      /* color: #fffbf0; */
+  }
 
-  <h1>Users Database</h1>
-  <Table bordered style="margin:0 auto;width:95%">
+  tbody {
+      background-color: #fffbf0;
+  }
+
+  th, tr {
+      text-align: center;
+  }
+
+  .inactive {
+    color: red;
+    font-weight: bold;
+  }
+
+  .active {
+    color: mediumseagreen;
+    font-weight: bold;
+  }
+</style>
+
+<div class="container-fluid">
+  <Row>
+    <Col>
+        <h3>User Management</h3>
+    </Col>
+    <Col>
+        <Button style="float:right; font-weight: bold; margin-left: 10px; color: black;" color="warning" on:click={toggleAdd}>Add User</Button>
+    </Col>
+  </Row>
+
+  <br/>
+
+  <Table bordered responsive>
     <thead>
       <tr>
         <th>Username</th>
@@ -85,11 +118,9 @@
           <td style="width:35%">{userData.user_group}</td>
           <td class:active={userData.status === "Active"} class:inactive={userData.status === "Inactive"}>{userData.status}</td>
 
-          <td
-            ><Button color="primary" on:click={() => editUserData(userData.username, userData.email, userData.user_group, userData.status)}
-              >Update User</Button
-            ></td
-          >
+          <td>
+            <Button style="font-weight: bold; color: black;" color="warning" on:click={() => editUserData(userData.username, userData.email, userData.user_group, userData.status)}>Update User</Button>
+          </td>
         </tr>
       {/each}
     </tbody>
@@ -102,7 +133,7 @@
     </ModalBody>
 
     <ModalFooter>
-      <Button color="primary" on:click={(e) => updateButton.handleClick(e)}>Update User</Button>
+      <Button style="color: #fffbf0;" color="warning" on:click={(e) => updateButton.handleClick(e)}>Update User</Button>
       <Button class="back-button" color="danger" on:click={toggle}>Back</Button>
     </ModalFooter>
   </Modal>
@@ -114,24 +145,8 @@
     </ModalBody>
 
     <ModalFooter>
-      <Button color="primary" on:click={(e) => addButton.CreateUser(e)}>Add User</Button>
+      <Button style="color: #fffbf0;" color="warning" on:click={(e) => addButton.CreateUser(e)}>Add User</Button>
       <Button class="back-button" color="danger" on:click={toggleAdd}>Back</Button>
     </ModalFooter>
   </Modal>
 </div>
-
-<style>
-  h1 {
-    color: blueviolet;
-    text-align: center;
-    font-family: "Montserrat";
-  }
-  .inactive {
-    color: red;
-    font-weight: bold;
-  }
-  .active {
-    color: mediumseagreen;
-    font-weight: bold;
-  }
-</style>

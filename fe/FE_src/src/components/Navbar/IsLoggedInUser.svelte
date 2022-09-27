@@ -30,11 +30,12 @@
 
 </script>
   
-<Navbar color="light" light expand="md">
+<Navbar color="dark" dark expand="md">
   <NavbarBrand href="/home">TMS</NavbarBrand>
   <NavbarToggler on:click={() => (isOpen = !isOpen)} />
   <Collapse {isOpen} navbar expand="md" on:update={handleUpdate}>
     <Nav class="ms-auto" navbar>
+      <NavLink href="/user">User Management</NavLink>
       <NavItem>
         <NavLink href="/" on:click={handleLogOut}>Log out</NavLink>
       </NavItem>

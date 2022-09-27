@@ -38,5 +38,6 @@
     flex-direction: column;
     justify-content: center;
     text-align: center;
+    color: #fffbf0;
   }
 </style>

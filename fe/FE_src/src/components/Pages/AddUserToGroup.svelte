@@ -1,42 +1,31 @@
 <script>
   import axios from "axios";
-  import { toast } from "@zerodevx/svelte-toast";
-  import { SvelteToast } from "@zerodevx/svelte-toast";
+  import { errorToast, successToast } from "../toast";
   import MultiSelect from "svelte-multiselect";
-  import { Button, Badge, Form, FormGroup, FormText, Input, Label, Dropdown, DropdownToggle, DropdownItem, DropdownMenu } from "sveltestrap";
-  import Navbar from "../Navbar/IsLoggedInAdmin.svelte";
-  import ProtectedRoute from "../ProtectedRoute.svelte";
+  import { Form, FormGroup, Row, Col, Input, Label, Dropdown, DropdownToggle, DropdownItem, DropdownMenu } from "sveltestrap";
 
-  let message = "";
-  let code = "";
   export let username = [];
-  //   export let user_group = [];
+  let selected;
+  let selectedUser;
 
   let groupsArray = [];
   let userArray = [];
-  let selected = [];
-  let selectedUser = "";
-  //   selected.push(...user_group);
 
   const loggedInUser = localStorage.getItem("username");
 
-  async function handleSubmit() {
-    // let user_group = selected.join(",");
-    console.log(username);
+  export async function handleSubmit() {
     username = username.toString();
     const json = { loggedInUser, username: selectedUser, groupname: selected };
-    console.log(json);
 
     try {
       const response = await axios.post("http://localhost:4000/add-user-to-group", json, { withCredentials: true });
       if (response) {
-        message = response.data.message;
-        console.log(response.data);
-        code = response.data.code;
-        toast.push(message);
+          successToast(response.data.message);
+          selected = [];
+          selectedUser = "";
       }
-    } catch (error) {
-      console.log(error);
+    } catch (e) {
+        errorToast(e.response.data.message);
     }
   }
 
@@ -82,32 +71,37 @@
   $: GetUserGroups();
 </script>
 
-<main>
-  <SvelteToast />
-</main>
-
-<!-- <Navbar /> -->
-
-<form on:submit|preventDefault={handleSubmit}>
-  <FormGroup>
-    <Dropdown>
-      <DropdownToggle caret>Users</DropdownToggle>
-      <DropdownMenu>
-        {#each userArray as user}
-          <DropdownItem active={user === selectedUser} on:click={() => (selectedUser = user)} placeholder={user}>
-            {user}</DropdownItem
-          >
-        {/each}
-      </DropdownMenu>
-    </Dropdown>
-    <input disabled placeholder={selectedUser} />
-  </FormGroup>
-  <FormGroup>
-    <Label for="usergroup">User Group(s):</Label>
-    <MultiSelect bind:selected options={groupsArray} allowUserOptions={true} />
-  </FormGroup>
-  <Button color="primary">Add User</Button>
-</form>
-
 <style>
 </style>
+
+<Form on:submit={handleSubmit}>
+  <Row>
+    <Col>
+      <FormGroup>
+        <Dropdown>
+          <DropdownToggle style="width:100%" caret>Users</DropdownToggle>
+           <DropdownMenu>
+              {#each userArray as user}
+                <DropdownItem active={user === selectedUser} on:click={() => (selectedUser = user)} placeholder={user}>
+                  {user}
+                </DropdownItem>
+              {/each}
+            </DropdownMenu>
+        </Dropdown>
+      </FormGroup>
+    </Col>
+    <Col class="col-md-6">
+      <FormGroup>
+        <Input placeholder={selectedUser} type="text" disabled />
+      </FormGroup>
+    </Col>
+  </Row>
+  <Row>
+    <Col>
+      <FormGroup>
+        <Label for="usergroup">Group</Label>
+        <MultiSelect bind:selected options={groupsArray} allowUserOptions={true} />
+      </FormGroup>
+    </Col>
+  </Row>
+</Form>

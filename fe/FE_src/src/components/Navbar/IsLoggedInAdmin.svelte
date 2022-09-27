@@ -24,7 +24,7 @@
   // handled/disabled go back functionality in browser
 </script>
 
-<Navbar color="light" light expand="md">
+<Navbar color="dark" dark expand="md">
   <NavbarBrand href="/home">TMS</NavbarBrand>
   <NavbarToggler on:click={() => (isOpen = !isOpen)} />
   <Collapse {isOpen} navbar expand="md" on:update={handleUpdate}>

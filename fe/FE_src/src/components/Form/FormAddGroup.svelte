@@ -3,7 +3,7 @@
     import { errorToast, successToast } from "../toast";
     import { Form, FormGroup, Input, Button, Modal, ModalBody, ModalHeader, ModalFooter } from "sveltestrap";
     
-    export let groupname;
+    let groupname;
 
     let loggedInUser = localStorage.getItem("username")
 
@@ -25,9 +25,6 @@
 </script>
   
 <style>
-    /* input {
-      color: purple;
-    } */
 </style>
 
 <Form on:submit={handleAddGroup}>
