@@ -101,17 +101,11 @@
 
 <Styles />
 <div>
-  <!-- <Button color="primary" on:click={toggle}>Add user</Button> -->
-  <!-- <Modal isOpen={openModal} {toggle} {size}>
-    <ModalHeader {toggle}>Add user</ModalHeader>
-
-    {#if loading}
-      <div class="loading-spinner">
-        <Spinner size="xl" />
-      </div>
-    {/if}
-
-    <ModalBody> -->
+  {#if loading}
+    <div class="loading-spinner">
+      <Spinner size="lg"/>
+    </div>
+  {/if}
   <Form>
     <Row>
       <Col>
@@ -155,16 +149,7 @@
         </FormGroup>
       </Col>
     </Row>
-
-    <!-- <ModalFooter>
-      <Col>
-        <Button on:click={CreateUser} style="background-color: #FCA311; border: none;">Create</Button>
-        <Button color="danger" on:click={toggle}>Cancel</Button>
-      </Col>
-    </ModalFooter> -->
   </Form>
-  <!-- </ModalBody>
-  </Modal> -->
 </div>
 
 <style>

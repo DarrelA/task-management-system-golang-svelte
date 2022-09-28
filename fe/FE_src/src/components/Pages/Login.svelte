@@ -19,7 +19,7 @@
         localStorage.setItem("username", json.username);
         localStorage.setItem("isAdmin", response.data.isAdmin);
         if (response.data.isAdmin === "true") navigate("/user-management");
-        else navigate("/user");
+        else navigate("/home");
       }
     } catch (e) {
       e.response && e.response.data.message ? errorToast(e.response.data.message) : errorToast(e.message);
@@ -31,7 +31,7 @@
   const user = localStorage.getItem("isAdmin");
   $: if (user === "true") {
     window.location.replace("/user-management");
-  } else if (user === "false") window.location.replace("/user");
+  } else if (user === "false") window.location.replace("/home");
 </script>
 
 <div class="container-fluid">
@@ -51,28 +51,13 @@
               <Form on:submit={handleSubmit}>
                 <FormGroup>
                   <div class="form-group mb-3">
-                    <Input
-                      autofocus
-                      id="username"
-                      type="text"
-                      placeholder="Username"
-                      required=""
-                      class="form-control rounded-pill border-0 shadow-sm px-4"
-                      bind:value={username}
-                    />
+                    <Input autofocus id="username" type="text" placeholder="Username" required="" class="form-control rounded-pill border-0 shadow-sm px-4" bind:value={username} />
                   </div>
                 </FormGroup>
 
                 <FormGroup>
                   <div class="form-group mb-3">
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="Password"
-                      required=""
-                      class="form-control rounded-pill border-0 shadow-sm px-4 text-primary"
-                      bind:value={password}
-                    />
+                    <Input id="password" type="password" placeholder="Password" required="" class="form-control rounded-pill border-0 shadow-sm px-4 text-primary" bind:value={password} />
                   </div>
                 </FormGroup>
                 <Button type="submit" class="btn btn-primary btn-block text-uppercase mb-2 rounded-pill shadow-sm" color="success">Sign in</Button>
@@ -89,11 +74,11 @@
 
 <style>
   .login {
-    min-height: 98vh;
+    min-height: 100vh;
   }
 
   .bg-image {
-    min-height: 98vh;
+    min-height: 100vh;
     background-image: url("https://blog.trello.com/hs-fs/Kanban-101-final-1.png");
     background-repeat: no-repeat;
     background-size: 110% 100%;
