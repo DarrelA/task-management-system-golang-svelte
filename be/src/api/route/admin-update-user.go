@@ -75,7 +75,7 @@ func adminUpdateUserEmail(username string, hashedPassword string, email string, 
 	if email != "" {
 		validEmail := middleware.CheckEmail(email)
 		if !validEmail {
-			middleware.ErrorHandler(c, 400, "Invalid Email")
+			middleware.ErrorHandler(c, 400, "Invalid Email Format")
 			return
 		}
 		whiteSpace := middleware.CheckWhiteSpace(email)

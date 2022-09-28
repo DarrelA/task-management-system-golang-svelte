@@ -16,34 +16,26 @@ var (
 
 var (
 	querySelectAccounts           = "SELECT username, email, user_group, status FROM accounts;"
-
 	querySelectAccountByLogin     = "SELECT username, password, status FROM accounts WHERE username = ?;"
-
 	querySelectAccountsByUsername = "SELECT username, password, email, admin_privilege, user_group, status, timestamp FROM accounts WHERE username = ?;"
-
 	querySelectUserGroupByUsernameUserGroup = "SELECT username, user_group FROM usergroup WHERE username = ? AND user_group = ?;"
-
 	querySelectGroupnamesByUserGroup = "SELECT user_group FROM groupnames WHERE user_group = ?;"
-
 	querySelectCompositeKey = "SELECT username, user_group FROM usergroup WHERE username = ? AND user_group = ?"
-
-	querySelectCheckGroupFromAccounts = "SELECT username, user_group FROM accounts WHERE username = ? AND user_group = ?"
-
+	querySelectCheckGroupFromAccounts = "SELECT username, user_group FROM accounts WHERE username = ?"
 	querySelectUserFromUserGroupByUsername = "SELECT user_group FROM accounts WHERE username = ?"
-
 	querySelectUserGroupFromGroupnamesByUserGroup = "SELECT user_group FROM groupnames WHERE user_group = ?"
-
 	querySelectUsernameFromAccountsByUsername = "SELECT username FROM accounts WHERE username = ?"
-
 	querySelectUserGroup = "SELECT user_group FROM groupnames"
-
 	querySelectUserGroupFromAccountsGroupByUsername = "SELECT user_group FROM accounts GROUP BY username"
+	querySelectPasswordEmailFromAccountsByUsername = "SELECT password, email FROM accounts WHERE username = ?"
 )
 
 var (
 	queryUpdateAccountsAdmin = "UPDATE accounts SET password = ?, email = ?, admin_privilege = ?, user_group = ?, status = ? WHERE username = ?;"
 
 	queryUpdateAccountsSetUsernameByUserGroup = "UPDATE accounts SET user_group = ? WHERE username = ?"
+
+	queryUpdateUserToDb = "UPDATE accounts SET password = ?, email = ? WHERE username = ?"
 )
 
 // INSERT
@@ -65,6 +57,18 @@ func InsertGroupnames(user_group string) (sql.Result, error) {
 // SELECT
 func SelectUserGroup() (*sql.Rows, error) {
 	result, err := db.Query(querySelectUserGroup)
+	return result, err
+}
+
+// For CheckGroup //
+func SelectCheckGroupFromAccounts(username string) *sql.Row {
+	result := db.QueryRow(querySelectCheckGroupFromAccounts, username)
+	return result
+}
+
+
+func SelectPasswordEmailFromAccountsByUsername(username string) (*sql.Rows, error) {
+	result, err := db.Query(querySelectPasswordEmailFromAccountsByUsername, username)
 	return result, err
 }
 
@@ -113,13 +117,8 @@ func SelectGroupnamesbyUserGroup(user_group string) *sql.Row {
 	return result
 }
 
-func SelectCompositeKey(username string,user_group string) *sql.Row {
+func SelectCompositeKey(username string, user_group string) *sql.Row {
 	result := db.QueryRow(querySelectCompositeKey, username, user_group)
-	return result
-}
-
-func SelectCheckGroupFromAccounts(username string, user_group string) *sql.Row {
-	result := db.QueryRow(querySelectCheckGroupFromAccounts, username, user_group)
 	return result
 }
 
@@ -129,7 +128,12 @@ func UpdateAccountsAdmin(password string, email string, admin_privilege int, use
 	return result, err
 }
 
-func UpdateAccountsSetUsernameByUsergroup(user_group string, username string) (*sql.Rows, error) {
-	result, err := db.Query(queryUpdateAccountsSetUsernameByUserGroup, user_group, username)
+func UpdateAccountsSetUsernameByUsergroup(user_group string, username string) (sql.Result, error) {
+	result, err := db.Exec(queryUpdateAccountsSetUsernameByUserGroup, user_group, username)
+	return result, err
+}
+
+func UpdateUserToDb(password string, email string, username string) (sql.Result, error) {
+	 result, err := db.Exec(queryUpdateUserToDb, password, email, username)
 	return result, err
 }

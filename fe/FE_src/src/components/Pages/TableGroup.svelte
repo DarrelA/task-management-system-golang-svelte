@@ -9,13 +9,13 @@
   let openModal = false;
   const size = "lg";
 
-  let loggedInUser = localStorage.getItem("username")
+  // let loggedInUser = localStorage.getItem("username")
 
   $: getGroupInfo();
 
   export async function getGroupInfo() {
     try {
-      const response = await axios.post("http://localhost:4000/get-users-in-group", {loggedInUser}, {withCredentials: true});
+      const response = await axios.get("http://localhost:4000/get-users-in-group", {withCredentials: true});
       if (response) {
         console.log(response.data)
         usersGroupData = response.data;

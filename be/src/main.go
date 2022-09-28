@@ -35,18 +35,18 @@ func main() {
 	router.POST("/login", route.Login)
 	router.GET("/logout", route.Logout)
 
-	// router.GET("/check-group", middleware.CheckGroup())
-	router.POST("/add-user-to-group", route.AddUserToGroup)
-	router.POST("/admin-update-user", route.AdminUpdateUser)
-	router.POST("/admin-create-user", route.AdminCreateUser)
-	router.POST("/admin-create-group", route.AdminCreateGroup)
-	router.GET("/get-users", route.GetUsers)
-	router.GET("/get-user-groups", route.GetUserGroup)
+	// router.GET("/check-group", middleware.CheckGroup(username, groupname))
+	router.POST("/add-user-to-group", middleware.CheckCookie, route.AddUserToGroup)
+	router.POST("/admin-update-user", middleware.CheckCookie, route.AdminUpdateUser)
+	router.POST("/admin-create-user", middleware.CheckCookie, route.AdminCreateUser)
+	router.POST("/admin-create-group", middleware.CheckCookie, route.AdminCreateGroup)
+	router.GET("/get-users", middleware.CheckCookie, route.GetUsers)
+	router.GET("/get-user-groups", middleware.CheckCookie, route.GetUserGroup)
 
 	// router.GET("/get-users-in-group", route.GetUsersInGroup)
-	router.POST("/get-users-in-group", route.GetUsersInGroup)
+	router.GET("/get-users-in-group", middleware.CheckCookie, route.GetUsersInGroup)
 
-	router.POST("/update-user", route.UpdateUser)
+	router.POST("/update-user", middleware.CheckCookie, route.UpdateUser)
 
 	port := middleware.LoadENV("SERVER_PORT")
 	server := fmt.Sprintf(":%v", port)

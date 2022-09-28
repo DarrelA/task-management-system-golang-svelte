@@ -1,7 +1,7 @@
 <script>
   import axios from "axios";
-  import { Form, FormGroup, Input, Button } from "sveltestrap";
   import { navigate } from "svelte-routing";
+  import { Form, FormGroup, Input, Button } from "sveltestrap";
   import { errorToast } from "../toast";
 
   let username;
@@ -16,14 +16,22 @@
         withCredentials: true,
       });
       if (response) {
-        navigate("http://localhost:3000/home");
         localStorage.setItem("username", json.username);
         localStorage.setItem("isAdmin", response.data.isAdmin);
+        if (response.data.isAdmin === "true") navigate("/user-management");
+        else navigate("/user");
       }
     } catch (e) {
       e.response && e.response.data.message ? errorToast(e.response.data.message) : errorToast(e.message);
+      username = "";
+      password = "";
     }
   }
+
+  const user = localStorage.getItem("isAdmin");
+  $: if (user === "true") {
+    window.location.replace("/user-management");
+  } else if (user === "false") window.location.replace("/user");
 </script>
 
 <div class="container-fluid">
@@ -86,7 +94,7 @@
 
   .bg-image {
     min-height: 98vh;
-    background-image:  url("https://blog.trello.com/hs-fs/Kanban-101-final-1.png");
+    background-image: url("https://blog.trello.com/hs-fs/Kanban-101-final-1.png");
     background-repeat: no-repeat;
     background-size: 110% 100%;
     background-position: center center;

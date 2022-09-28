@@ -114,14 +114,14 @@ func AdminCreateUser(c *gin.Context) {
 			middleware.ErrorHandler(c, 400, "Invalid field")
 			return
 		}
-		c.JSON(201, gin.H{"code": 201, "message": "New user created"})
-
+		
 		// LOOP through Usergroup slice and validate
 		for _, group := range newUser.Usergroup {
 			// LOOP to validate group name
 			var user_group string
+			fmt.Println(group)
 
-			result := middleware.SelectGroupnamesbyUserGroup(user_group)
+			result := middleware.SelectGroupnamesbyUserGroup(group)
 
 			switch err := result.Scan(&user_group); err {
 
@@ -142,6 +142,7 @@ func AdminCreateUser(c *gin.Context) {
 				return
 			}
 		}
+		c.JSON(201, gin.H{"code": 201, "message": "New user created"})
 
 	// Username exist
 	case nil:

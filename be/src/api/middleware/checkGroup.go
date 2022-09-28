@@ -2,18 +2,20 @@ package middleware
 
 import (
 	"database/sql"
+	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 // Takes in username, user_group to check as params of the function and return a bool
-func CheckGroup(username string, user_group string) bool {
+func CheckGroup(username string, groupname string) bool {
+	var user_group string
 
 	var (
 		checkgroup = false
 	)
-	
-	result := SelectCheckGroupFromAccounts(username, user_group)
+
+	result := SelectCheckGroupFromAccounts(username)
 
 	switch err := result.Scan(&username, &user_group); err {
 
@@ -23,24 +25,11 @@ func CheckGroup(username string, user_group string) bool {
 
 	// Username & Usergroup exists in database
 	case nil:
-		checkgroup = true
+		if strings.Contains(user_group, groupname) {
+			checkgroup = true
+		} else {
+			checkgroup = false
+		}
 	}
-
 	return checkgroup
 }
-
-// check if an array contains a given value
-// fetch user_group where username = ?
-// for loop user_group, append into slice []
-// check contains with loop
-// func contains(s []string, str string) bool {
-
-// 	var checkGroup = false
-
-// 	for _, i := range s {
-// 		if i == str {
-// 			checkGroup = true
-// 		}
-// 	}
-// 	return checkGroup
-// }

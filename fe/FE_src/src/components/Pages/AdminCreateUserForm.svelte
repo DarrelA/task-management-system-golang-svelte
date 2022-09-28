@@ -13,17 +13,14 @@
 
   let groupsArray = [];
   let selected = [];
-  let usersData = [];
 
   let loading = false;
 
-  let loggedInUser = localStorage.getItem("username")
-
-  $: getUsers();
+  let loggedInUser = localStorage.getItem("username");
 
   async function getUsers() {
     try {
-      const response = await axios.get("http://localhost:4000/get-users");
+      const response = await axios.get("http://localhost:4000/get-users", { withCredentials: true });
       if (response) {
         usersData = response.data;
       }
@@ -32,7 +29,7 @@
     }
   }
 
-  async function CreateUser(e) {
+  export async function CreateUser(e) {
     e.preventDefault();
     const json = {
       loggedInUser,
@@ -67,7 +64,7 @@
   onMount(() => {
     async function GetUserGroups() {
       try {
-        const response = await axios.get("http://localhost:4000/get-user-groups", { loggedInUser });
+        const response = await axios.get("http://localhost:4000/get-user-groups", { withCredentials: true });
 
         if (response.data.error) {
           console.error(response.data.error);
@@ -104,8 +101,8 @@
 
 <Styles />
 <div>
-  <Button color="primary" on:click={toggle}>Add user</Button>
-  <Modal isOpen={openModal} {toggle} {size}>
+  <!-- <Button color="primary" on:click={toggle}>Add user</Button> -->
+  <!-- <Modal isOpen={openModal} {toggle} {size}>
     <ModalHeader {toggle}>Add user</ModalHeader>
 
     {#if loading}
@@ -114,60 +111,60 @@
       </div>
     {/if}
 
-    <ModalBody>
-      <Form>
-        <Row>
-          <Col>
-            <FormGroup>
-              <Label>Username:</Label>
-              <Input placeholder="username" bind:value={username} autofocus />
-            </FormGroup>
-          </Col>
+    <ModalBody> -->
+  <Form>
+    <Row>
+      <Col>
+        <FormGroup>
+          <Label>Username:</Label>
+          <Input placeholder="username" bind:value={username} autofocus />
+        </FormGroup>
+      </Col>
 
-          <Col>
-            <FormGroup>
-              <Label>Password:</Label>
-              <Input type="password" placeholder="password" bind:value={password} />
-            </FormGroup>
-          </Col>
-        </Row>
+      <Col>
+        <FormGroup>
+          <Label>Password:</Label>
+          <Input type="password" placeholder="password" bind:value={password} />
+        </FormGroup>
+      </Col>
+    </Row>
 
-        <Row>
-          <Col>
-            <FormGroup>
-              <Label>Email:</Label>
-              <Input placeholder="example@email.com" bind:value={email} />
-            </FormGroup>
-          </Col>
+    <Row>
+      <Col>
+        <FormGroup>
+          <Label>Email:</Label>
+          <Input placeholder="example@email.com" bind:value={email} />
+        </FormGroup>
+      </Col>
 
-          <Col>
-            <FormGroup>
-              <Label>User group(s)</Label>
-              <MultiSelect bind:selected options={groupsArray} allowUserOptions={true} />
-            </FormGroup>
-          </Col>
-        </Row>
+      <Col>
+        <FormGroup>
+          <Label>User group(s)</Label>
+          <MultiSelect bind:selected options={groupsArray} allowUserOptions={true} />
+        </FormGroup>
+      </Col>
+    </Row>
 
-        <Row>
-          <Col>
-            <FormGroup>
-              <Input type="select" bind:value={status} placeholder="Status">
-                <option>Inactive</option>
-                <option>Active</option>
-              </Input>
-            </FormGroup>
-          </Col>
-        </Row>
+    <Row>
+      <Col>
+        <FormGroup>
+          <Input type="select" bind:value={status} placeholder="Status">
+            <option>Inactive</option>
+            <option>Active</option>
+          </Input>
+        </FormGroup>
+      </Col>
+    </Row>
 
-        <ModalFooter>
-          <Col>
-            <Button on:click={CreateUser} style="background-color: #FCA311; border: none;">Create</Button>
-            <Button color="danger" on:click={toggle}>Cancel</Button>
-          </Col>
-        </ModalFooter>
-      </Form>
-    </ModalBody>
-  </Modal>
+    <!-- <ModalFooter>
+      <Col>
+        <Button on:click={CreateUser} style="background-color: #FCA311; border: none;">Create</Button>
+        <Button color="danger" on:click={toggle}>Cancel</Button>
+      </Col>
+    </ModalFooter> -->
+  </Form>
+  <!-- </ModalBody>
+  </Modal> -->
 </div>
 
 <style>
