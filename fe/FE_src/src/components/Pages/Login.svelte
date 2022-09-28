@@ -18,7 +18,7 @@
       if (response) {
         localStorage.setItem("username", json.username);
         localStorage.setItem("isAdmin", response.data.isAdmin);
-        if (response.data.isAdmin === "true") navigate("/home");
+        if (response.data.isAdmin === "true") navigate("/user-management");
         else navigate("/home");
       }
     } catch (e) {
@@ -31,7 +31,7 @@
   const user = localStorage.getItem("isAdmin");
   $: if (user === "true") {
     window.location.replace("/user-management");
-  } else if (user === "false") window.location.replace("/user");
+  } else if (user === "false") window.location.replace("/home");
 </script>
 
 <div class="container-fluid">
