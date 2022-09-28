@@ -1,5 +1,7 @@
-CREATE DATABASE IF NOT EXISTS C3_database;
-USE C3_database;
+-- CREATE DATABASE AND TABLES
+
+CREATE DATABASE IF NOT EXISTS c3_database;
+USE c3_database;
 
 CREATE TABLE IF NOT EXISTS accounts (
   username varchar(50) NOT NULL,
@@ -76,7 +78,6 @@ CREATE TABLE IF NOT EXISTS task (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 CREATE TABLE IF NOT EXISTS task_notes (
-  tasknotesid varchar(255) DEFAULT NULL,
   task_name varchar(255) NOT NULL,
   task_note longtext,
   task_owner varchar(255) NOT NULL,

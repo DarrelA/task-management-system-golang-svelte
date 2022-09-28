@@ -8,33 +8,29 @@ import (
 
 var (
 	queryInsertAccounts = "INSERT INTO accounts (username, password, email, admin_privilege, user_group, status, timestamp) VALUES (?,?,?,?,?,?,now());"
-
-	queryInsertUserGroup  = "INSERT INTO usergroup (username, user_group) VALUES (?,?);"
-
+	queryInsertUserGroup = "INSERT INTO usergroup (username, user_group) VALUES (?,?);"
 	queryInsertGroupnames = "INSERT INTO groupnames (user_group) VALUES (?);"
 )
 
 var (
-	querySelectAccounts           = "SELECT username, email, user_group, status FROM accounts;"
-	querySelectAccountByLogin     = "SELECT username, password, status FROM accounts WHERE username = ?;"
-	querySelectAccountsByUsername = "SELECT username, password, email, admin_privilege, user_group, status, timestamp FROM accounts WHERE username = ?;"
-	querySelectUserGroupByUsernameUserGroup = "SELECT username, user_group FROM usergroup WHERE username = ? AND user_group = ?;"
-	querySelectGroupnamesByUserGroup = "SELECT user_group FROM groupnames WHERE user_group = ?;"
-	querySelectCompositeKey = "SELECT username, user_group FROM usergroup WHERE username = ? AND user_group = ?"
-	querySelectCheckGroupFromAccounts = "SELECT username, user_group FROM accounts WHERE username = ?"
-	querySelectUserFromUserGroupByUsername = "SELECT user_group FROM accounts WHERE username = ?"
-	querySelectUserGroupFromGroupnamesByUserGroup = "SELECT user_group FROM groupnames WHERE user_group = ?"
-	querySelectUsernameFromAccountsByUsername = "SELECT username FROM accounts WHERE username = ?"
-	querySelectUserGroup = "SELECT user_group FROM groupnames"
+	querySelectAccounts                             = "SELECT username, email, user_group, status FROM accounts;"
+	querySelectAccountByLogin                       = "SELECT username, password, status FROM accounts WHERE username = ?;"
+	querySelectAccountsByUsername                   = "SELECT username, password, email, admin_privilege, user_group, status, timestamp FROM accounts WHERE username = ?;"
+	querySelectUserGroupByUsernameUserGroup         = "SELECT username, user_group FROM usergroup WHERE username = ? AND user_group = ?;"
+	querySelectGroupnamesByUserGroup                = "SELECT user_group FROM groupnames WHERE user_group = ?;"
+	querySelectCompositeKey                         = "SELECT username, user_group FROM usergroup WHERE username = ? AND user_group = ?"
+	querySelectCheckGroupFromAccounts               = "SELECT username, user_group FROM accounts WHERE username = ?"
+	querySelectUserFromUserGroupByUsername          = "SELECT user_group FROM accounts WHERE username = ?"
+	querySelectUserGroupFromGroupnamesByUserGroup   = "SELECT user_group FROM groupnames WHERE user_group = ?"
+	querySelectUsernameFromAccountsByUsername       = "SELECT username FROM accounts WHERE username = ?"
+	querySelectUserGroup                            = "SELECT user_group FROM groupnames"
 	querySelectUserGroupFromAccountsGroupByUsername = "SELECT user_group FROM accounts GROUP BY username"
-	querySelectPasswordEmailFromAccountsByUsername = "SELECT password, email FROM accounts WHERE username = ?"
+	querySelectPasswordEmailFromAccountsByUsername  = "SELECT password, email FROM accounts WHERE username = ?"
 )
 
 var (
 	queryUpdateAccountsAdmin = "UPDATE accounts SET password = ?, email = ?, admin_privilege = ?, user_group = ?, status = ? WHERE username = ?;"
-
 	queryUpdateAccountsSetUsernameByUserGroup = "UPDATE accounts SET user_group = ? WHERE username = ?"
-
 	queryUpdateUserToDb = "UPDATE accounts SET password = ?, email = ? WHERE username = ?"
 )
 
@@ -65,7 +61,6 @@ func SelectCheckGroupFromAccounts(username string) *sql.Row {
 	result := db.QueryRow(querySelectCheckGroupFromAccounts, username)
 	return result
 }
-
 
 func SelectPasswordEmailFromAccountsByUsername(username string) (*sql.Rows, error) {
 	result, err := db.Query(querySelectPasswordEmailFromAccountsByUsername, username)
@@ -134,6 +129,6 @@ func UpdateAccountsSetUsernameByUsergroup(user_group string, username string) (s
 }
 
 func UpdateUserToDb(password string, email string, username string) (sql.Result, error) {
-	 result, err := db.Exec(queryUpdateUserToDb, password, email, username)
+	result, err := db.Exec(queryUpdateUserToDb, password, email, username)
 	return result, err
 }

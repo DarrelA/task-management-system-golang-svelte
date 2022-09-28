@@ -15,17 +15,17 @@ type Application struct {
 }
 
 type Task struct {
-	AppAcronym      string `json: "task_app_acronym`
-	TaskID          string `json: "task_id"`
-	TaskName        string `json: "task_name`
-	TaskDescription string `json: "task_description"`
-	TaskNotes       string `json: "task_notes`
-	TaskPlan        string `json: "task_plan"`
-	TaskColor       string `json: "task_color"`
-	TaskState       string `json: "task_state"`
-	TaskCreator     string `json: "task_creator"`
-	TaskOwner       string `json: "task_owner"`
-	CreatedDate     string `json: "task_created"`
+	TaskAppAcronym      string `json:"task_app_acronym"`
+	TaskID          string `json:"task_id"`
+	TaskName        string `json:"task_name"`
+	TaskDescription string `json:"task_description"`
+	TaskNotes       string `json:"task_notes"`
+	TaskPlan        string `json:"task_plan"`
+	TaskColor       string `json:"task_color"`
+	TaskState       string `json:"task_state"`
+	TaskCreator     string `json:"task_creator"`
+	TaskOwner       string `json:"task_owner"`
+	CreatedDate     string `json:"task_created"`
 }
 
 type Plan struct {

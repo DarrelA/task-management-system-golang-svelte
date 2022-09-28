@@ -27,6 +27,7 @@ func AddUserToGroup(c *gin.Context) {
 
 	// Check user group
 	checkGroup := middleware.CheckGroup(c.GetString("username"), "Admin")
+	fmt.Println(checkGroup)
 	if !checkGroup {
 		middleware.ErrorHandler(c, 400, "Unauthorized actions")
 		return
