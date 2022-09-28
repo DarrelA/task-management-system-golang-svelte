@@ -15,28 +15,27 @@
   <AdminNavbar />
 {:else if isAdmin === "false"}
   <UserNavbar />
+  insert application component here for user
   <!-- {:else}
 <Login/> -->
 {/if}
 
 <div class="masthead">
   <h2>Welcome {username} &#x1F642;</h2>
+  <p>Do you have any tasks to complete today?</p>
 </div>
 
 <style>
   .masthead {
     border-radius: 20px;
-    position: absolute;
     background-color: grey;
-    height: 30%;
+    height: 15%;
     width: 75%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: -1;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     text-align: center;
     color: #fffbf0;
   }
