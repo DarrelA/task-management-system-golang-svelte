@@ -25,7 +25,6 @@ func CreateTask(c *gin.Context) {
 }
 
 func validatePermitCreate(task models.Task, c *gin.Context) {
-	fmt.Println("validatePermitCreate")
 	var PermitCreate string
 	result := middleware.SelectPermitCreate(task.TaskAppAcronym)
 	err := result.Scan(&PermitCreate) 
@@ -45,7 +44,6 @@ func validatePermitCreate(task models.Task, c *gin.Context) {
 }
 
 func validateTaskName(task models.Task, c *gin.Context) {
-	fmt.Println("validateTaskName")
 	var TaskName, TaskAppAcronym string
 	if (!middleware.CheckLength(task.TaskName)) {
 		task.TaskName = strings.TrimSpace(task.TaskName)
@@ -66,7 +64,6 @@ func validateTaskName(task models.Task, c *gin.Context) {
 }
 
 func validateTaskPlan(task models.Task, c *gin.Context) {
-	fmt.Println("validateTaskPlan")
 	var PlanColor string
 	if (!middleware.CheckLength(task.TaskPlan)) {
 		result := middleware.SelectPlanColor(task.TaskPlan)
@@ -87,7 +84,6 @@ func validateTaskPlan(task models.Task, c *gin.Context) {
 }
 
 func validateTaskNotes(task models.Task, c *gin.Context) {
-	fmt.Println("validateTaskNotes")
 	task.TaskState = "Open"
 	var TaskNotesDate, TaskNotesTime string
 	if (!middleware.CheckLength(task.TaskNotes)) {
@@ -110,7 +106,6 @@ func validateTaskNotes(task models.Task, c *gin.Context) {
 }
 
 func generateTaskId(task models.Task, c *gin.Context) string {
-	fmt.Println("generateTaskID")
 	var TaskID string
 	var AppRNum int
 	result := middleware.SelectRNumber(task.TaskAppAcronym)
