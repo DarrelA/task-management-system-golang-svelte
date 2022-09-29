@@ -1,7 +1,5 @@
 package models
 
-import "database/sql"
-
 type Application struct {
 	AppAcronym   string `json: "app_acronym"`
 	Description  string `json:"app_description"`
