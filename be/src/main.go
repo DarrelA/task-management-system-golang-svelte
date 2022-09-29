@@ -42,6 +42,7 @@ func main() {
 	router.GET("/get-users-in-group", middleware.CheckCookie, route.GetUsersInGroup)
 
 	router.POST("/create-task", middleware.CheckCookie, route.CreateTask)
+	router.GET("/get-one-task", route.GetOneTask)
 	router.POST("/get-all-tasks", route.GetAllTasks)
 
 	port := middleware.LoadENV("SERVER_PORT")

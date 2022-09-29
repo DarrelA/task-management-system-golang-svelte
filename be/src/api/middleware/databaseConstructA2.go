@@ -3,22 +3,33 @@ package middleware
 import "database/sql"
 
 var (
-	queryInsertTask = `INSERT INTO task (task_app_acronym, task_id, task_name, task_description, task_notes, task_plan, task_color, task_state, task_creator, task_owner, task_createDate) VALUES (?,?,?,?,?,?,?,?,?,?,now());`
+	queryInsertTask            = `INSERT INTO task (task_app_acronym, task_id, task_name, task_description, task_notes, task_plan, task_color, task_state, task_creator, task_owner, task_createDate) VALUES (?,?,?,?,?,?,?,?,?,?,now());`
 	queryInsertCreateTaskNotes = `INSERT INTO task_notes (task_name, task_note, task_owner, task_state, last_updated) VALUES (?,?,?,?,now());`
 )
 
 var (
-	querySelectPermitCreate = `SELECT app_permitCreate FROM application WHERE app_acronym = ?`;
-	querySelectRNumber = `SELECT app_Rnum FROM application WHERE app_acronym = ?;`
-	querySelectTaskName = `SELECT task_name FROM task WHERE task_name = ? AND task_app_acronym = ?;`
-	querySelectTaskID = `SELECT task_id FROM task WHERE task_app_acronym = ?;`
-	querySelectPlanColor = `SELECT plan_color FROM plan WHERE plan_mvp_name = ?;`
+	querySelectPermitCreate       = `SELECT app_permitCreate FROM application WHERE app_acronym = ?`
+	querySelectRNumber            = `SELECT app_Rnum FROM application WHERE app_acronym = ?;`
+	querySelectTaskName           = `SELECT task_name FROM task WHERE task_name = ? AND task_app_acronym = ?;`
+	querySelectTaskID             = `SELECT task_id FROM task WHERE task_app_acronym = ?;`
+	querySelectPlanColor          = `SELECT plan_color FROM plan WHERE plan_mvp_name = ?;`
 	querySelectTaskNotesTimestamp = `SELECT DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime FROM task WHERE task_name = ?;`
+<<<<<<< Updated upstream
 	querySelectAllTasks = `SELECT task_id, task_name, task_description, task_notes, task_plan, task_color, task_state, task_creator, task_owner, DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime FROM task WHERE task_app_acronym = ?;`
+=======
+
+	querySelectOneTask = `SELECT task_id, task_name, task_description, task_notes, task_plan, 
+																		task_color, task_state, task_creator, task_owner, 
+																		DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, 
+																		TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime 
+																		FROM task WHERE task_name = ? AND task_app_acronym = ?;`
+
+	querySelectAllTasks = `SELECT IFNULL(task_id,""), task_name, task_description, task_notes, task_plan, task_color, task_state, task_creator, task_owner, DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime FROM task WHERE task_app_acronym = ?;`
+>>>>>>> Stashed changes
 )
 
 var (
-	queryUpdateRNumber = `UPDATE application SET app_Rnum = ? WHERE app_acronym = ?;`
+	queryUpdateRNumber        = `UPDATE application SET app_Rnum = ? WHERE app_acronym = ?;`
 	queryUpdateTaskAuditNotes = `UPDATE task SET task_notes = ? WHERE task_name = ? AND task_app_acronym = ?;`
 )
 
@@ -67,6 +78,11 @@ func SelectPlanColor(TaskPlan string) *sql.Row {
 func SelectTaskNotesTimestamp(TaskName string) *sql.Row {
 	result := db.QueryRow(querySelectTaskNotesTimestamp, TaskName)
 	return result
+}
+
+func SelectOneTask(TaskName string, TaskAppAcronym string) (*sql.Rows, error) {
+	result, err := db.Query(querySelectOneTask, TaskName, TaskAppAcronym)
+	return result, err
 }
 
 func SelectAllTasks(TaskAppAcronym string) (*sql.Rows, error) {
