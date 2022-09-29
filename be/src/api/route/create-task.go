@@ -44,7 +44,7 @@ func validateTaskName(task models.Task, c *gin.Context) {
 	var TaskName, TaskAppAcronym string
 	if (!middleware.CheckLength(task.TaskName)) {
 		result := middleware.SelectTaskName(task.TaskName, task.TaskAppAcronym)
-		err := result.Scan(&TaskName, TaskAppAcronym)
+		err := result.Scan(&TaskName, &TaskAppAcronym)
 		if (err != sql.ErrNoRows) {
 			error_message := fmt.Sprintf(`Task Name "%s" already exists for Application "%s"`, task.TaskName, task.TaskAppAcronym)
 			middleware.ErrorHandler(c, 400, error_message)
