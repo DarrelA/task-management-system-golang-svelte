@@ -1,5 +1,5 @@
 <script>
-    import { errorToast, successToast } from "../../toast";
+    import { errorToast, successToast } from "../toast";
     import { Form, FormGroup, Input, Label, Button, Modal, ModalHeader, ModalFooter, Col, Row, Spinner, ModalBody, Styles } from "sveltestrap";
     import MultiSelect from "svelte-multiselect";
     import axios from "axios";

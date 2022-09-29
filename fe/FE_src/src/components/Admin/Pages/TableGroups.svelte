@@ -1,8 +1,8 @@
 <script>
   import axios from "axios";
   import { Table, Row, Col, Button, Modal, ModalBody, ModalHeader, ModalFooter } from "sveltestrap";
-  import FormAddGroup from "../Form/FormAddGroup.svelte"
-  import AddUserToGroup from "./AddUserToGroup.svelte"
+  import FormAddGroup from "../Form/AddGroup.svelte"
+  import AddUserToGroup from "../Form/AddUserToGroup.svelte"
 
   let usersGroupData = [];
   export let groupname = "";

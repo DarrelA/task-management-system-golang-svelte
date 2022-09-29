@@ -2,30 +2,13 @@
   //export let name;
   import { SvelteToast } from '@zerodevx/svelte-toast';
   import { Route, Router } from 'svelte-routing';
-  import AddUserToGroup from './components/Pages/AddUserToGroup.svelte';
-  import Home from './components/Pages/Home.svelte';
-  import Login from './components/Pages/Login.svelte';
-  import MgtGroup from './components/Pages/MgtGroup.svelte';
-  import MgtUser from './components/Pages/MgtUser.svelte';
-  import User from './components/Pages/UpdateUser.svelte';
+  import Home from './components/Home.svelte';
+  import Login from './components/Login.svelte';
+  import MgtGroup from './components/Admin/Pages/MgtGroup.svelte';
+  import MgtUser from './components/Admin/Pages/MgtUser.svelte';
+  import User from './components/User/Pages/MgtUser.svelte';
   import ProtectedRoute from './components/ProtectedRoute.svelte';
 </script>
-
-<SvelteToast />
-
-<main>
-  <Router>
-    <Route path="/" component={Login} />
-
-    <!-- Need to change on protected route -->
-    <ProtectedRoute path="/add-user-to-group" component={AddUserToGroup} />
-    <ProtectedRoute path="/home" component={Home} />
-    <ProtectedRoute path="/user" component={User} />
-    <ProtectedRoute path="/user-management" component={MgtUser} />
-    <ProtectedRoute path="/group-management" component={MgtGroup} />
-    <ProtectedRoute path="*" component={Login} />
-  </Router>
-</main>
 
 <style>
   /* main {
@@ -41,3 +24,19 @@
 		}
 	} */
 </style>
+
+
+<SvelteToast />
+
+<main>
+  <Router>
+    <Route path="/" component={Login} />
+
+    <!-- Need to change on protected route -->
+    <ProtectedRoute path="/home" component={Home} />
+    <ProtectedRoute path="/user" component={User} />
+    <ProtectedRoute path="/user-management" component={MgtUser} />
+    <ProtectedRoute path="/group-management" component={MgtGroup} />
+    <ProtectedRoute path="*" component={Login} />
+  </Router>
+</main>
