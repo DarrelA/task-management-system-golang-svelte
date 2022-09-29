@@ -14,7 +14,7 @@ var (
 	querySelectTaskID = `SELECT task_id FROM task WHERE task_app_acronym = ?;`
 	querySelectPlanColor = `SELECT plan_color FROM plan WHERE plan_mvp_name = ?;`
 	querySelectTaskNotesTimestamp = `SELECT DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime FROM task WHERE task_name = ?;`
-	querySelectAllTasks = `SELECT task_id, task_name, task_description, task_notes, task_plan, task_color, task_state, task_creator, task_owner, DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime FROM task WHERE task_app_acronym = ?;`
+	querySelectAllTasks = `SELECT IFNULL(task_id,""), task_name, task_description, task_notes, task_plan, task_color, task_state, task_creator, task_owner, DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime FROM task WHERE task_app_acronym = ?;`
 )
 
 var (
@@ -24,6 +24,11 @@ var (
 
 // Insert Queries
 func InsertTask(TaskAppAcronym string, TaskID string, TaskName string, TaskDescription string, TaskNotes string, TaskPlan string, TaskColor string, TaskState string, TaskCreator string, TaskOwner string) (sql.Result, error) {
+	result, err := db.Exec(queryInsertTask, TaskAppAcronym, TaskID, TaskName, TaskDescription, TaskNotes, TaskPlan, TaskColor, TaskState, TaskCreator, TaskOwner)
+	return result, err
+}
+
+func InsertTaskWithoutPlan(TaskAppAcronym string, TaskID string, TaskName string, TaskDescription string, TaskNotes string, TaskPlan *string, TaskColor string, TaskState string, TaskCreator string, TaskOwner string) (sql.Result, error) {
 	result, err := db.Exec(queryInsertTask, TaskAppAcronym, TaskID, TaskName, TaskDescription, TaskNotes, TaskPlan, TaskColor, TaskState, TaskCreator, TaskOwner)
 	return result, err
 }

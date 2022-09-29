@@ -87,21 +87,30 @@ func validateTaskNotes(task models.Task, c *gin.Context) {
 	task.TaskState = "Open"
 	var TaskNotesDate, TaskNotesTime string
 	if (!middleware.CheckLength(task.TaskNotes)) {
-		_, err := middleware.InsertTask(task.TaskAppAcronym, task.TaskID, task.TaskName, task.TaskDescription, task.TaskNotes, task.TaskPlan, task.TaskColor, task.TaskState, task.TaskCreator, task.TaskOwner)
-		checkError(err)
+		insertTaskTable(task)
 		result := middleware.SelectTaskNotesTimestamp(task.TaskName)
 		result.Scan(&TaskNotesDate, &TaskNotesTime)
 		taskNotesAuditString := TaskNotesDate + " " + TaskNotesTime + "\n" + "Task Owner: " + task.TaskOwner + ", Task State: " + task.TaskState  + "\n" + task.TaskNotes + " \n";
 		fmt.Println("tasknotesAuditString: ", taskNotesAuditString)
-		_, err = middleware.UpdateTaskAuditNotes(taskNotesAuditString, task.TaskName, task.TaskAppAcronym)
+		_, err := middleware.UpdateTaskAuditNotes(taskNotesAuditString, task.TaskName, task.TaskAppAcronym)
 		checkError(err)
 		_, err = middleware.InsertCreateTaskNotes(task.TaskName, task.TaskNotes, task.TaskOwner, task.TaskState)
 		checkError(err)
 		c.JSON(http.StatusCreated, gin.H{"code": 200, "message": "Task was successfully created!"})
 	} else {
+		insertTaskTable(task)
+		c.JSON(http.StatusCreated, gin.H{"code": 200, "message": "Task was successfully created!"})
+	}
+}
+
+func insertTaskTable(task models.Task) {
+	var TaskPlan *string = nil 
+	if (!middleware.CheckLength(task.TaskPlan)) {
 		_, err := middleware.InsertTask(task.TaskAppAcronym, task.TaskID, task.TaskName, task.TaskDescription, task.TaskNotes, task.TaskPlan, task.TaskColor, task.TaskState, task.TaskCreator, task.TaskOwner)
 		checkError(err)
-		c.JSON(http.StatusCreated, gin.H{"code": 200, "message": "Task was successfully created!"})
+	} else {
+		_, err := middleware.InsertTaskWithoutPlan(task.TaskAppAcronym, task.TaskID, task.TaskName, task.TaskDescription, task.TaskNotes, TaskPlan, task.TaskColor, task.TaskState, task.TaskCreator, task.TaskOwner)
+		checkError(err)
 	}
 }
 

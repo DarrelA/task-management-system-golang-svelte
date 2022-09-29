@@ -3,6 +3,7 @@ package route
 import (
 	"backend/api/middleware"
 	"backend/api/models"
+	"database/sql"
 	"log"
 	"strings"
 
@@ -13,9 +14,9 @@ import (
 // from the params in the URL for tasks.
 // http://localhost:4000/get-all-tasks/?AppAcronym=durian
 func GetAllTasks(c *gin.Context) {
-	var task models.Task
 	var data []models.Task
-	var formattedDate, formattedTime string
+	// sql.NullString is a way to represent null string coming from SQL
+	var TaskID, TaskName, TaskDescription, TaskNotes, TaskPlan, TaskColor, TaskState, TaskCreator, TaskOwner, FormattedDate, FormattedTime sql.NullString
 	// AppAcronym URL params will be passed in here
 	var AppAcronym map[string][]string = c.Request.URL.Query()
 	TaskAppAcronym := strings.Join(AppAcronym["AppAcronym"], "")
@@ -23,22 +24,22 @@ func GetAllTasks(c *gin.Context) {
 	checkGetError("Failed to /get-all-tasks: ", err)
 	defer rows.Close()
 	for rows.Next() {
-		err = rows.Scan(&task.TaskID, &task.TaskName, &task.TaskDescription, &task.TaskNotes, &task.TaskPlan, &task.TaskColor, &task.TaskState, &task.TaskCreator, &task.TaskOwner, &formattedDate, &formattedTime)
+		err = rows.Scan(&TaskID, &TaskName, &TaskDescription, &TaskNotes, &TaskPlan, &TaskColor, &TaskState, &TaskCreator, &TaskOwner, &FormattedDate, &FormattedTime)
 		checkGetError("Failed to scan in /get-all-tasks", err)
 
 		response := models.Task {
 			TaskAppAcronym: TaskAppAcronym,
-			TaskID: task.TaskID,
-			TaskName: task.TaskName,
-			TaskDescription: task.TaskDescription,
-			TaskNotes: task.TaskNotes,
-			TaskPlan: task.TaskPlan,
-			TaskColor: task.TaskColor,
-			TaskState: task.TaskState,
-			TaskCreator: task.TaskCreator,
-			TaskOwner: task.TaskOwner,
-			FormattedDate: formattedDate,
-			FormattedTime: formattedTime,
+			TaskID: TaskID.String,
+			TaskName: TaskName.String,
+			TaskDescription: TaskDescription.String,
+			TaskNotes: TaskNotes.String,
+			TaskPlan: TaskPlan.String,
+			TaskColor: TaskColor.String,
+			TaskState: TaskState.String,
+			TaskCreator: TaskCreator.String,
+			TaskOwner: TaskOwner.String,
+			FormattedDate: FormattedDate.String,
+			FormattedTime: FormattedTime.String,
 		}
 
 		data = append(data, response)

@@ -1,5 +1,7 @@
 package models
 
+import "database/sql"
+
 type Application struct {
 	AppAcronym   string `json: "app_acronym"`
 	Description  string `json:"app_description"`
@@ -36,4 +38,20 @@ type Plan struct {
 	PlanColor   string `json: "plan_color`
 	StartDate   string `json: "plan_start"`
 	EndDate     string `json: "plan_end"`
+}
+
+type TaskNull struct {
+	TaskAppAcronym      sql.NullString `json:"task_app_acronym"`
+	TaskID          sql.NullString `json:"task_id"`
+	TaskName        sql.NullString `json:"task_name"`
+	TaskDescription sql.NullString `json:"task_description"`
+	TaskNotes       sql.NullString `json:"task_notes"`
+	TaskPlan        sql.NullString `json:"task_plan"`
+	TaskColor       sql.NullString `json:"task_color"`
+	TaskState       sql.NullString `json:"task_state"`
+	TaskCreator     sql.NullString `json:"task_creator"`
+	TaskOwner       sql.NullString `json:"task_owner"`
+	CreatedDate     sql.NullString `json:"task_created"`
+	FormattedDate sql.NullString `json:"formatted_date"`
+	FormattedTime sql.NullString `json:"formatted_time"`
 }
