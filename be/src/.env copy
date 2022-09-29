@@ -1,0 +1,13 @@
+SERVER_HOST=localhost
+SERVER_PORT=3306
+SERVER_USER=root
+SERVER_PASSWORD=password
+SERVER_DB=c3_database
+
+SERVER_PORT=4000
+
+JWT_SECRET=this_is_my_secret_key
+
+SMTP_USERNAME=cb54ffdc01d3d4
+SMTP_PASSWORD=998e56d9d549da
+SMTP_HOST=smtp.mailtrap.io
