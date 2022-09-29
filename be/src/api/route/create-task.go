@@ -25,11 +25,11 @@ func CreateTask(c *gin.Context) {
 }
 
 func validatePermitCreate(task models.Task, c *gin.Context) {
-	var PermitCreate string
+	var PermitCreate sql.NullString
 	result := middleware.SelectPermitCreate(task.TaskAppAcronym)
 	err := result.Scan(&PermitCreate) 
 	if (err != sql.ErrNoRows) {
-		checkGroup := middleware.CheckGroup(c.GetString("username"), PermitCreate)
+		checkGroup := middleware.CheckGroup(c.GetString("username"), PermitCreate.String)
 		if !checkGroup {
 			middleware.ErrorHandler(c, 400, "Unauthorized actions")
 			return
@@ -44,11 +44,11 @@ func validatePermitCreate(task models.Task, c *gin.Context) {
 }
 
 func validateTaskName(task models.Task, c *gin.Context) {
-	var TaskName, TaskAppAcronym string
+	var TaskName, TaskAppAcronym sql.NullString
 	if (!middleware.CheckLength(task.TaskName)) {
 		task.TaskName = strings.TrimSpace(task.TaskName)
 		result := middleware.SelectTaskName(task.TaskName, task.TaskAppAcronym)
-		err := result.Scan(&TaskName, TaskAppAcronym)
+		err := result.Scan(&TaskName, &TaskAppAcronym)
 		if (err != sql.ErrNoRows) {
 			error_message := fmt.Sprintf(`%s already exists in %s Application`, task.TaskName, task.TaskAppAcronym)
 			middleware.ErrorHandler(c, 400, error_message)
@@ -64,7 +64,7 @@ func validateTaskName(task models.Task, c *gin.Context) {
 }
 
 func validateTaskPlan(task models.Task, c *gin.Context) {
-	var PlanColor string
+	var PlanColor sql.NullString
 	if (!middleware.CheckLength(task.TaskPlan)) {
 		result := middleware.SelectPlanColor(task.TaskPlan)
 		switch err := result.Scan(&PlanColor); {
@@ -73,7 +73,7 @@ func validateTaskPlan(task models.Task, c *gin.Context) {
 			validateTaskNotes(task, c)
 		case err != sql.ErrNoRows:
 			fmt.Println(PlanColor) 
-			task.TaskColor = PlanColor
+			task.TaskColor = PlanColor.String
 			validateTaskNotes(task, c)
 		default:
 			checkError(err)
@@ -85,12 +85,12 @@ func validateTaskPlan(task models.Task, c *gin.Context) {
 
 func validateTaskNotes(task models.Task, c *gin.Context) {
 	task.TaskState = "Open"
-	var TaskNotesDate, TaskNotesTime string
+	var TaskNotesDate, TaskNotesTime sql.NullString
 	if (!middleware.CheckLength(task.TaskNotes)) {
 		insertTaskTable(task)
 		result := middleware.SelectTaskNotesTimestamp(task.TaskName)
 		result.Scan(&TaskNotesDate, &TaskNotesTime)
-		taskNotesAuditString := TaskNotesDate + " " + TaskNotesTime + "\n" + "Task Owner: " + task.TaskOwner + ", Task State: " + task.TaskState  + "\n" + task.TaskNotes + " \n";
+		taskNotesAuditString := TaskNotesDate.String + " " + TaskNotesTime.String + "\n" + "Task Owner: " + task.TaskOwner + ", Task State: " + task.TaskState  + "\n" + task.TaskNotes + " \n";
 		fmt.Println("tasknotesAuditString: ", taskNotesAuditString)
 		_, err := middleware.UpdateTaskAuditNotes(taskNotesAuditString, task.TaskName, task.TaskAppAcronym)
 		checkError(err)
@@ -115,8 +115,8 @@ func insertTaskTable(task models.Task) {
 }
 
 func generateTaskId(task models.Task, c *gin.Context) string {
-	var TaskID string
-	var AppRNum int
+	var TaskID sql.NullString
+	var AppRNum sql.NullInt64
 	result := middleware.SelectRNumber(task.TaskAppAcronym)
 	result.Scan(&AppRNum)
 
@@ -124,11 +124,11 @@ func generateTaskId(task models.Task, c *gin.Context) string {
 	switch err := result.Scan(&TaskID); {
 	case err == sql.ErrNoRows:
 		// First task created in the application
-		task.TaskID = task.TaskAppAcronym + "_" + strconv.Itoa(AppRNum)
+		task.TaskID = task.TaskAppAcronym + "_" + strconv.Itoa(int(AppRNum.Int64))
 	case err != sql.ErrNoRows:
-		AppRNum = AppRNum + 1
-		task.TaskID = task.TaskAppAcronym + "_" + strconv.Itoa(AppRNum)
-		_, err := middleware.UpdateRNumber(AppRNum, task.TaskAppAcronym)
+		AppRNum.Int64 = AppRNum.Int64 + 1
+		task.TaskID = task.TaskAppAcronym + "_" + strconv.Itoa(int(AppRNum.Int64))
+		_, err := middleware.UpdateRNumber(int(AppRNum.Int64), task.TaskAppAcronym)
 		checkError(err)
 	default:
 		checkError(err)
