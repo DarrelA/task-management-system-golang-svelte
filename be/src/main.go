@@ -36,12 +36,13 @@ func main() {
 	router.POST("/admin-update-user", middleware.CheckCookie, route.AdminUpdateUser)
 	router.POST("/admin-create-user", middleware.CheckCookie, route.AdminCreateUser)
 	router.POST("/admin-create-group", middleware.CheckCookie, route.AdminCreateGroup)
+	router.POST("/update-user", middleware.CheckCookie, route.UpdateUser)
 	router.GET("/get-users", middleware.CheckCookie, route.GetUsers)
 	router.GET("/get-user-groups", middleware.CheckCookie, route.GetUserGroup)
 	router.GET("/get-users-in-group", middleware.CheckCookie, route.GetUsersInGroup)
-	router.POST("/update-user", middleware.CheckCookie, route.UpdateUser)
 
 	router.POST("/create-task", middleware.CheckCookie, route.CreateTask)
+	router.POST("/get-all-tasks", route.GetAllTasks)
 
 	port := middleware.LoadENV("SERVER_PORT")
 	server := fmt.Sprintf(":%v", port)
