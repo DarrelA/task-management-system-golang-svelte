@@ -51,6 +51,7 @@ func validateTaskName(task models.Task, c *gin.Context) {
 		} else if (err == sql.ErrNoRows) {
 			TaskID := generateTaskId(task, c)
 			fmt.Println("from validatetaskname function:", TaskID)
+			validateTaskPlan(task, c)
 			// c.JSON(http.StatusCreated, gin.H{"code": 200, "message": "Task was created!"})
 		} else {
 			checkError(err)
@@ -58,6 +59,27 @@ func validateTaskName(task models.Task, c *gin.Context) {
 	} else {
 		middleware.ErrorHandler(c, 400, "Please enter a Task Name.")
 	}
+}
+
+func validateTaskPlan(task models.Task, c *gin.Context) {
+	var PlanColor string
+	if (!middleware.CheckLength(task.TaskPlan)) {
+		result := middleware.SelectPlanColor(task.TaskPlan)
+		switch err := result.Scan(&PlanColor); {
+		case err == sql.ErrNoRows:
+			task.TaskColor = ""
+			validateTaskNotes(task, c)
+		case err != sql.ErrNoRows:
+			task.TaskColor = PlanColor
+			validateTaskNotes(task, c)
+		default:
+			checkError(err)
+		}
+	}
+}
+
+func validateTaskNotes(task models.Task, c *gin.Context) {
+	
 }
 
 func generateTaskId(task models.Task, c *gin.Context) string {
@@ -74,6 +96,8 @@ func generateTaskId(task models.Task, c *gin.Context) string {
 	case err != sql.ErrNoRows:
 		AppRNum = AppRNum + 1
 		task.TaskID = task.TaskAppAcronym + "_" + strconv.Itoa(AppRNum)
+		_, err := middleware.UpdateRNumber(AppRNum, task.TaskAppAcronym)
+		checkError(err)
 	default:
 		checkError(err)
 	}
