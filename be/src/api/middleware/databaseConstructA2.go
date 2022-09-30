@@ -20,7 +20,8 @@ var (
 																																																																																																																																																																																	TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime 
 																																																																																																																																																																																	FROM task WHERE task_name = ? AND task_app_acronym = ?;`
 
-	querySelectAllTasks = `SELECT IFNULL(task_id,""), task_name, task_description, task_notes, task_plan, task_color, task_state, task_creator, task_owner, DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime FROM task WHERE task_app_acronym = ?;`
+	querySelectAllTasks         = `SELECT IFNULL(task_id,""), task_name, task_description, task_notes, task_plan, task_color, task_state, task_creator, task_owner, DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime FROM task WHERE task_app_acronym = ?;`
+	querySelectEmailByUserGroup = `SELECT accounts.email, usergroup.user_group FROM accounts, usergroup WHERE accounts.username = usergroup.username AND usergroup.user_group = ?`
 )
 
 var (
@@ -101,8 +102,9 @@ func SelectOneTask(TaskName string, TaskAppAcronym string) (*sql.Rows, error) {
 func SelectAllTasks(TaskAppAcronym string) (*sql.Rows, error) {
 	result, err := db.Query(querySelectAllTasks, TaskAppAcronym)
 	return result, err
-
 }
+
+func SelectEmailByUserGroup()
 
 // Update Queries
 func UpdateRNumber(AppRNumber int, TaskAppAcronym string) (sql.Result, error) {
