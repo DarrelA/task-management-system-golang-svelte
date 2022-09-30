@@ -1,15 +1,18 @@
 package middleware
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
 var (
-	querySelectPermitCreate      = `SELECT app_permitCreate FROM application WHERE app_acronym = ?`
-	querySelectRNumber           = `SELECT app_Rnum FROM application WHERE app_acronym = ?;`
-	querySelectTaskName          = `SELECT task_name FROM task WHERE task_name = ? AND task_app_acronym = ?;`
-	querySelectTaskID            = `SELECT task_id FROM task WHERE task_app_acronym = ?;`
-	querySelectPlanColor         = `SELECT plan_color FROM plan WHERE plan_mvp_name = ?;`
-	querySelectAllApplications   = `SELECT app_acronym, app_description, app_Rnum, app_startDate, app_endDate FROM application`
-	querySelectApplicationByName = `SELECT app_acronym FROM application WHERE app_acronym = ?`
+	querySelectPermitCreate    = `SELECT app_permitCreate FROM application WHERE app_acronym = ?`
+	querySelectRNumber         = `SELECT app_Rnum FROM application WHERE app_acronym = ?;`
+	querySelectTaskName        = `SELECT task_name FROM task WHERE task_name = ? AND task_app_acronym = ?;`
+	querySelectTaskID          = `SELECT task_id FROM task WHERE task_app_acronym = ?;`
+	querySelectPlanColor       = `SELECT plan_color FROM plan WHERE plan_mvp_name = ?;`
+	querySelectAllApplications = `SELECT app_acronym, app_description, app_Rnum, app_startDate, app_endDate FROM application`
+	// querySelectSingleApplication = `SELECT app_description, app_Rnum, app_permitCreate, app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone, app_createdDate, DATE_FORMAT(app_startDate, "%Y-%m-%d") as app_startDate, DATE_FORMAT(app_endDate, "%Y-%m-%d") as app_endDate FROM application WHERE app_acronym = ?`
+	querySelectSingleApplication = `SELECT app_description, app_Rnum, app_permitCreate, app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone, app_createdDate, CONVERT(app_startDate, DATE), CONVERT(app_endDate, DATE) FROM application WHERE app_acronym = ?`
 )
 
 var (
@@ -52,8 +55,8 @@ func SelectAllApplications() (*sql.Rows, error) {
 	return result, err
 }
 
-func SelectApplicationByName(AppAcronym string) *sql.Row {
-	result := db.QueryRow(querySelectApplicationByName, AppAcronym)
+func SelectSingleApplication(AppAcronym string) *sql.Row {
+	result := db.QueryRow(querySelectSingleApplication, AppAcronym)
 	return result
 }
 
