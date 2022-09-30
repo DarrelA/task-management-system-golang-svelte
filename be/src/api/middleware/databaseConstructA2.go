@@ -15,10 +15,10 @@ var (
 	querySelectTaskNotesTimestamp = `SELECT DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime FROM task WHERE task_name = ?;`
 
 	querySelectOneTask = `SELECT task_id, task_name, task_description, task_notes, task_plan, 
-																																																																																																																																																																																	task_color, task_state, task_creator, task_owner, 
-																																																																																																																																																																																	DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, 
-																																																																																																																																																																																	TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime 
-																																																																																																																																																																																	FROM task WHERE task_name = ? AND task_app_acronym = ?;`
+													task_color, task_state, task_creator, task_owner, 
+													DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, 
+													TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime 
+													FROM task WHERE task_name = ? AND task_app_acronym = ?;`
 
 	querySelectAllTasks = `SELECT IFNULL(task_id,""), task_name, task_description, task_notes, task_plan, task_color, task_state, task_creator, task_owner, DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime FROM task WHERE task_app_acronym = ?;`
 )
@@ -26,6 +26,7 @@ var (
 var (
 	queryUpdateRNumber        = `UPDATE application SET app_Rnum = ? WHERE app_acronym = ?;`
 	queryUpdateTaskAuditNotes = `UPDATE task SET task_notes = ? WHERE task_name = ? AND task_app_acronym = ?;`
+	queryUpdateApplication = "UPDATE application SET app_description = ?, app_Rnum = ?, app_startDate = ?, app_endDate = ?, app_permitCreate = ?, app_permitOpen = ?, app_permitToDo = ?, app_permitDoing = ?, app_permitDone = ?, app_createdDate = ? WHERE app_acronym = ?;"
 )
 
 var (
@@ -107,6 +108,11 @@ func SelectAllTasks(TaskAppAcronym string) (*sql.Rows, error) {
 // Update Queries
 func UpdateRNumber(AppRNumber int, TaskAppAcronym string) (sql.Result, error) {
 	result, err := db.Exec(queryUpdateRNumber, AppRNumber, TaskAppAcronym)
+	return result, err
+}
+
+func UpdateApplication(Description string, Rnum int, StartDate string, EndDate string, PermitCreate string, PermitOpen string) (sql.Result, error) {
+	result, err := db.Exec(queryUpdateApplication, Description, Rnum, StartDate, EndDate, PermitCreate, PermitOpen)
 	return result, err
 }
 

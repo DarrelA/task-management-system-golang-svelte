@@ -50,7 +50,6 @@ func GetApplication(c *gin.Context) {
 	}
 	application.AppAcronym = c.Query("app_acronym")
 	result := middleware.SelectSingleApplication(application.AppAcronym)
-
 	switch err := result.Scan(&application.Description, &application.Rnumber, &application.PermitCreate, &application.PermitOpen, &application.PermitToDo, &application.PermitDoing, &application.PermitDone, &application.CreatedDate, &application.StartDate, &application.EndDate); err {
 
 	// Create application
