@@ -43,7 +43,7 @@ func main() {
 
 	router.POST("/create-task", middleware.CheckCookie, route.CreateTask)
 	router.GET("/get-one-task", route.GetOneTask)
-	router.POST("/get-all-tasks", route.GetAllTasks)
+	router.GET("/get-all-tasks", route.GetAllTasks)
 
 	port := middleware.LoadENV("SERVER_PORT")
 	server := fmt.Sprintf(":%v", port)

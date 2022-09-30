@@ -1,5 +1,5 @@
 <script>
-    import { errorToast, successToast } from "../../toast";
+    import { errorToast, successToast } from "../toast";
     import { Form, FormGroup, Input, Label, Button, Modal, ModalHeader, ModalFooter, Col, Row, Spinner, ModalBody, Styles } from "sveltestrap";
     import MultiSelect from "svelte-multiselect";
     import axios from "axios";
@@ -60,7 +60,7 @@
                 </Col>
                 <Col>
                     <FormGroup>
-                        <Label>Task Name:</Label>
+                        <Label>Plan Name:</Label>
                         <Input type="select" bind:value={task_plan} placeholder="Select a Plan">
                             <option value="Sprint 1">Sprint 1</option>
                             <option value="Sprint 2">Sprint 2</option>
