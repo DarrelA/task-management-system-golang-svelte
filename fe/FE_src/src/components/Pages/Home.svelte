@@ -1,6 +1,7 @@
 <script>
   import AdminNavbar from "../Navbar/IsLoggedInAdmin.svelte";
   import UserNavbar from "../Navbar/IsLoggedInUser.svelte";
+  import CreateTask from "./CreateTask.svelte"
 
   const isAdmin = localStorage.getItem("isAdmin");
   let username = localStorage.getItem("username");
@@ -10,7 +11,6 @@
   <AdminNavbar />
 {:else if isAdmin === "false"}
   <UserNavbar />
-  insert application component here for user
 {/if}
 
 <div class="masthead">
@@ -18,13 +18,15 @@
   <p>Do you have any tasks to complete today?</p>
 </div>
 
+<CreateTask />
+
 <style>
   .masthead {
     border-radius: 20px;
     background-color: grey;
     height: 15%;
     width: 75%;
-    margin: 0 auto;
+    margin: 20px auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
