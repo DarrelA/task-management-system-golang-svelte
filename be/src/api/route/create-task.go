@@ -27,8 +27,8 @@ func CreateTask(c *gin.Context) {
 func validatePermitCreate(task models.Task, c *gin.Context) {
 	var PermitCreate sql.NullString
 	result := middleware.SelectPermitCreate(task.TaskAppAcronym)
-	err := result.Scan(&PermitCreate) 
-	if (err != sql.ErrNoRows) {
+	err := result.Scan(&PermitCreate)
+	if err != sql.ErrNoRows {
 		checkGroup := middleware.CheckGroup(c.GetString("username"), PermitCreate.String)
 		if !checkGroup {
 			middleware.ErrorHandler(c, 400, "Unauthorized actions")
@@ -45,14 +45,14 @@ func validatePermitCreate(task models.Task, c *gin.Context) {
 
 func validateTaskName(task models.Task, c *gin.Context) {
 	var TaskName, TaskAppAcronym sql.NullString
-	if (!middleware.CheckLength(task.TaskName)) {
+	if !middleware.CheckLength(task.TaskName) {
 		task.TaskName = strings.TrimSpace(task.TaskName)
 		result := middleware.SelectTaskName(task.TaskName, task.TaskAppAcronym)
 		err := result.Scan(&TaskName, &TaskAppAcronym)
-		if (err != sql.ErrNoRows) {
+		if err != sql.ErrNoRows {
 			error_message := fmt.Sprintf(`%s already exists in %s Application`, task.TaskName, task.TaskAppAcronym)
 			middleware.ErrorHandler(c, 400, error_message)
-		} else if (err == sql.ErrNoRows) {
+		} else if err == sql.ErrNoRows {
 			task.TaskID = generateTaskId(task, c)
 			validateTaskPlan(task, c)
 		} else {
@@ -65,14 +65,14 @@ func validateTaskName(task models.Task, c *gin.Context) {
 
 func validateTaskPlan(task models.Task, c *gin.Context) {
 	var PlanColor sql.NullString
-	if (!middleware.CheckLength(task.TaskPlan)) {
+	if !middleware.CheckLength(task.TaskPlan) {
 		result := middleware.SelectPlanColor(task.TaskPlan)
 		switch err := result.Scan(&PlanColor); {
 		case err == sql.ErrNoRows:
 			task.TaskColor = ""
 			validateTaskNotes(task, c)
 		case err != sql.ErrNoRows:
-			fmt.Println(PlanColor) 
+			fmt.Println(PlanColor)
 			task.TaskColor = PlanColor.String
 			validateTaskNotes(task, c)
 		default:
@@ -86,11 +86,11 @@ func validateTaskPlan(task models.Task, c *gin.Context) {
 func validateTaskNotes(task models.Task, c *gin.Context) {
 	task.TaskState = "Open"
 	var TaskNotesDate, TaskNotesTime sql.NullString
-	if (!middleware.CheckLength(task.TaskNotes)) {
+	if !middleware.CheckLength(task.TaskNotes) {
 		insertTaskTable(task)
 		result := middleware.SelectTaskNotesTimestamp(task.TaskName)
 		result.Scan(&TaskNotesDate, &TaskNotesTime)
-		taskNotesAuditString := TaskNotesDate.String + " " + TaskNotesTime.String + "\n" + "Task Owner: " + task.TaskOwner + ", Task State: " + task.TaskState  + "\n" + task.TaskNotes + " \n";
+		taskNotesAuditString := TaskNotesDate.String + " " + TaskNotesTime.String + "\n" + "Task Owner: " + task.TaskOwner + ", Task State: " + task.TaskState + "\n" + task.TaskNotes + " \n"
 		fmt.Println("tasknotesAuditString: ", taskNotesAuditString)
 		_, err := middleware.UpdateTaskAuditNotes(taskNotesAuditString, task.TaskName, task.TaskAppAcronym)
 		checkError(err)
@@ -104,8 +104,8 @@ func validateTaskNotes(task models.Task, c *gin.Context) {
 }
 
 func insertTaskTable(task models.Task) {
-	var TaskPlan *string = nil 
-	if (!middleware.CheckLength(task.TaskPlan)) {
+	var TaskPlan *string = nil
+	if !middleware.CheckLength(task.TaskPlan) {
 		_, err := middleware.InsertTask(task.TaskAppAcronym, task.TaskID, task.TaskName, task.TaskDescription, task.TaskNotes, task.TaskPlan, task.TaskColor, task.TaskState, task.TaskCreator, task.TaskOwner)
 		checkError(err)
 	} else {
