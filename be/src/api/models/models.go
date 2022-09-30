@@ -26,6 +26,8 @@ type Task struct {
 	TaskCreator     string `json:"task_creator"`
 	TaskOwner       string `json:"task_owner"`
 	CreatedDate     string `json:"task_created"`
+	FormattedDate   string `json:"formatted_date"`
+	FormattedTime   string `json:"formatted_time"`
 }
 
 type Plan struct {
