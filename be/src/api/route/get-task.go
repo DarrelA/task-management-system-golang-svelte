@@ -6,7 +6,6 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -57,14 +56,17 @@ func GetAllTasks(c *gin.Context) {
 	// sql.NullString is a way to represent null string coming from SQL
 	var TaskID, TaskName, TaskDescription, TaskNotes, TaskPlan, TaskColor, TaskState, TaskCreator, TaskOwner, FormattedDate, FormattedTime sql.NullString
 	// AppAcronym URL params will be passed in here
-	var AppAcronym map[string][]string = c.Request.URL.Query()
-	TaskAppAcronym := strings.Join(AppAcronym["AppAcronym"], "")
+	TaskAppAcronym := c.Query("AppAcronym")
 	rows, err := middleware.SelectAllTasks(TaskAppAcronym)
-	checkGetError("Failed to /get-all-tasks: ", err)
+	if err != nil {
+		middleware.ErrorHandler(c, http.StatusBadRequest, "Failed to /get-all-tasks")
+	}
 	defer rows.Close()
 	for rows.Next() {
 		err = rows.Scan(&TaskID, &TaskName, &TaskDescription, &TaskNotes, &TaskPlan, &TaskColor, &TaskState, &TaskCreator, &TaskOwner, &FormattedDate, &FormattedTime)
-		checkGetError("Failed to scan in /get-all-tasks", err)
+		if err != nil {
+			middleware.ErrorHandler(c, http.StatusInternalServerError, "Failed to scan in /get-all-tasks")
+		}
 
 		response := models.Task{
 			TaskAppAcronym:  TaskAppAcronym,
@@ -87,7 +89,9 @@ func GetAllTasks(c *gin.Context) {
 	c.JSON(200, data)
 
 	err = rows.Err()
-	checkGetError("Some other error occurred", err)
+	if err != nil {
+		middleware.ErrorHandler(c, http.StatusBadRequest, "Some other error occurred.")
+	}
 }
 
 // route: /get-task
