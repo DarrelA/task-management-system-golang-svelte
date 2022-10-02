@@ -111,7 +111,7 @@ func UpdateRNumber(AppRNumber int, TaskAppAcronym string) (sql.Result, error) {
 	return result, err
 }
 
-func UpdateApplication(Description string, Rnum int, StartDate string, EndDate string, PermitCreate string, PermitOpen string) (sql.Result, error) {
+func UpdateApplication(Description string, Rnum int, StartDate string, EndDate string, PermitCreate string, PermitOpen string, PermitToDo string, PermitDoing string, PermitDone string, CreatedDate string ) (sql.Result, error) {
 	result, err := db.Exec(queryUpdateApplication, Description, Rnum, StartDate, EndDate, PermitCreate, PermitOpen)
 	return result, err
 }

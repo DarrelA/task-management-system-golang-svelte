@@ -16,7 +16,7 @@ func UpdateApplication(c *gin.Context) {
 		middleware.ErrorHandler(c, 400, "Bad Request")
 		return
 	}
-
+	GetApplication(c)
 	application.AppAcronym = c.Query("app_acronym")
 	result := middleware.SelectSingleApplication(application.AppAcronym)
 	switch err := result.Scan(&application.Description, &application.Rnumber, &application.PermitCreate, &application.PermitOpen, &application.PermitToDo, &application.PermitDoing, &application.PermitDone, &application.CreatedDate, &application.StartDate, &application.EndDate); err {
@@ -28,8 +28,7 @@ func UpdateApplication(c *gin.Context) {
 	
 	//Application exists
 	case nil:
-		GetApplication(c)
-		_, err := middleware.UpdateApplication(application.Description, application.Rnumber, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen)
+		_, err := middleware.UpdateApplication(application.Description, application.Rnumber, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, application.CreatedDate)
 		if err != nil {
 			fmt.Println(err)
 			return
