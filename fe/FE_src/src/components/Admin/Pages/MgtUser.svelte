@@ -1,6 +1,6 @@
 <script>
-  import Navbar from "../Navbar/IsLoggedInAdmin.svelte";
-  import AccountsTable from "./AccountsTable.svelte";
+  import Navbar from "../NavBar/IsLoggedInAdmin.svelte";
+  import AccountsTable from "./TableAccounts.svelte";
 </script>
 
 <style>

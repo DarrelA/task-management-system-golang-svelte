@@ -1,6 +1,6 @@
 <script>
   import { navigate, Route } from 'svelte-routing';
-  import Login from './Pages/Login.svelte';
+  import Login from './Login.svelte';
 
   export let path;
   export let component;

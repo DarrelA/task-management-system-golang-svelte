@@ -1,6 +1,6 @@
 <script>
   import axios from "axios";
-  import { errorToast, successToast } from "../toast";
+  import { errorToast, successToast } from "../../toast";
   import MultiSelect from "svelte-multiselect";
   import { Form, FormGroup, Row, Col, Input, Label, Dropdown, DropdownToggle, DropdownItem, DropdownMenu } from "sveltestrap";
 
@@ -24,8 +24,8 @@
           selected = [];
           selectedUser = "";
       }
-    } catch (e) {
-        errorToast(e.response.data.message);
+    } catch (error) {
+        errorToast(error.response.data.message);
     }
   }
 
@@ -42,8 +42,8 @@
 
         userArray = userArray;
       }
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      console.error(error);
     }
   }
   $: GetUserData();
