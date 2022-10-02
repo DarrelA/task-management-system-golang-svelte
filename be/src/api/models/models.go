@@ -37,3 +37,11 @@ type Plan struct {
 	StartDate   string `json:"plan_start"`
 	EndDate     string `json:"plan_end"`
 }
+
+type Email struct {
+	Sender  string
+	To      []string
+	Cc      []string
+	Subject string
+	Body    string
+}

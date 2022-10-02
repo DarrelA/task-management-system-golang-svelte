@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"backend/api/models"
 	"fmt"
 	"log"
 	"net/smtp"
@@ -8,14 +9,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
-
-type Mail struct {
-	Sender  string
-	To      []string
-	Cc      []string
-	Subject string
-	Body    string
-}
 
 // include taskname, sender email, recipient email as param
 func SendMail(c *gin.Context) {
@@ -33,7 +26,7 @@ func SendMail(c *gin.Context) {
 	body := "<h3>Task has been completed by team member.</h3>\r\n" +
 		"Review Now <task name>!\r\n"
 
-	mail := Mail{
+	mail := models.Email{
 		Sender:  sender,
 		To:      recipient,
 		Cc:      cc,
@@ -43,6 +36,7 @@ func SendMail(c *gin.Context) {
 
 	msg := BuildMessage(mail)
 
+	// host:port, auth, from, to, []byte
 	err := smtp.SendMail("smtp.mailtrap.io:2525", auth, sender, recipient, []byte(msg))
 	if err != nil {
 		log.Fatal(err)
@@ -52,7 +46,7 @@ func SendMail(c *gin.Context) {
 }
 
 // Compose messsage template
-func BuildMessage(mail Mail) string {
+func BuildMessage(mail models.Email) string {
 	msg := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\r\n"
 	msg += fmt.Sprintf("From: %s\r\n", mail.Sender)
 
