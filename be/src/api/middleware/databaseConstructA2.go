@@ -104,7 +104,9 @@ func SelectAllTasks(TaskAppAcronym string) (*sql.Rows, error) {
 	return result, err
 }
 
-func SelectEmailByUserGroup()
+func SelectEmailByUserGroup() {
+	
+}
 
 // Update Queries
 func UpdateRNumber(AppRNumber int, TaskAppAcronym string) (sql.Result, error) {
