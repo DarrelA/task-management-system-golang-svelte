@@ -1,11 +1,9 @@
 <script>
   import axios from "axios";
-  import { errorToast, successToast } from "../toast";
+  import { errorToast, successToast } from "../../toast";
   import MultiSelect from "svelte-multiselect";
-  import { Button, Form, FormGroup, Input, Label, Row, Col } from "sveltestrap";
+  import { Form, FormGroup, Input, Label, Row, Col } from "sveltestrap";
 
-  let message = "";
-  let code = "";
   export let username;
   let password;
   export let email;
@@ -21,14 +19,12 @@
   export async function handleClick(e) {
     e.preventDefault();
     let user_group = selected.join(",");
-    const json = {loggedInUser, username, password, email, user_group, status };
+    const json = { loggedInUser, username, password, email, user_group, status };
 
     try {
       const response = await axios.post("http://localhost:4000/admin-update-user", json, { withCredentials: true });
       if (response) {
-        message = response.data.message;
-        code = response.data.code;
-        successToast(message);
+        successToast(response.data.message);
         password = "";
       }
     } catch (error) {
@@ -52,8 +48,8 @@
 
         groupsArray = groupsArray;
       }
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      console.error(error);
     }
   }
   $: GetUserGroups();

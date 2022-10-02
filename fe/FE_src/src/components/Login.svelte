@@ -2,7 +2,7 @@
   import axios from "axios";
   import { navigate } from "svelte-routing";
   import { Form, FormGroup, Input, Button } from "sveltestrap";
-  import { errorToast } from "../toast";
+  import { errorToast } from "./toast";
 
   let username;
   let password;

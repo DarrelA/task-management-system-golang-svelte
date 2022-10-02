@@ -1,10 +1,9 @@
 <script>
   import axios from "axios";
   import { onMount } from "svelte";
-  import { Form, FormGroup, Input, Label, Button, Modal, ModalHeader, ModalFooter, Col, Row, Spinner, ModalBody, Styles } from "sveltestrap";
+  import { Form, FormGroup, Input, Label, Col, Row, Spinner, Styles } from "sveltestrap";
   import MultiSelect from "svelte-multiselect";
-
-  import { errorToast, successToast } from "../toast";
+  import { errorToast, successToast } from "../../toast";
 
   let username = "";
   let email = "";
@@ -76,8 +75,8 @@
           });
           groupsArray = groupsArray;
         }
-      } catch (e) {
-        console.error(e);
+      } catch (error) {
+        console.error(error);
       }
     }
     GetUserGroups();

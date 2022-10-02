@@ -1,14 +1,5 @@
 <script>
-    import {
-      Collapse,
-      Navbar,
-      NavbarToggler,
-      NavbarBrand,
-      Nav,
-      NavItem,
-      NavLink
-    } from 'sveltestrap'
-  
+    import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'sveltestrap'
     import axios from "axios";
     import { navigate } from 'svelte-routing';
 

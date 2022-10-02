@@ -1,6 +1,6 @@
 <script>
   import { navigate } from "svelte-routing";
-  import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "sveltestrap";
+  import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from "sveltestrap";
 
   import axios from "axios";
 
