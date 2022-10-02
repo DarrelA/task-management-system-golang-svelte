@@ -44,7 +44,6 @@ func CreateApplication(c *gin.Context) {
 	result := middleware.SelectSingleApplication(application.AppAcronym)
 	switch err := result.Scan(&application.AppAcronym); err {
 	// Create application
-	// Date format yyyy-mm-dd
 	case sql.ErrNoRows:
 		_, err := middleware.InsertApplication(application.AppAcronym, application.Description, application.Rnumber, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone)
 		if err != nil {
