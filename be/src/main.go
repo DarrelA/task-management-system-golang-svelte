@@ -47,9 +47,12 @@ func main() {
 	router.POST("/create-new-application", route.CreateApplication)
 	router.GET("/get-all-applications", route.GetAllApplications)
 	router.GET("/get-application", route.GetApplication)
-	router.POST("/send-email", middleware.SendMail)
+
 	router.GET("/get-one-task", route.GetOneTask)
 	router.GET("/get-all-tasks", route.GetAllTasks)
+
+	// Test sending email
+	router.POST("/send-email", middleware.SendMail)
 
 	port := middleware.LoadENV("SERVER_PORT")
 	server := fmt.Sprintf(":%v", port)
