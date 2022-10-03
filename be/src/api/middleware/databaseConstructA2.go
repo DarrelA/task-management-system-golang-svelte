@@ -29,7 +29,14 @@ var (
 var (
 	queryUpdateRNumber        = `UPDATE application SET app_Rnum = ? WHERE app_acronym = ?;`
 	queryUpdateTaskAuditNotes = `UPDATE task SET task_notes = ? WHERE task_name = ? AND task_app_acronym = ?;`
-	queryUpdateApplication = "UPDATE application SET app_startDate = ?, app_endDate = ?, app_permitCreate = ?, app_permitOpen = ?, app_permitToDo = ?, app_permitDoing = ?, app_permitDone = ? WHERE app_acronym = ?;"
+	queryUpdateApplication = `UPDATE application SET app_startDate = ?, app_endDate = ?, app_permitCreate = ?, app_permitOpen = ?, app_permitToDo = ?, app_permitDoing = ?, app_permitDone = ? WHERE app_acronym = ?;`
+	queryUpdateApplicationStartDate = `UPDATE application SET app_startDate = ? WHERE app_acronym = ?;`
+	queryUpdateApplicationEndDate = `UPDATE application SET app_endDate = ? WHERE app_acronym = ?;`
+	queryUpdateApplicationPermitCreate = `UPDATE application SET app_permitCreate = ? WHERE app_acronym = ?;`
+	queryUpdateApplicationPermitOpen = `UPDATE application SET app_permitOpen = ? WHERE app_acronym = ?;`
+	queryUpdateApplicationPermitToDo = `UPDATE application SET app_permitToDo = ? WHERE app_acronym = ?;`
+	queryUpdateApplicationPermitDoing = `UPDATE application SET app_permitDoing = ? WHERE app_acronym = ?;`
+	queryUpdateApplicationPermitDone = `UPDATE application SET app_permitDone = ? WHERE app_acronym = ?;`
 )
 
 var (
@@ -122,8 +129,43 @@ func UpdateRNumber(AppRNumber int, TaskAppAcronym string) (sql.Result, error) {
 	return result, err
 }
 
-func UpdateApplication(StartDate string, EndDate string, PermitCreate string, PermitOpen string, PermitToDo string, PermitDoing string, PermitDone string) (sql.Result, error) {
-	result, err := db.Exec(queryUpdateApplication, StartDate, EndDate, PermitCreate, PermitOpen, PermitToDo, PermitDoing, PermitDone)
+func UpdateApplication(StartDate string, EndDate string, PermitCreate string, PermitOpen string, PermitToDo string, PermitDoing string, PermitDone string, AppAcronym string) (sql.Result, error) {
+	result, err := db.Exec(queryUpdateApplication, StartDate, EndDate, PermitCreate, PermitOpen, PermitToDo, PermitDoing, PermitDone, AppAcronym)
+	return result, err
+}
+
+func UpdateApplicationStartDate(StartDate string, AppAcronym string) (sql.Result, error) {
+	result, err := db.Exec(queryUpdateApplicationStartDate, StartDate, AppAcronym)
+	return result, err
+}
+
+func UpdateApplicationEndDate(EndDate string, AppAcronym string) (sql.Result, error) {
+	result, err := db.Exec(queryUpdateApplicationEndDate, EndDate, AppAcronym)
+	return result, err
+}
+
+func UpdateApplicationPermitCreate(PermitCreate string, AppAcronym string) (sql.Result, error) {
+	result, err := db.Exec(queryUpdateApplicationPermitCreate, PermitCreate, AppAcronym)
+	return result, err
+}
+
+func UpdateApplicationPermitOpen(PermitOpen string, AppAcronym string) (sql.Result, error) {
+	result, err := db.Exec(queryUpdateApplicationPermitOpen, PermitOpen, AppAcronym)
+	return result, err
+}
+
+func UpdateApplicationPermitToDo(PermitToDo string, AppAcronym string) (sql.Result, error) {
+	result, err := db.Exec(queryUpdateApplicationPermitToDo, PermitToDo, AppAcronym)
+	return result, err
+}
+
+func UpdateApplicationPermitDoing(PermitDoing string, AppAcronym string) (sql.Result, error) {
+	result, err := db.Exec(queryUpdateApplicationPermitDoing, PermitDoing, AppAcronym)
+	return result, err
+}
+
+func UpdateApplicationPermitDone(PermitDone string, AppAcronym string) (sql.Result, error) {
+	result, err := db.Exec(queryUpdateApplicationPermitDone, PermitDone, AppAcronym)
 	return result, err
 }
 
