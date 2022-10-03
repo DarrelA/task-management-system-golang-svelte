@@ -54,7 +54,8 @@ func main() {
 	router.PUT("/task-state-transition", middleware.CheckCookie, route.TaskStateTransition)
 
 	// Test sending email
-	router.POST("/send-email", middleware.SendMail)
+	// router.POST("/send-email", middleware.SendMail)
+
 
 	port := middleware.LoadENV("SERVER_PORT")
 	server := fmt.Sprintf(":%v", port)

@@ -86,3 +86,9 @@ CREATE TABLE IF NOT EXISTS task_notes (
   PRIMARY KEY (task_name,last_updated),
   CONSTRAINT task_name FOREIGN KEY (task_name) REFERENCES task (task_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+INSERT INTO application (app_acronym, app_description, app_Rnum, app_startDate, app_endDate, app_permitCreate, app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone, app_createdDate)
+VALUES ("apple","","2", NOW(), NOW(), null, null, null, null, null, NOW());
+
+INSERT INTO application (app_acronym, app_description, app_Rnum, app_startDate, app_endDate, app_permitCreate, app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone, app_createdDate)
+VALUES ("pear","","2", NOW(), NOW(), "Project Lead", "Project Manager", "Team Member", "Team Member", "Project Lead", NOW());

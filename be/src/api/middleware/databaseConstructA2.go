@@ -16,9 +16,17 @@ var (
 	querySelectSingleApplication  = `SELECT app_description, app_Rnum, app_permitCreate, app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone, app_createdDate, CONVERT(app_startDate, DATE), CONVERT(app_endDate, DATE) FROM application WHERE app_acronym = ?`
 	querySelectTaskNotesTimestamp = `SELECT DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime FROM task WHERE task_name = ?;`
 
+
+	querySelectOneTask = `SELECT task_id, task_name, task_description, task_notes, task_plan, 
+							task_color, task_state, task_creator, task_owner, 
+							DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, 
+							TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime 
+							FROM task WHERE task_name = ? AND task_app_acronym = ?;`
+
 	querySelectAllPlans = `SELECT plan_mvp_name, plan_color, DATE_FORMAT(plan_startDate, "%d/%m/%Y") as formattedStartDate, DATE_FORMAT(plan_endDate, "%d/%m/%Y") as formattedEndDate FROM plan WHERE plan_app_acronym = ?`
 
 	querySelectOneTask = `SELECT task_id, task_name, task_description, task_notes, task_plan,task_color, task_state, task_creator, task_owner,DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate,TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime FROM task WHERE task_name = ? AND task_app_acronym = ?;`
+
 
 	querySelectAllTasks         = `SELECT task_id, task_name, task_description, task_notes, task_plan, task_color, task_state, task_creator, task_owner, DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime FROM task WHERE task_app_acronym = ?;`
 	querySelectEmailByUserGroup = `SELECT accounts.email, usergroup.user_group FROM accounts, usergroup WHERE accounts.username = usergroup.username AND usergroup.user_group = ?`

@@ -10,7 +10,9 @@ import (
 )
 
 func CreateApplication(c *gin.Context) {
-	var application models.Application
+	var (
+		application models.Application
+	)
 
 	if err := c.BindJSON(&application); err != nil {
 		fmt.Println(err)
@@ -19,11 +21,12 @@ func CreateApplication(c *gin.Context) {
 	}
 
 	// Check group : Project Lead
-	// checkGroup := middleware.CheckGroup(c.GetString("username"), "Admin")
-	// if !checkGroup {
-	// 	middleware.ErrorHandler(c, 400, "Unauthorized actions")
-	// 	return
-	// }
+	// replace GetString with "admin" for POSTMAN testing
+	checkGroup := middleware.CheckGroup(c.GetString("username"), "Project Lead")
+	if !checkGroup {
+		middleware.ErrorHandler(c, 400, "Unauthorized actions")
+		return
+	}
 
 	if len(application.AppAcronym) == 0 {
 		middleware.ErrorHandler(c, 400, "Invalid app acronym")
