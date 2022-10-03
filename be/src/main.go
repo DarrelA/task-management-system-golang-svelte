@@ -51,9 +51,6 @@ func main() {
 	router.GET("/get-one-task", route.GetOneTask)
 	router.GET("/get-all-tasks", route.GetAllTasks)
 
-	// Test sending email
-	router.POST("/send-email", middleware.SendMail)
-
 	port := middleware.LoadENV("SERVER_PORT")
 	server := fmt.Sprintf(":%v", port)
 
