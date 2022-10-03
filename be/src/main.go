@@ -51,6 +51,8 @@ func main() {
 	router.GET("/get-one-task", route.GetOneTask)
 	router.GET("/get-all-tasks", route.GetAllTasks)
 
+	router.PUT("/task-state-transition", middleware.CheckCookie, route.TaskStateTransition)
+
 	// Test sending email
 	router.POST("/send-email", middleware.SendMail)
 
