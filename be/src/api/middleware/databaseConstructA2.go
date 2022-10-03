@@ -27,7 +27,7 @@ var (
 var (
 	queryUpdateRNumber        = `UPDATE application SET app_Rnum = ? WHERE app_acronym = ?;`
 	queryUpdateTaskAuditNotes = `UPDATE task SET task_notes = ? WHERE task_name = ? AND task_app_acronym = ?;`
-	queryUpdateApplication = "UPDATE application SET app_description = ?, app_Rnum = ?, app_startDate = ?, app_endDate = ?, app_permitCreate = ?, app_permitOpen = ?, app_permitToDo = ?, app_permitDoing = ?, app_permitDone = ?, app_createdDate = ? WHERE app_acronym = ?;"
+	queryUpdateApplication = "UPDATE application SET app_startDate = ?, app_endDate = ?, app_permitCreate = ?, app_permitOpen = ?, app_permitToDo = ?, app_permitDoing = ?, app_permitDone = ? WHERE app_acronym = ?;"
 )
 
 var (
@@ -115,8 +115,8 @@ func UpdateRNumber(AppRNumber int, TaskAppAcronym string) (sql.Result, error) {
 	return result, err
 }
 
-func UpdateApplication(Description string, Rnum int, StartDate string, EndDate string, PermitCreate string, PermitOpen string, PermitToDo string, PermitDoing string, PermitDone string, CreatedDate string ) (sql.Result, error) {
-	result, err := db.Exec(queryUpdateApplication, Description, Rnum, StartDate, EndDate, PermitCreate, PermitOpen)
+func UpdateApplication(StartDate string, EndDate string, PermitCreate string, PermitOpen string, PermitToDo string, PermitDoing string, PermitDone string) (sql.Result, error) {
+	result, err := db.Exec(queryUpdateApplication, StartDate, EndDate, PermitCreate, PermitOpen, PermitToDo, PermitDoing, PermitDone)
 	return result, err
 }
 
