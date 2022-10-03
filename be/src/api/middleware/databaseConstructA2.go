@@ -14,6 +14,8 @@ var (
 	querySelectSingleApplication  = `SELECT app_description, app_Rnum, app_permitCreate, app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone, app_createdDate, CONVERT(app_startDate, DATE), CONVERT(app_endDate, DATE) FROM application WHERE app_acronym = ?`
 	querySelectTaskNotesTimestamp = `SELECT DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime FROM task WHERE task_name = ?;`
 
+	querySelectAllPlans = `SELECT plan_mvp_name, plan_color, DATE_FORMAT(plan_startDate, "%d/%m/%Y") as formattedStartDate, DATE_FORMAT(plan_endDate, "%d/%m/%Y") as formattedEndDate FROM plan WHERE plan_app_acronym = ?`
+
 	querySelectOneTask = `SELECT task_id, task_name, task_description, task_notes, task_plan, 
 																																																																																																																																																																																	task_color, task_state, task_creator, task_owner, 
 																																																																																																																																																																																	DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, 
@@ -92,6 +94,11 @@ func SelectSingleApplication(AppAcronym string) *sql.Row {
 func SelectTaskNotesTimestamp(TaskName string) *sql.Row {
 	result := db.QueryRow(querySelectTaskNotesTimestamp, TaskName)
 	return result
+}
+
+func SelectAllPlans(PlanAppAcronym string) (*sql.Rows, error) {
+	result, err := db.Query(querySelectAllPlans, PlanAppAcronym)
+	return result, err
 }
 
 func SelectOneTask(TaskName string, TaskAppAcronym string) (*sql.Rows, error) {
