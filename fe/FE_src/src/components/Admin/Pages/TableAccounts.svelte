@@ -63,42 +63,17 @@
   };
 </script>
 
-<style>
-  thead { 
-      background-color: #F4BB44;
-      /* color: #fffbf0; */
-  }
-
-  tbody {
-      background-color: #fffbf0;
-  }
-
-  th, tr {
-      text-align: center;
-  }
-
-  .inactive {
-    color: red;
-    font-weight: bold;
-  }
-
-  .active {
-    color: mediumseagreen;
-    font-weight: bold;
-  }
-</style>
-
 <div class="container-fluid">
   <Row>
     <Col>
-        <h3>User Management</h3>
+      <h3>User Management</h3>
     </Col>
     <Col>
-        <Button style="float:right; font-weight: bold; margin-left: 10px; color: black;" color="warning" on:click={toggleAdd}>Add User</Button>
+      <Button style="float:right; font-weight: bold; margin-left: 10px; color: black;" color="warning" on:click={toggleAdd}>Add User</Button>
     </Col>
   </Row>
 
-  <br/>
+  <br />
 
   <Table bordered responsive>
     <thead>
@@ -119,7 +94,11 @@
           <td class:active={userData.status === "Active"} class:inactive={userData.status === "Inactive"}>{userData.status}</td>
 
           <td>
-            <Button style="font-weight: bold; color: black;" color="warning" on:click={() => editUserData(userData.username, userData.email, userData.user_group, userData.status)}>Update User</Button>
+            <Button
+              style="font-weight: bold; color: black;"
+              color="warning"
+              on:click={() => editUserData(userData.username, userData.email, userData.user_group, userData.status)}>Update User</Button
+            >
           </td>
         </tr>
       {/each}
@@ -150,3 +129,29 @@
     </ModalFooter>
   </Modal>
 </div>
+
+<style>
+  thead {
+    background-color: #f4bb44;
+    /* color: #fffbf0; */
+  }
+
+  tbody {
+    background-color: #fffbf0;
+  }
+
+  th,
+  tr {
+    text-align: center;
+  }
+
+  .inactive {
+    color: red;
+    font-weight: bold;
+  }
+
+  .active {
+    color: mediumseagreen;
+    font-weight: bold;
+  }
+</style>

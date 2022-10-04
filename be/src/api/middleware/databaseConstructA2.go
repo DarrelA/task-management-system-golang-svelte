@@ -125,7 +125,7 @@ func SelectAllTasks(TaskAppAcronym string) (*sql.Rows, error) {
 }
 
 func SelectEmailByUserGroup() {
-
+	
 }
 
 // Update Queries
