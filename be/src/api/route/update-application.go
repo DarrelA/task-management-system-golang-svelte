@@ -18,133 +18,71 @@ func UpdateApplication(c *gin.Context) {
 		middleware.ErrorHandler(c, http.StatusBadRequest, "Bad Request")
 		return
 	}
+
+	if err := c.BindJSON(&application); err != nil {
+		middleware.ErrorHandler(c, http.StatusBadRequest, "Bad Request")
+		return
+	}
+
 	application.AppAcronym = c.Query("app_acronym")
 	currentData := getSelectedApp(application.AppAcronym)
 
+	/////////// Start Date ///////////
 	if application.StartDate == "" {
-		updateStartDate(application.AppAcronym, currentData["start_date"], c)
+		updateAppToDB(application.AppAcronym, currentData["start_date"], application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, c)
 	} else if (application.StartDate != ""){
-		updateStartDate(application.AppAcronym, application.StartDate, c)
+		updateAppToDB(application.AppAcronym, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, c)
 	}
 
+	/////////// End Date ///////////
 	if application.EndDate == "" {
-		updateEndDate(application.AppAcronym, currentData["end_date"], c)
+		updateAppToDB(application.AppAcronym, application.StartDate, currentData["end_date"], application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, c)
 	} else if (application.EndDate != "") {
-		updateEndDate(application.AppAcronym, application.EndDate, c)
+		updateAppToDB(application.AppAcronym, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, c)
 	}
 
+	/////////// Permit Create ///////////
 	if application.PermitCreate == "" {
-		updatePermitCreate(application.AppAcronym, currentData["app_permitCreate"], c)
+		updateAppToDB(application.AppAcronym, application.StartDate, application.EndDate, currentData["app_permitCreate"], application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, c)
 	} else if application.PermitCreate != "" {
-		updatePermitCreate(application.AppAcronym, application.PermitCreate, c)
+		updateAppToDB(application.AppAcronym, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, c)
 	}
 
-	fmt.Println(application.PermitCreate)
-	
+	/////////// Permit Open ///////////
 	if application.PermitOpen == "" {
-		updatePermitOpen(application.AppAcronym, currentData["app_permitOpen"], c)
+		updateAppToDB(application.AppAcronym, application.StartDate, application.EndDate, application.PermitCreate, currentData["app_permitOpen"], application.PermitToDo, application.PermitDoing, application.PermitDone, c)
 	} else if application.PermitOpen != "" {
-		updatePermitOpen(application.AppAcronym, application.PermitOpen, c)
+		updateAppToDB(application.AppAcronym, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, c)
 	}
 
+	/////////// Permit ToDo ///////////
 	if application.PermitToDo == "" {
-		updatePermitToDo(application.AppAcronym, currentData["app_permitToDo"], c)
+		updateAppToDB(application.AppAcronym, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, currentData["app_permitToDo"], application.PermitDoing, application.PermitDone, c)
 	} else if application.PermitToDo != "" {
-		updatePermitToDo(application.AppAcronym, application.PermitToDo, c)
+		updateAppToDB(application.AppAcronym, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, c)
 	}
 
+	/////////// Permit Doing ///////////
 	if application.PermitDoing == "" {
-		updatePermitDoing(application.AppAcronym,currentData["app_permitDoing"], c)
+		updateAppToDB(application.AppAcronym, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, currentData["app_permitDoing"], application.PermitDone, c)
 	} else if application.PermitDoing != "" {
-		updatePermitDoing(application.AppAcronym, application.PermitDoing, c)
+		updateAppToDB(application.AppAcronym, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, c)
 	}
 
+	/////////// Permit Done ///////////
 	if application.PermitDone == "" {
-		updatePermitDone(application.AppAcronym, currentData["app_permitDone"], c)
+		updateAppToDB(application.AppAcronym, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, currentData["app_permitDone"], c)
 	} else if application.PermitDone != "" {
-		updatePermitDone(application.AppAcronym, application.PermitDone, c)
+		updateAppToDB(application.AppAcronym, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, c)
 	}
-
-	// result := middleware.SelectSingleApplication(application.AppAcronym)
-	// fmt.Println(application.AppAcronym)
-	// switch err := result.Scan(&application.Description, &application.Rnumber, &application.PermitCreate, &application.PermitOpen, &application.PermitToDo, &application.PermitDoing, &application.PermitDone, &application.CreatedDate, &application.StartDate, &application.EndDate); err {
-	// //Application not found
-	// case sql.ErrNoRows: 
-	// 	middleware.ErrorHandler(c, 400, "Application does not exist")	
-	// 	return
-	
-	// //Application exists
-	// case nil:
-	// 	_, err := middleware.UpdateApplication(application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, application.AppAcronym)
-	// 	fmt.Println(application.PermitCreate)
-	// 	if err != nil {
-	// 		fmt.Println(err)
-	// 	}
-	// }
-	// c.JSON(200, gin.H{"code": 200, "message": "Application successfully updated!"})
 }
 
-func updateStartDate(AppAcronym string, StartDate string, c *gin.Context) {
-	_, err := middleware.UpdateApplicationStartDate(StartDate, AppAcronym)
+func updateAppToDB(AppAcronym string, StartDate string, EndDate string, PermitCreate string, PermitOpen string, PermitToDo string, PermitDoing string, PermitDone string, c *gin.Context) {
+	_, err := middleware.UpdateApplication(StartDate, EndDate, PermitCreate, PermitOpen, PermitToDo, PermitDoing, PermitDone, AppAcronym)
 	if err != nil {
 		fmt.Println(err)
 	}
-	successMessage := fmt.Sprintf("StartDate %s was successfully updated!", StartDate)
-	c.JSON(http.StatusCreated, gin.H{"code": 200, "message": successMessage})
-}
-
-func updateEndDate(AppAcronym string, EndDate string, c *gin.Context) {
-	_, err := middleware.UpdateApplicationEndDate(EndDate, AppAcronym)
-	if err != nil {
-		fmt.Println(err)
-	}
-	successMessage := fmt.Sprintf("EndDate %s was successfully updated!", EndDate)
-	c.JSON(http.StatusCreated, gin.H{"code": 200, "message": successMessage})
-}
-
-func updatePermitCreate(AppAcronym string, PermitCreate string, c *gin.Context) {
-	_, err := middleware.UpdateApplicationPermitCreate(PermitCreate, AppAcronym)
-	if err != nil {
-		fmt.Println(err)
-	}
-	successMessage := fmt.Sprintf("PermitCreate %s was successfully updated!", PermitCreate)
-	c.JSON(http.StatusCreated, gin.H{"code": 200, "message": successMessage})
-}
-
-func updatePermitOpen(AppAcronym string, PermitOpen string, c *gin.Context) {
-	_, err := middleware.UpdateApplicationPermitOpen(PermitOpen, AppAcronym)
-	if err != nil {
-		fmt.Println(err)
-	}
-	successMessage := fmt.Sprintf("PermitOpen %s was successfully updated!", PermitOpen)
-	c.JSON(http.StatusCreated, gin.H{"code": 200, "message": successMessage})
-}
-
-func updatePermitToDo(AppAcronym string, PermitToDo string, c *gin.Context) {
-	_, err := middleware.UpdateApplicationPermitToDo(PermitToDo, AppAcronym)
-	if err != nil {
-		fmt.Println(err)
-	}
-	successMessage := fmt.Sprintf("PermitToDo %s was successfully updated!", PermitToDo)
-	c.JSON(http.StatusCreated, gin.H{"code": 200, "message": successMessage})
-}
-
-func updatePermitDoing(AppAcronym string, PermitDoing string, c *gin.Context) {
-	_, err := middleware.UpdateApplicationPermitDoing(PermitDoing, AppAcronym)
-	if err != nil {
-		fmt.Println(err)
-	}
-	successMessage := fmt.Sprintf("PermitDoing %s was successfully updated!", PermitDoing)
-	c.JSON(http.StatusCreated, gin.H{"code": 200, "message": successMessage})
-}
-
-func updatePermitDone(AppAcronym string, PermitDone string, c *gin.Context) {
-	_, err := middleware.UpdateApplicationPermitDone(PermitDone, AppAcronym)
-	if err != nil {
-		fmt.Println(err)
-	}
-	successMessage := fmt.Sprintf("PermitDone %s was successfully updated!", PermitDone)
-	c.JSON(http.StatusCreated, gin.H{"code": 200, "message": successMessage})
+	c.JSON(http.StatusCreated, gin.H{"code": 200, "message": "Application successfully updated"})
 }
 
 func getSelectedApp (AppAcronym string) map[string]string {
