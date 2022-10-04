@@ -78,13 +78,16 @@ CREATE TABLE IF NOT EXISTS task (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 CREATE TABLE IF NOT EXISTS task_notes (
+  task_notes_id int NOT NULL AUTO_INCREMENT,
   task_name varchar(255) NOT NULL,
   task_note longtext,
   task_owner varchar(255) NOT NULL,
   task_state enum('Open','ToDo','Doing','Done','Closed'),
+  task_app_acronym varchar(255) NOT NULL,
   last_updated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (task_name,last_updated),
+  PRIMARY KEY (task_notes_id),
   CONSTRAINT task_name FOREIGN KEY (task_name) REFERENCES task (task_name)
+  CONSTRAINT task_app_acronym FOREIGN KEY (task_app_acronym) REFERENCES application (app_acronym)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 INSERT INTO application (app_acronym, app_description, app_Rnum, app_startDate, app_endDate, app_permitCreate, app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone, app_createdDate)

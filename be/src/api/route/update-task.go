@@ -4,8 +4,9 @@ import (
 	"backend/api/middleware"
 	"backend/api/models"
 	"database/sql"
+	"fmt"
+	"log"
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,149 +18,237 @@ import (
 // - check task notes if there is task notes (insert in tasknotes table and update tasknotes in task table)/there is no task notes (dont need insert in tasknotes table and update tasknotes in task table)
 func UpdateTask(c *gin.Context) {
 	var task models.Task
+	// params
+	task.TaskAppAcronym = c.Query("AppAcronym")
+	task.TaskName = c.Query("TaskName")
 
+	// call BindJSON to bind the received JSON to task
 	if err := c.BindJSON(&task); err != nil {
 		checkError(err)
 		middleware.ErrorHandler(c, http.StatusBadRequest, "Bad Request")
 		return
 	}
 
-}
+	// check if taskname exists
+	result := middleware.SelectTaskName(task.TaskName, task.TaskAppAcronym)
 
-// check if plan is empty
-func CheckTaskPlan(task models.Task, c *gin.Context) {
+	fmt.Println(task.TaskAppAcronym)
+	fmt.Println(task.TaskName)
 
-}
+	switch err := result.Scan(&task.TaskName); err {
 
-// check if task notes is empty
-func CheckTaskNotes(task models.Task, c *gin.Context) {
+	// task name does not exist
+	case sql.ErrNoRows:
+		middleware.ErrorHandler(c, 400, "Task name does not exist")
+		return
 
-}
+	// task name exists
+	case nil:
+		// task state check
+		task.TaskState = checkTaskState(task, c)
 
-// insert task notes
-func InsertTaskNotes(task models.Task, c *gin.Context) {
-	// do all the checking
-	// insert task notes
-}
+		// permit check
+		task.TaskOwner = checkPermit(task, c)
+		fmt.Println(task.TaskOwner)
 
-func contains(s [5]string, str string) bool {
-	for _, v := range s {
-		if v == str {
-			return true
+		// update task with/without plan
+		if (task.TaskOwner != "") {
+			fmt.Println("line 56")
+			
+			// plan color check
+			task.TaskColor = checkTaskPlanColor(task, c)
+
+			// task notes check
+			task.TaskNotes = checkTaskNotes(task, c)
+			updateTaskTable(task, c)
+			return
 		}
 	}
-
-	return false
 }
 
-func TaskStateTransition(c *gin.Context) {
-	var task models.Task
-
-	if err := c.BindJSON(&task); err != nil {
-		middleware.ErrorHandler(c, http.StatusBadRequest, "Bad Request")
-		return
-	}
-
-	// validation for valid states
-	validAppPermitStates := [5]string{"Open", "ToDo", "Doing", "Done", "Closed"}
-	isValidState := contains(validAppPermitStates, task.TaskState)
-	if !isValidState {
-		middleware.ErrorHandler(c, http.StatusBadRequest, "Invalid Task State")
-		return
-	}
-
-	// validation for promoting and demoting state
-	// after querying db TaskState
-	taskState := middleware.SelectTaskState(task.TaskName, task.TaskAppAcronym)
-
+// check task state
+// 1. no task state (return empty string)
+// 2. has task state (return task state string)
+func checkTaskState(task models.Task, c *gin.Context) string {
 	var TaskState sql.NullString
-	err := taskState.Scan(&TaskState)
-	if err != nil {
-		middleware.ErrorHandler(c, http.StatusBadRequest, "Bad Request")
-		return
+
+	result := middleware.SelectTaskState(task.TaskName, task.TaskAppAcronym)
+
+	switch err := result.Scan(&TaskState); err {
+	case sql.ErrNoRows:
+		task.TaskState = ""
+
+	case nil:
+		task.TaskState = TaskState.String
 	}
 
-	if (TaskState.String == "Open" && task.TaskState != "Open" && task.TaskState != "ToDo") ||
-		(TaskState.String == "ToDo" && task.TaskState != "ToDo" && task.TaskState != "Doing") ||
-		(TaskState.String == "Doing" && task.TaskState != "Doing" && task.TaskState != "ToDo" && task.TaskState != "Done") ||
-		(TaskState.String == "Done" && task.TaskState != "Done" && task.TaskState != "Doing" && task.TaskState != "Closed") ||
-		(TaskState.String == "Closed" && task.TaskState != "Closed") {
-		middleware.ErrorHandler(c, http.StatusBadRequest, "Invalid State Transition")
-		return
+	return task.TaskState
+}
+
+
+
+func checkPermit(task models.Task, c *gin.Context) string {
+	var PermitOpen sql.NullString
+	var PermitToDo sql.NullString
+	var PermitDoing sql.NullString
+	var PermitDone sql.NullString
+	var TaskOwner string
+
+	// select query from application (4 permits)
+	result := middleware.SelectAppPermits(task.TaskAppAcronym)
+
+	switch err := result.Scan(&PermitOpen, &PermitToDo, &PermitDoing, &PermitDone); err {
+	
+	// no app permits
+	case sql.ErrNoRows:
+		middleware.ErrorHandler(c, 400, "Application does not exist")
+
+	// app permits
+	case nil:
+		// for each task state, check user group if authorized to update task
+		switch {
+		case task.TaskState == "Open":
+			checkGroup := middleware.CheckGroup(c.GetString("username"), PermitOpen.String)
+			fmt.Println("username here", c.GetString("username"))
+			fmt.Println(checkGroup)
+			if !checkGroup {
+				fmt.Println("Not Here")
+				middleware.ErrorHandler(c, 400, "Unauthorized actions")
+				TaskOwner = ""
+			} else {
+				fmt.Println("Here")
+				TaskOwner = c.GetString("username")
+			}
+			// return TaskOwner
+
+		case task.TaskState == "ToDo":
+			checkGroup := middleware.CheckGroup(c.GetString("username"), PermitToDo.String)
+			if !checkGroup {
+				middleware.ErrorHandler(c, 400, "Unauthorized actions")
+				TaskOwner = ""
+			} else {
+				TaskOwner = c.GetString("username")
+			}
+			// return TaskOwner
+
+		case task.TaskState == "Doing":
+			checkGroup := middleware.CheckGroup(c.GetString("username"), PermitDoing.String)
+			if !checkGroup {
+				middleware.ErrorHandler(c, 400, "Unauthorized actions")
+				TaskOwner = ""
+			} else {
+				TaskOwner = c.GetString("username")
+			}
+			// return TaskOwner
+
+		case task.TaskState == "Done":
+			checkGroup := middleware.CheckGroup(c.GetString("username"), PermitDone.String)
+			if !checkGroup {
+				middleware.ErrorHandler(c, 400, "Unauthorized actions")
+				TaskOwner = ""
+			} else {
+				TaskOwner = c.GetString("username")
+			}
+			// return TaskOwner
+
+		default:
+			fmt.Println("Task state not available")
+			TaskOwner = ""
+		}
 	}
 
-	// validation for app permit rights
-	// UserGroups is case sensitive
-	appPermits := middleware.SelectAppPermits(task.TaskAppAcronym)
+	return TaskOwner
+}
 
-	var PermitOpen, PermitToDo, PermitDoing, PermitDone sql.NullString
-	err = appPermits.Scan(&PermitOpen, &PermitToDo, &PermitDoing, &PermitDone)
-	if err != nil {
-		middleware.ErrorHandler(c, http.StatusInternalServerError, "Failed to scan in /task-state-transition")
-		return
+// check if there is plan color
+// 1. no plan color (return empty string)
+// 2. has plan color (return plan color)
+func checkTaskPlanColor(task models.Task, c *gin.Context) string {
+	var PlanColor sql.NullString
+
+	result := middleware.SelectPlanColor(task.TaskPlan)
+
+	switch err := result.Scan(&PlanColor); err {
+	case sql.ErrNoRows:
+		task.TaskColor = ""
+
+	case nil:
+		task.TaskColor = PlanColor.String
 	}
 
-	Username := c.GetString("username")
-	userGroups := middleware.SelectUserFromUserGroupByUsername(Username)
-	var UserGroups sql.NullString
-	err = userGroups.Scan(&UserGroups)
-	if err != nil {
-		middleware.ErrorHandler(c, http.StatusInternalServerError, "Failed to scan in /task-state-transition")
-		return
-	}
+	return task.TaskColor
+}
 
-	switch checkAppPermit := TaskState.String; checkAppPermit {
-	case "Open":
-		isAuthorized := strings.Contains(UserGroups.String, PermitOpen.String)
-		if !isAuthorized {
-			middleware.ErrorHandler(c, http.StatusUnauthorized, "Unauthorized")
-			return
+// check if there is task notes
+// 1. no new task notes (get existing task notes from task table and return task notes)
+// 2. has new task notes (insert task notes into task_notes table and return formatted task notes)
+func checkTaskNotes(task models.Task, c *gin.Context) string {
+	var TaskNotes, TaskNotesDate, TaskNotesTime, TaskOwner, TaskState sql.NullString
+	var taskNotesAuditString string
+
+	if !middleware.CheckLength(task.TaskNotes) {
+
+		// insert task notes, task owner and task state into task notes table
+		_, err := middleware.InsertCreateTaskNotes(task.TaskName, task.TaskNotes, task.TaskOwner, task.TaskState, task.TaskAppAcronym)
+
+		if err != nil {
+			panic(err)
 		}
 
-	case "ToDo":
-		isAuthorized := strings.Contains(UserGroups.String, PermitToDo.String)
-		if !isAuthorized {
-			middleware.ErrorHandler(c, http.StatusUnauthorized, "Unauthorized")
-			return
+		// format new task notes
+		// concat with existing task notes
+		rows, err := middleware.SelectTaskNotesTimestamp(task.TaskName, task.TaskAppAcronym)
+		if err != nil {
+			log.Fatal(err)
 		}
 
-	case "Doing":
-		isAuthorized := strings.Contains(UserGroups.String, PermitDoing.String)
-		if !isAuthorized {
-			middleware.ErrorHandler(c, http.StatusUnauthorized, "Unauthorized")
-			return
+		for rows.Next() {
+			if err := rows.Scan(&TaskNotesDate, &TaskNotesTime, &TaskNotes, &TaskOwner, &TaskState); err != nil {
+				log.Fatal(err)
+			}
+
+			taskNotesAuditString += TaskNotesDate.String + " " + TaskNotesTime.String + "\n" + "Task Owner: " + TaskOwner.String + ", Task State: " + TaskState.String + "\n" + TaskNotes.String + " \n\n"
 		}
 
-	case "Done":
-		isAuthorized := strings.Contains(UserGroups.String, PermitDone.String)
-		if !isAuthorized {
-			middleware.ErrorHandler(c, http.StatusUnauthorized, "Unauthorized")
-			return
-		}
+		task.TaskNotes = taskNotesAuditString
+		
+	} else {
+		// get existing task notes
 
-	default:
-		middleware.ErrorHandler(c, http.StatusBadRequest, "Bad Request")
-		return
+		result := middleware.SelectTaskNotes(task.TaskName, task.TaskAppAcronym)
+
+		switch err := result.Scan(&TaskNotes); err {
+
+		case sql.ErrNoRows:
+			middleware.ErrorHandler(c, 400, "Task does not exist")
+
+		case nil:
+			task.TaskNotes = TaskNotes.String
+		}
 	}
 
-	_, err = middleware.UpdateTaskState(Username, task.TaskState, task.TaskName, task.TaskAppAcronym)
-	if err != nil {
-		middleware.ErrorHandler(c, http.StatusInternalServerError, "Failed to update in /task-state-transition")
-		return
+	return task.TaskNotes
+}
+
+// check if there is a plan
+// 1. yes: insert with plan (plan name)
+// 2. no: insert without plan (null)
+func updateTaskTable(task models.Task, c *gin.Context) {
+	var TaskPlan *string = nil
+
+	if !middleware.CheckLength(task.TaskPlan) {
+		_, err := middleware.UpdateTask(task.TaskNotes, task.TaskPlan, task.TaskColor, task.TaskOwner, task.TaskName, task.TaskAppAcronym)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		fmt.Println("line 245")
+		fmt.Println("line 246", task.TaskNotes)
+		_, err := middleware.UpdateTaskWithoutPlan(task.TaskNotes, TaskPlan, task.TaskColor, task.TaskOwner, task.TaskName, task.TaskAppAcronym)
+		if err != nil {
+			panic(err)
+		}
 	}
 
-	// @TODO: update notes to include state change
-
-	// @TODO: send email to ALL project leads from team member once task state is updated to done
-
-	// @TODO: discuss on what to return to FE
-	// Below is for dev testing
-	c.JSON(200, gin.H{
-		"PermitOpen":  PermitOpen.String,
-		"PermitToDo":  PermitToDo.String,
-		"PermitDoing": PermitDoing.String,
-		"PermitDone":  PermitDone.String,
-		"UserGroups":  UserGroups.String,
-	})
-
+	c.JSON(200, gin.H{"code": 200, "message": "Task updated successfully"})
 }

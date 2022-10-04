@@ -1,7 +1,7 @@
 <script>
-  import AdminNavbar from "../Navbar/IsLoggedInAdmin.svelte";
-  import UserNavbar from "../Navbar/IsLoggedInUser.svelte";
-  import CreateTask from "../Kanban/Form/CreateTask.svelte"
+  import AdminNavbar from "./Admin/NavBar/IsLoggedInAdmin.svelte";
+  import UserNavbar from "./User/Navbar/IsLoggedInUser.svelte";
+  import CreateTask from "./Kanban/Form/CreateTask.svelte"
 
   const isAdmin = localStorage.getItem("isAdmin");
   let username = localStorage.getItem("username");
