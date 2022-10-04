@@ -32,6 +32,7 @@ var (
 	queryUpdateRNumber        = `UPDATE application SET app_Rnum = ? WHERE app_acronym = ?;`
 	queryUpdateTaskState      = `UPDATE task SET task_owner = ?, task_state = ? WHERE task_name = ? AND task_app_acronym = ?;`
 	queryUpdateTaskAuditNotes = `UPDATE task SET task_notes = ? WHERE task_name = ? AND task_app_acronym = ?;`
+	queryUpdateApplication = `UPDATE application SET app_startDate = ?, app_endDate = ?, app_permitCreate = ?, app_permitOpen = ?, app_permitToDo = ?, app_permitDoing = ?, app_permitDone = ? WHERE app_acronym = ?;`
 )
 
 var (
@@ -125,7 +126,6 @@ func SelectAllTasks(TaskAppAcronym string) (*sql.Rows, error) {
 }
 
 func SelectEmailByUserGroup() {
-
 }
 
 // Update Queries
@@ -138,9 +138,12 @@ func UpdateTaskState(Username string, TaskState string, TaskName string, TaskApp
 	result, err := db.Exec(queryUpdateTaskState, Username, TaskState, TaskName, TaskAppAcronym)
 	return result, err
 }
+func UpdateApplication(StartDate string, EndDate string, PermitCreate string, PermitOpen string, PermitToDo string, PermitDoing string, PermitDone string, AppAcronym string) (sql.Result, error) {
+	result, err := db.Exec(queryUpdateApplication, StartDate, EndDate, PermitCreate, PermitOpen, PermitToDo, PermitDoing, PermitDone, AppAcronym)
+	return result, err
+}
 
 // Insert Queries
-
 func InsertApplication(AppAcronym string, Description string, Rnum int, StartDate string, EndDate string, PermitCreate string, PermitOpen string, PermitToDo string, PermitDoing string, PermitDone string) (sql.Result, error) {
 	result, err := db.Exec(queryInsertApplication, AppAcronym, Description, Rnum, StartDate, EndDate, PermitCreate, PermitOpen, PermitToDo, PermitDoing, PermitDone)
 	return result, err

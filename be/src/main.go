@@ -38,6 +38,7 @@ func main() {
 	router.POST("/admin-create-user", middleware.CheckCookie, route.AdminCreateUser)
 	router.POST("/admin-create-group", middleware.CheckCookie, route.AdminCreateGroup)
 	router.POST("/update-user", middleware.CheckCookie, route.UpdateUser)
+	router.POST("/update-application", route.UpdateApplication)
 	router.GET("/get-users", middleware.CheckCookie, route.GetUsers)
 	router.GET("/get-user-groups", middleware.CheckCookie, route.GetUserGroup)
 	router.GET("/get-users-in-group", middleware.CheckCookie, route.GetUsersInGroup)
