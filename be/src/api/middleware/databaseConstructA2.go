@@ -5,27 +5,25 @@ import (
 )
 
 var (
-	querySelectPermitCreate       = `SELECT app_permitCreate FROM application WHERE app_acronym = ?`
-	querySelectAppPermits         = `SELECT app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone FROM application WHERE app_acronym = ?`
-	querySelectRNumber            = `SELECT app_Rnum FROM application WHERE app_acronym = ?;`
-	querySelectTaskName           = `SELECT task_name FROM task WHERE task_name = ? AND task_app_acronym = ?;`
-	querySelectTaskState          = `SELECT task_state FROM task WHERE task_name = ? AND task_app_acronym = ?;`
-	querySelectTaskID             = `SELECT task_id FROM task WHERE task_app_acronym = ?;`
-	querySelectPlanColor          = `SELECT plan_color FROM plan WHERE plan_mvp_name = ?;`
-	querySelectTaskNotes          = `SELECT task_notes FROM task WHERE task_name = ? AND task_app_acronym = ?`
-	querySelectAllApplications    = `SELECT app_acronym, app_description, app_Rnum, app_startDate, app_endDate FROM application`
-	querySelectSingleApplication  = `SELECT app_description, app_Rnum, app_permitCreate, app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone, app_createdDate, CONVERT(app_startDate, DATE), CONVERT(app_endDate, DATE) FROM application WHERE app_acronym = ?`
-	querySelectTaskNotesTimestamp = `SELECT DATE_FORMAT(last_updated, "%d/%m/%Y") as formattedDate, TIME_FORMAT(last_updated, "%H:%i:%s") as formattedTime, task_note, task_owner, task_state FROM task_notes WHERE task_name = ? AND task_app_acronym = ? ORDER BY last_updated DESC;`
+	querySelectPermitCreate              = `SELECT app_permitCreate FROM application WHERE app_acronym = ?`
+	querySelectAppPermits                = `SELECT app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone FROM application WHERE app_acronym = ?`
+	querySelectRNumber                   = `SELECT app_Rnum FROM application WHERE app_acronym = ?;`
+	querySelectTaskName                  = `SELECT task_name FROM task WHERE task_name = ? AND task_app_acronym = ?;`
+	querySelectTaskState                 = `SELECT task_state FROM task WHERE task_name = ? AND task_app_acronym = ?;`
+	querySelectTaskID                    = `SELECT task_id FROM task WHERE task_app_acronym = ?;`
+	querySelectPlanColor                 = `SELECT plan_color FROM plan WHERE plan_mvp_name = ?;`
+	querySelectTaskNotes                 = `SELECT task_notes FROM task WHERE task_name = ? AND task_app_acronym = ?`
+	querySelectAllApplications           = `SELECT app_acronym, app_description, app_Rnum, app_startDate, app_endDate FROM application`
+	querySelectSingleApplication         = `SELECT app_description, app_Rnum, app_permitCreate, app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone, app_createdDate, CONVERT(app_startDate, DATE), CONVERT(app_endDate, DATE) FROM application WHERE app_acronym = ?`
+	querySelectCreatedTaskNotesTimestamp = `SELECT DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, TIME_FORMAT(task_createDate, "%H:%i:%s") as formattedTime FROM task WHERE task_name = ? AND task_app_acronym = ?`
+	querySelectTaskNotesTimestamp        = `SELECT DATE_FORMAT(last_updated, "%d/%m/%Y") as formattedDate, TIME_FORMAT(last_updated, "%H:%i:%s") as formattedTime, task_note, task_owner, task_state FROM task_notes WHERE task_name = ? AND task_app_acronym = ? ORDER BY last_updated DESC;`
 
-	querySelectOneTask = `SELECT task_id, task_name, task_description, task_notes, task_plan, 
-						task_color, task_state, task_creator, task_owner, 
-						DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, 
-						TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime 
-						FROM task WHERE task_name = ? AND task_app_acronym = ?;`
+	querySelectOneTask = `SELECT task_id, task_name, task_description, task_notes, task_plan,task_color, task_state, task_creator, task_owner,DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate,TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime FROM task WHERE task_name = ? AND task_app_acronym = ?;`
 
 	querySelectAllPlans = `SELECT plan_mvp_name, plan_color, DATE_FORMAT(plan_startDate, "%d/%m/%Y") as formattedStartDate, DATE_FORMAT(plan_endDate, "%d/%m/%Y") as formattedEndDate FROM plan WHERE plan_app_acronym = ?`
 
 	querySelectAllTasks         = `SELECT task_id, task_name, task_description, task_notes, task_plan, task_color, task_state, task_creator, task_owner, DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime FROM task WHERE task_app_acronym = ?;`
+	querySelectEmailByUsername  = `SELECT email FROM accounts WHERE username = ?;`
 	querySelectEmailByUserGroup = `SELECT username, email FROM accounts WHERE user_group LIKE CONCAT("%", ? , "%");`
 )
 
@@ -137,6 +135,10 @@ func SelectAllTasks(TaskAppAcronym string) (*sql.Rows, error) {
 	return result, err
 }
 
+func SelectEmailByUsername(username string) *sql.Row {
+	result := db.QueryRow(querySelectEmailByUsername, username)
+	return result
+}
 func SelectEmailByUserGroup(groupname string) (*sql.Rows, error) {
 	result, err := db.Query(querySelectEmailByUserGroup, groupname)
 	return result, err
