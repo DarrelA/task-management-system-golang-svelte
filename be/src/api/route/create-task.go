@@ -89,11 +89,11 @@ func validateTaskNotes(task models.Task, c *gin.Context) {
 	var TaskNotesDate, TaskNotesTime sql.NullString
 	if !middleware.CheckLength(task.TaskNotes) {
 		insertTaskTable(task)
-		result := middleware.SelectTaskNotesTimestamp(task.TaskName)
-		result.Scan(&TaskNotesDate, &TaskNotesTime)
+		result, err := middleware.SelectTaskNotesTimestamp(task.TaskName, task.TaskAppAcronym)
+		result.Scan(&TaskNotesDate, &TaskNotesTime, &task.TaskNotes, &task.TaskOwner, &task.TaskState)
 		taskNotesAuditString := TaskNotesDate.String + " " + TaskNotesTime.String + "\n" + "Task Owner: " + task.TaskOwner + ", Task State: " + task.TaskState + "\n" + task.TaskNotes + " \n"
 		fmt.Println("tasknotesAuditString: ", taskNotesAuditString)
-		_, err := middleware.UpdateTaskAuditNotes(taskNotesAuditString, task.TaskName, task.TaskAppAcronym)
+		_, err = middleware.UpdateTaskAuditNotes(taskNotesAuditString, task.TaskName, task.TaskAppAcronym)
 		checkError(err)
 		_, err = middleware.InsertCreateTaskNotes(task.TaskName, task.TaskNotes, task.TaskOwner, task.TaskState)
 		checkError(err)
