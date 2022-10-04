@@ -5,17 +5,18 @@ import (
 )
 
 var (
-	querySelectPermitCreate       = `SELECT app_permitCreate FROM application WHERE app_acronym = ?`
-	querySelectAppPermits         = `SELECT app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone FROM application WHERE app_acronym = ?`
-	querySelectRNumber            = `SELECT app_Rnum FROM application WHERE app_acronym = ?;`
-	querySelectTaskName           = `SELECT task_name FROM task WHERE task_name = ? AND task_app_acronym = ?;`
-	querySelectTaskState          = `SELECT task_state FROM task WHERE task_name = ? AND task_app_acronym = ?;`
-	querySelectTaskID             = `SELECT task_id FROM task WHERE task_app_acronym = ?;`
-	querySelectPlanColor          = `SELECT plan_color FROM plan WHERE plan_mvp_name = ?;`
-	querySelectTaskNotes 					= `SELECT task_notes FROM task WHERE task_name = ? AND task_app_acronym = ?`
-	querySelectAllApplications    = `SELECT app_acronym, app_description, app_Rnum, app_startDate, app_endDate FROM application`
-	querySelectSingleApplication  = `SELECT app_description, app_Rnum, app_permitCreate, app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone, app_createdDate, CONVERT(app_startDate, DATE), CONVERT(app_endDate, DATE) FROM application WHERE app_acronym = ?`
-	querySelectTaskNotesTimestamp = `SELECT DATE_FORMAT(last_updated, "%d/%m/%Y") as formattedDate, TIME_FORMAT(last_updated, "%H:%i:%s") as formattedTime, task_note, task_owner, task_state FROM task_notes WHERE task_name = ? AND task_app_acronym = ? ORDER BY last_updated DESC;`
+	querySelectPermitCreate              = `SELECT app_permitCreate FROM application WHERE app_acronym = ?`
+	querySelectAppPermits                = `SELECT app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone FROM application WHERE app_acronym = ?`
+	querySelectRNumber                   = `SELECT app_Rnum FROM application WHERE app_acronym = ?;`
+	querySelectTaskName                  = `SELECT task_name FROM task WHERE task_name = ? AND task_app_acronym = ?;`
+	querySelectTaskState                 = `SELECT task_state FROM task WHERE task_name = ? AND task_app_acronym = ?;`
+	querySelectTaskID                    = `SELECT task_id FROM task WHERE task_app_acronym = ?;`
+	querySelectPlanColor                 = `SELECT plan_color FROM plan WHERE plan_mvp_name = ?;`
+	querySelectTaskNotes                 = `SELECT task_notes FROM task WHERE task_name = ? AND task_app_acronym = ?`
+	querySelectAllApplications           = `SELECT app_acronym, app_description, app_Rnum, app_startDate, app_endDate FROM application`
+	querySelectSingleApplication         = `SELECT app_description, app_Rnum, app_permitCreate, app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone, app_createdDate, CONVERT(app_startDate, DATE), CONVERT(app_endDate, DATE) FROM application WHERE app_acronym = ?`
+	querySelectCreatedTaskNotesTimestamp = `SELECT DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, TIME_FORMAT(task_createDate, "%H:%i:%s") as formattedTime FROM task WHERE task_name = ? AND task_app_acronym = ?`
+	querySelectTaskNotesTimestamp        = `SELECT DATE_FORMAT(last_updated, "%d/%m/%Y") as formattedDate, TIME_FORMAT(last_updated, "%H:%i:%s") as formattedTime, task_note, task_owner, task_state FROM task_notes WHERE task_name = ? AND task_app_acronym = ? ORDER BY last_updated DESC;`
 
 	querySelectOneTask = `SELECT task_id, task_name, task_description, task_notes, task_plan, 
 						task_color, task_state, task_creator, task_owner, 
@@ -33,8 +34,8 @@ var (
 	queryUpdateRNumber        = `UPDATE application SET app_Rnum = ? WHERE app_acronym = ?;`
 	queryUpdateTaskState      = `UPDATE task SET task_owner = ?, task_state = ? WHERE task_name = ? AND task_app_acronym = ?;`
 	queryUpdateTaskAuditNotes = `UPDATE task SET task_notes = ? WHERE task_name = ? AND task_app_acronym = ?;`
-	queryUpdateApplication 		= `UPDATE application SET app_startDate = ?, app_endDate = ?, app_permitCreate = ?, app_permitOpen = ?, app_permitToDo = ?, app_permitDoing = ?, app_permitDone = ? WHERE app_acronym = ?;`
-	queryUpdateTask 					= `UPDATE task SET task_notes = ?, task_plan = ?, task_color = ?,  task_owner = ? WHERE task_name = ? AND task_app_acronym = ?`
+	queryUpdateApplication    = `UPDATE application SET app_startDate = ?, app_endDate = ?, app_permitCreate = ?, app_permitOpen = ?, app_permitToDo = ?, app_permitDoing = ?, app_permitDone = ? WHERE app_acronym = ?;`
+	queryUpdateTask           = `UPDATE task SET task_notes = ?, task_plan = ?, task_color = ?,  task_owner = ? WHERE task_name = ? AND task_app_acronym = ?`
 )
 
 var (
@@ -42,7 +43,7 @@ var (
 	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()); `
 
 	queryInsertTask            = `INSERT INTO task (task_app_acronym, task_id, task_name, task_description, task_notes, task_plan, task_color, task_state, task_creator, task_owner, task_createDate) VALUES (?,?,?,?,?,?,?,?,?,?,now());`
-	queryInsertCreateTaskNotes = `INSERT INTO task_notes (task_name, task_note, task_owner, task_state, last_updated) VALUES (?,?,?,?,now());`
+	queryInsertCreateTaskNotes = `INSERT INTO task_notes (task_name, task_note, task_owner, task_state, task_app_acronym, last_updated) VALUES (?,?,?,?,?,now());`
 )
 
 // Insert Queries
@@ -56,8 +57,8 @@ func InsertTaskWithoutPlan(TaskAppAcronym string, TaskID string, TaskName string
 	return result, err
 }
 
-func InsertCreateTaskNotes(TaskName string, TaskNote string, TaskOwner string, TaskState string) (sql.Result, error) {
-	result, err := db.Exec(queryInsertCreateTaskNotes, TaskName, TaskNote, TaskOwner, TaskState)
+func InsertCreateTaskNotes(TaskName string, TaskNote string, TaskOwner string, TaskState string, TaskAppAcronym string) (sql.Result, error) {
+	result, err := db.Exec(queryInsertCreateTaskNotes, TaskName, TaskNote, TaskOwner, TaskState, TaskAppAcronym)
 	return result, err
 }
 
@@ -109,6 +110,11 @@ func SelectAllApplications() (*sql.Rows, error) {
 
 func SelectSingleApplication(AppAcronym string) *sql.Row {
 	result := db.QueryRow(querySelectSingleApplication, AppAcronym)
+	return result
+}
+
+func SelectCreatedTaskNotesTimestamp(TaskName string, TaskAppAcronym string) *sql.Row {
+	result := db.QueryRow(querySelectCreatedTaskNotesTimestamp, TaskName, TaskAppAcronym)
 	return result
 }
 

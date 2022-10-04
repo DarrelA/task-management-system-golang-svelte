@@ -53,6 +53,7 @@ func UpdateTask(c *gin.Context) {
 
 		// update task with/without plan
 		if (task.TaskOwner != "") {
+			fmt.Println("line 56")
 			
 			// plan color check
 			task.TaskColor = checkTaskPlanColor(task, c)
@@ -188,7 +189,7 @@ func checkTaskNotes(task models.Task, c *gin.Context) string {
 	if !middleware.CheckLength(task.TaskNotes) {
 
 		// insert task notes, task owner and task state into task notes table
-		_, err := middleware.InsertCreateTaskNotes(task.TaskName, task.TaskNotes, task.TaskOwner, task.TaskState)
+		_, err := middleware.InsertCreateTaskNotes(task.TaskName, task.TaskNotes, task.TaskOwner, task.TaskState, task.TaskAppAcronym)
 
 		if err != nil {
 			panic(err)
@@ -241,6 +242,8 @@ func updateTaskTable(task models.Task, c *gin.Context) {
 			panic(err)
 		}
 	} else {
+		fmt.Println("line 245")
+		fmt.Println("line 246", task.TaskNotes)
 		_, err := middleware.UpdateTaskWithoutPlan(task.TaskNotes, TaskPlan, task.TaskColor, task.TaskOwner, task.TaskName, task.TaskAppAcronym)
 		if err != nil {
 			panic(err)

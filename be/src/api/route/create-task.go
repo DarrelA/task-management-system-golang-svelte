@@ -89,13 +89,14 @@ func validateTaskNotes(task models.Task, c *gin.Context) {
 	var TaskNotesDate, TaskNotesTime sql.NullString
 	if !middleware.CheckLength(task.TaskNotes) {
 		insertTaskTable(task)
-		result, err := middleware.SelectTaskNotesTimestamp(task.TaskName, task.TaskAppAcronym)
-		result.Scan(&TaskNotesDate, &TaskNotesTime, &task.TaskNotes, &task.TaskOwner, &task.TaskState)
+		fmt.Println(task.TaskName, task.TaskAppAcronym)
+		result := middleware.SelectCreatedTaskNotesTimestamp(task.TaskName, task.TaskAppAcronym)
+		result.Scan(&TaskNotesDate, &TaskNotesTime)
 		taskNotesAuditString := TaskNotesDate.String + " " + TaskNotesTime.String + "\n" + "Task Owner: " + task.TaskOwner + ", Task State: " + task.TaskState + "\n" + task.TaskNotes + " \n"
 		fmt.Println("tasknotesAuditString: ", taskNotesAuditString)
-		_, err = middleware.UpdateTaskAuditNotes(taskNotesAuditString, task.TaskName, task.TaskAppAcronym)
+		_, err := middleware.UpdateTaskAuditNotes(taskNotesAuditString, task.TaskName, task.TaskAppAcronym)
 		checkError(err)
-		_, err = middleware.InsertCreateTaskNotes(task.TaskName, task.TaskNotes, task.TaskOwner, task.TaskState)
+		_, err = middleware.InsertCreateTaskNotes(task.TaskName, task.TaskNotes, task.TaskOwner, task.TaskState, task.TaskAppAcronym)
 		checkError(err)
 		c.JSON(http.StatusCreated, gin.H{"code": 200, "message": "Task was successfully created!"})
 	} else {

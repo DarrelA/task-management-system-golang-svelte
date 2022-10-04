@@ -50,6 +50,7 @@ func main() {
 
 	router.GET("/get-all-plans", route.GetAllPlans)
 
+	router.POST("/update-task", middleware.CheckCookie, route.UpdateTask)
 	router.POST("/create-task", middleware.CheckCookie, route.CreateTask)
 	router.GET("/get-one-task", route.GetOneTask)
 	router.GET("/get-all-tasks", route.GetAllTasks)
