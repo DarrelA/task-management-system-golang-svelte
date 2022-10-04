@@ -24,6 +24,14 @@ func UpdateApplication(c *gin.Context) {
 		return
 	}
 
+	//Check User Group
+	checkGroup := middleware.CheckGroup(c.GetString("username"), "Project Lead")
+	fmt.Println(c.GetString("username"))
+	if !checkGroup {
+		middleware.ErrorHandler(c, 400, "Unauthorized actions")
+		return
+	}
+
 	application.AppAcronym = c.Query("app_acronym")
 	currentData := getSelectedApp(application.AppAcronym)
 
