@@ -1,10 +1,11 @@
 package route
 
 import (
-	"backend/api/middleware"
-	"backend/api/models"
 	"database/sql"
 	"fmt"
+
+	"backend/api/middleware"
+	"backend/api/models"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,11 +13,13 @@ import (
 // route: /get-all-applications
 func GetAllApplications(c *gin.Context) {
 	var (
-		application models.Application
 		acronym     sql.NullString
+		description sql.NullString
+		rNumber     sql.NullInt64
+		start       sql.NullString
+		end         sql.NullString
 	)
 
-	// querySelectAllApplications = `SELECT app_acronym, app_description, app_Rnum, app_startDate, app_endDate FROM application`
 	rows, err := middleware.SelectAllApplications()
 	if err != nil {
 		fmt.Println(err)
@@ -26,36 +29,39 @@ func GetAllApplications(c *gin.Context) {
 
 	for rows.Next() {
 
-		if err := rows.Scan(&acronym, &application.Description, &application.Rnumber, &application.StartDate, &application.EndDate); err != nil {
+		if err := rows.Scan(&acronym, &description, &rNumber, &start, &end); err != nil {
 			panic(err)
 		}
 
 		response := models.Application{
 			AppAcronym:  acronym.String,
-			Description: application.Description,
-			Rnumber:     application.Rnumber,
-			StartDate:   application.StartDate,
-			EndDate:     application.EndDate,
+			Description: description.String,
+			Rnumber:     int(rNumber.Int64),
+			StartDate:   start.String,
+			EndDate:     end.String,
 		}
 		data = append(data, response)
 
 	}
 	c.JSON(200, data)
-	
-	recipient := []string{"project_lead@tms.com", "project_lead2@tms.com"}
-	middleware.SendMail(c, recipient, "team_member@tms.com", "alfred", "microservice 1")
 }
 
 // route: /get-application
 func GetApplication(c *gin.Context) {
 	var (
 		application  models.Application
+		description  sql.NullString
+		rNumber      sql.NullInt64
 		permitCreate sql.NullString
 		permitOpen   sql.NullString
 		permitToDo   sql.NullString
 		permitDoing  sql.NullString
 		permitDone   sql.NullString
+		start        sql.NullString
+		end          sql.NullString
+		created      sql.NullString
 	)
+
 	if err := c.BindQuery(&application); err != nil {
 		fmt.Println(err)
 		middleware.ErrorHandler(c, 400, "Bad Request")
@@ -64,8 +70,7 @@ func GetApplication(c *gin.Context) {
 	application.AppAcronym = c.Query("app_acronym")
 	result := middleware.SelectSingleApplication(application.AppAcronym)
 
-	switch err := result.Scan(&application.Description, &application.Rnumber, &permitCreate, &permitOpen, &permitToDo, &permitDoing, &permitDone, &application.CreatedDate, &application.StartDate, &application.EndDate); err {
-
+	switch err := result.Scan(&description, &rNumber, &permitCreate, &permitOpen, &permitToDo, &permitDoing, &permitDone, &created, &start, &end); err {
 	// Create application
 	case sql.ErrNoRows:
 		middleware.ErrorHandler(c, 400, "Invalid app acronym")
@@ -74,16 +79,16 @@ func GetApplication(c *gin.Context) {
 
 	query := models.Application{
 		AppAcronym:   application.AppAcronym,
-		Description:  application.Description,
-		Rnumber:      application.Rnumber,
-		StartDate:    application.StartDate,
-		EndDate:      application.EndDate,
+		Description:  description.String,
+		Rnumber:      int(rNumber.Int64),
+		StartDate:    start.String,
+		EndDate:      end.String,
 		PermitCreate: permitCreate.String,
 		PermitOpen:   permitOpen.String,
 		PermitToDo:   permitToDo.String,
 		PermitDoing:  permitDoing.String,
 		PermitDone:   permitDone.String,
-		CreatedDate:  application.CreatedDate,
+		CreatedDate:  created.String,
 	}
 
 	c.JSON(200, query)

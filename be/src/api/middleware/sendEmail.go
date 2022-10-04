@@ -1,17 +1,18 @@
 package middleware
 
 import (
-	"backend/api/models"
 	"fmt"
 	"log"
 	"net/smtp"
 	"strings"
 
+	"backend/api/models"
+
 	"github.com/gin-gonic/gin"
 )
 
 // include taskname, sender email, recipient email as param
-func SendMail(c *gin.Context, recipient []string, senderEmail string, sender string, taskName string) {
+func SendMail(c *gin.Context, recipient []string, senderEmail string, senderName string, taskName string) {
 	username := LoadENV("SMTP_USERNAME")
 	password := LoadENV("SMTP_PASSWORD")
 	host := LoadENV("SMTP_HOST")
@@ -27,7 +28,7 @@ func SendMail(c *gin.Context, recipient []string, senderEmail string, sender str
 	// 	"<p style='font-family': Montserrat;>Review task: %s in TMS now!</p>\r\n", sender, taskName)
 
 	body := fmt.Sprintf("<h3>Task has been completed by %s.</h3>\r\n"+
-		"<p>Review task: %s in TMS now!</p>\r\n", sender, taskName)
+		"<p>Review task: %s in TMS now!</p>\r\n", senderName, taskName)
 
 	mail := models.Email{
 		Sender:  senderEmail,

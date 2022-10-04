@@ -1,10 +1,11 @@
 package route
 
 import (
-	"backend/api/middleware"
-	"backend/api/models"
 	"database/sql"
 	"fmt"
+
+	"backend/api/middleware"
+	"backend/api/models"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,6 +13,7 @@ import (
 func CreateApplication(c *gin.Context) {
 	var (
 		application models.Application
+		acronym     sql.NullString
 	)
 
 	if err := c.BindJSON(&application); err != nil {
@@ -22,7 +24,8 @@ func CreateApplication(c *gin.Context) {
 
 	// Check group : Project Lead
 	// replace GetString with "admin" for POSTMAN testing
-	checkGroup := middleware.CheckGroup(c.GetString("username"), "Project Lead")
+	// checkGroup := middleware.CheckGroup(c.GetString("username"), "Project Lead")
+	checkGroup := middleware.CheckGroup("admin", "Project Lead")
 	if !checkGroup {
 		middleware.ErrorHandler(c, 400, "Unauthorized actions")
 		return
@@ -45,7 +48,7 @@ func CreateApplication(c *gin.Context) {
 
 	// Query if acronym exist
 	result := middleware.SelectSingleApplication(application.AppAcronym)
-	switch err := result.Scan(&application.AppAcronym); err {
+	switch err := result.Scan(&acronym); err {
 	// Create application
 	case sql.ErrNoRows:
 		_, err := middleware.InsertApplication(application.AppAcronym, application.Description, application.Rnumber, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone)

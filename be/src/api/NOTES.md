@@ -45,10 +45,8 @@ Examples:
 ---
 
 ### Working with Gin
+
 `Context.JSON` serialize given struct as JSON into the response body
-
-
-
 
 ---
 
@@ -57,6 +55,7 @@ Examples:
 ### JWT
 
 - login
+
   - [] username
 
   - [] password
@@ -71,7 +70,7 @@ Examples:
 
 `json.Unmarshal()` return data structure formed from JSON obj
 
-````
+```
 curl http://localhost:4000/login
 --include \
 --header "Content-Type: application/json" \
@@ -205,3 +204,13 @@ Example calling SendResponse
 `c.IndentedJSON(400, gin.H{"code": 400, "error": "Password length should be between length 8 - 10 with numbers and special characters"})`
 
 ---
+
+## Email sending with Go and net/smtp
+
+Function takes in array of emails, sender email, sender name, task name
+`SendMail(c *gin.Context, recipient []string, senderEmail string, senderName string, taskName string)`
+
+```
+recipient := []string{"project_lead@tms.com", "project_lead2@tms.com"}
+middleware.SendMail(c, recipient, "team_member@tms.com", "alfred", "microservice 1")
+```
