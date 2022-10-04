@@ -28,6 +28,7 @@ func validatePermitCreate(task models.Task, c *gin.Context) {
 	var PermitCreate sql.NullString
 	result := middleware.SelectPermitCreate(task.TaskAppAcronym)
 	err := result.Scan(&PermitCreate)
+	fmt.Println("username", c.GetString("username"))
 	if err != sql.ErrNoRows {
 		checkGroup := middleware.CheckGroup(c.GetString("username"), PermitCreate.String)
 		if !checkGroup {
@@ -49,7 +50,7 @@ func validateTaskName(task models.Task, c *gin.Context) {
 		task.TaskName = strings.TrimSpace(task.TaskName)
 		result := middleware.SelectTaskName(task.TaskName, task.TaskAppAcronym)
 		err := result.Scan(&TaskName, &TaskAppAcronym)
-		if (err != sql.ErrNoRows) {
+		if err != sql.ErrNoRows {
 			error_message := fmt.Sprintf(`Task Name "%s" already exists for Application "%s"`, task.TaskName, task.TaskAppAcronym)
 			middleware.ErrorHandler(c, 400, error_message)
 		} else if err == sql.ErrNoRows {
