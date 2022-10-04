@@ -12,7 +12,7 @@ var (
 	querySelectTaskState          = `SELECT task_state FROM task WHERE task_name = ? AND task_app_acronym = ?;`
 	querySelectTaskID             = `SELECT task_id FROM task WHERE task_app_acronym = ?;`
 	querySelectPlanColor          = `SELECT plan_color FROM plan WHERE plan_mvp_name = ?;`
-	querySelectTaskNotes 					= `SELECT task_notes FROM task WHERE task_name = ? AND task_app_acronym = ?`
+	querySelectTaskNotes          = `SELECT task_notes FROM task WHERE task_name = ? AND task_app_acronym = ?`
 	querySelectAllApplications    = `SELECT app_acronym, app_description, app_Rnum, app_startDate, app_endDate FROM application`
 	querySelectSingleApplication  = `SELECT app_description, app_Rnum, app_permitCreate, app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone, app_createdDate, CONVERT(app_startDate, DATE), CONVERT(app_endDate, DATE) FROM application WHERE app_acronym = ?`
 	querySelectTaskNotesTimestamp = `SELECT DATE_FORMAT(last_updated, "%d/%m/%Y") as formattedDate, TIME_FORMAT(last_updated, "%H:%i:%s") as formattedTime, task_note, task_owner, task_state FROM task_notes WHERE task_name = ? AND task_app_acronym = ? ORDER BY last_updated DESC;`
@@ -26,15 +26,15 @@ var (
 	querySelectAllPlans = `SELECT plan_mvp_name, plan_color, DATE_FORMAT(plan_startDate, "%d/%m/%Y") as formattedStartDate, DATE_FORMAT(plan_endDate, "%d/%m/%Y") as formattedEndDate FROM plan WHERE plan_app_acronym = ?`
 
 	querySelectAllTasks         = `SELECT task_id, task_name, task_description, task_notes, task_plan, task_color, task_state, task_creator, task_owner, DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime FROM task WHERE task_app_acronym = ?;`
-	querySelectEmailByUserGroup = `SELECT accounts.email, usergroup.user_group FROM accounts, usergroup WHERE accounts.username = usergroup.username AND usergroup.user_group = ?`
+	querySelectEmailByUserGroup = `SELECT username, email FROM accounts WHERE user_group LIKE CONCAT("%", ? , "%");`
 )
 
 var (
 	queryUpdateRNumber        = `UPDATE application SET app_Rnum = ? WHERE app_acronym = ?;`
 	queryUpdateTaskState      = `UPDATE task SET task_owner = ?, task_state = ? WHERE task_name = ? AND task_app_acronym = ?;`
 	queryUpdateTaskAuditNotes = `UPDATE task SET task_notes = ? WHERE task_name = ? AND task_app_acronym = ?;`
-	queryUpdateApplication 		= `UPDATE application SET app_startDate = ?, app_endDate = ?, app_permitCreate = ?, app_permitOpen = ?, app_permitToDo = ?, app_permitDoing = ?, app_permitDone = ? WHERE app_acronym = ?;`
-	queryUpdateTask 					= `UPDATE task SET task_notes = ?, task_plan = ?, task_color = ?,  task_owner = ? WHERE task_name = ? AND task_app_acronym = ?`
+	queryUpdateApplication    = `UPDATE application SET app_startDate = ?, app_endDate = ?, app_permitCreate = ?, app_permitOpen = ?, app_permitToDo = ?, app_permitDoing = ?, app_permitDone = ? WHERE app_acronym = ?;`
+	queryUpdateTask           = `UPDATE task SET task_notes = ?, task_plan = ?, task_color = ?,  task_owner = ? WHERE task_name = ? AND task_app_acronym = ?`
 )
 
 var (
@@ -132,7 +132,9 @@ func SelectAllTasks(TaskAppAcronym string) (*sql.Rows, error) {
 	return result, err
 }
 
-func SelectEmailByUserGroup() {
+func SelectEmailByUserGroup(groupname string) (*sql.Rows, error) {
+	result, err := db.Query(querySelectEmailByUserGroup, groupname)
+	return result, err
 }
 
 // Update Queries

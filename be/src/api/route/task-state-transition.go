@@ -4,6 +4,7 @@ import (
 	"backend/api/middleware"
 	"backend/api/models"
 	"database/sql"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -57,7 +58,7 @@ func TaskStateTransition(c *gin.Context) {
 	}
 
 	// validation for app permit rights
-	// UserGroups is case sensitive
+	// `UserGroups` is case sensitive
 	appPermits := middleware.SelectAppPermits(task.TaskAppAcronym)
 
 	var PermitOpen, PermitToDo, PermitDoing, PermitDone sql.NullString
@@ -116,18 +117,64 @@ func TaskStateTransition(c *gin.Context) {
 		return
 	}
 
-	// @TODO: update notes to include state change
+	// insert note when state is promoted or demoted
+	if task.TaskState != TaskState.String {
+		updateNotes := fmt.Sprintf("Task state has been updated from \"%s\" to \"%s\"", TaskState.String, task.TaskState)
+		_, err := middleware.InsertCreateTaskNotes(task.TaskName, updateNotes, Username, task.TaskState)
+		if err != nil {
+			middleware.ErrorHandler(c, http.StatusInternalServerError, "Failed to insert notes in /task-state-transition")
+			return
+		}
+	}
+
+	// query list of PermitDoneInfo to send emails
+	// e.g. Get `emailsData` of everyone who is in `Project Lead` usergroup
+	// if `app_permitDone` under `application` table is `Project Lead`
+	rows, err := middleware.SelectEmailByUserGroup(PermitDone.String)
+	if err != nil {
+		fmt.Println("\n\npermitDoneEmails:")
+		fmt.Println(err)
+		middleware.ErrorHandler(c, http.StatusInternalServerError, "Failed to send email in /task-state-transition")
+		return
+	}
+	defer rows.Close()
+
+	type PermitDoneInfo struct {
+		PermitDoneUsername string `json:"permit_done_username"`
+		PermitDoneEmails   string `json:"permit_done_emails"`
+	}
+
+	var emailsData []PermitDoneInfo
+	var PermitDoneUsername, PermitDoneEmails sql.NullString
+
+	for rows.Next() {
+		err = rows.Scan(&PermitDoneUsername, &PermitDoneEmails)
+		if err != nil {
+			fmt.Println(err)
+			middleware.ErrorHandler(c, http.StatusInternalServerError, "Failed to scan in /task-state-transition")
+			return
+		}
+
+		response := PermitDoneInfo{
+			PermitDoneUsername: PermitDoneUsername.String,
+			PermitDoneEmails:   PermitDoneEmails.String,
+		}
+
+		// return null if no one is in `PermitDone.String` user_group
+		emailsData = append(emailsData, response)
+	}
 
 	// @TODO: send email to ALL project leads from team member once task state is updated to done
+	// Combine structs with email struct in modal
 
 	// @TODO: discuss on what to return to FE
 	// Below is for dev testing
 	c.JSON(200, gin.H{
-		"PermitOpen":  PermitOpen.String,
-		"PermitToDo":  PermitToDo.String,
-		"PermitDoing": PermitDoing.String,
-		"PermitDone":  PermitDone.String,
-		"UserGroups":  UserGroups.String,
+		"PermitOpen":     PermitOpen.String,
+		"PermitToDo":     PermitToDo.String,
+		"PermitDoing":    PermitDoing.String,
+		"PermitDone":     PermitDone.String,
+		"UserGroups":     UserGroups.String,
+		"PermitDoneInfo": emailsData,
 	})
-
 }
