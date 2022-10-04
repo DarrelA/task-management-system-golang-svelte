@@ -38,16 +38,20 @@ func main() {
 	router.POST("/admin-create-user", middleware.CheckCookie, route.AdminCreateUser)
 	router.POST("/admin-create-group", middleware.CheckCookie, route.AdminCreateGroup)
 	router.POST("/update-user", middleware.CheckCookie, route.UpdateUser)
+	router.POST("/update-application", middleware.CheckCookie, route.UpdateApplication)
 	router.GET("/get-users", middleware.CheckCookie, route.GetUsers)
 	router.GET("/get-user-groups", middleware.CheckCookie, route.GetUserGroup)
 	router.GET("/get-users-in-group", middleware.CheckCookie, route.GetUsersInGroup)
 
 	// ASSIGNMENT 2 ROUTING
-	router.POST("/create-task", middleware.CheckCookie, route.CreateTask)
 	router.POST("/create-new-application", route.CreateApplication)
 	router.GET("/get-all-applications", route.GetAllApplications)
 	router.GET("/get-application", route.GetApplication)
 
+	router.GET("/get-all-plans", route.GetAllPlans)
+
+	router.POST("/update-task", middleware.CheckCookie, route.UpdateTask)
+	router.POST("/create-task", middleware.CheckCookie, route.CreateTask)
 	router.GET("/get-one-task", route.GetOneTask)
 	router.GET("/get-all-tasks", route.GetAllTasks)
 
@@ -55,7 +59,6 @@ func main() {
 
 	// Test sending email
 	// router.POST("/send-email", middleware.SendMail)
-
 
 	port := middleware.LoadENV("SERVER_PORT")
 	server := fmt.Sprintf(":%v", port)

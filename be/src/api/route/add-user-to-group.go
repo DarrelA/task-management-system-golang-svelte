@@ -10,8 +10,8 @@ import (
 )
 
 type CompositeKey struct {
-	Username     string   `json:"username"`
-	Groupname    []string `json:"groupname"`
+	Username  string   `json:"username"`
+	Groupname []string `json:"groupname"`
 }
 
 var existingGroup string
@@ -71,30 +71,34 @@ func AddUserToGroup(c *gin.Context) {
 				if err != nil {
 					fmt.Println(err)
 					return
-				}  
+				}
 			}
 		}
 
 		// Fetch user's EXISTING groups and update
-		
+
 		// SELECT user_group FROM accounts WHERE username = ?
 		result = middleware.SelectUserFromUserGroupByUsername(newComposite.Username)
 		err := result.Scan(&existingGroup)
-	
+
 		if err != nil {
 			panic(err)
-		}		
+		}
 	}
 
 	groupstr := strings.Join(newComposite.Groupname, ",")
 	fmt.Println(groupstr)
 
-	existingGroup = existingGroup + "," + groupstr
+	if existingGroup == "" {
+		existingGroup = groupstr
+	} else {
+		existingGroup = existingGroup + "," + groupstr
+	}
 
 	groupSlice := strings.Split(existingGroup, ",")
 	fmt.Println(groupSlice)
 
-	keys := make(map[string]bool )
+	keys := make(map[string]bool)
 
 	// composite groupname slice
 	list := []string{}
