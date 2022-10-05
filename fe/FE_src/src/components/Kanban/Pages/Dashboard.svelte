@@ -6,7 +6,6 @@
     import AdminNavbar from "../../Admin/NavBar/IsLoggedInAdmin.svelte";
     import UserNavbar from "../../User/NavBar/IsLoggedInUser.svelte";
     import CreateTask from "../Form/CreateTask.svelte";
-
     import MgtTask from "./MgtTask.svelte"
 
     const isAdmin = localStorage.getItem("isAdmin");
@@ -15,14 +14,6 @@
     export let task_description = ""
     export let task_notes = ""
     export let task_plan = ""
-    
-    export let app_startDate = ""
-    export let app_endDate = ""
-    export let app_permitCreate = ""
-    export let app_permitOpen = ""
-    export let app_permitToDo = ""
-    export let app_permitDoing = ""
-    export let app_permitDone = ""
 
     function handleBack() {
         navigate("/home")
@@ -37,18 +28,8 @@
         task_plan = ""
     }
 
-    function toggleUpdateApp(e) {
-        e.preventDefault()
-        open = !open;
-        app_startDate = ""
-        app_endDate = ""
-        app_permitCreate = ""
-        app_permitOpen = ""
-        app_permitToDo = ""
-        app_permitDoing = ""
-        app_permitDone = ""
-    }
-
+    let isOpen = false;
+    const toggle = () => (isOpen = !isOpen);
 </script>   
   
 <style>
@@ -59,8 +40,6 @@
 {:else if isAdmin === "false"}
     <UserNavbar />
 {/if}
-
-
 
 <div class="container-fluid">
     <br/>
@@ -132,28 +111,13 @@
         <Col xs = "2">
             <MgtPlan />
         </Col>
-        <Col xs = "10">
-            <MgtTask />
-=======
         <Col>
             <Button style="float:right; font-weight: bold; color: black;  margin-left: 10px;" color="warning" on:click={handleBack}>Back</Button> 
-            <Button style="float:right; font-weight: bold; color: black;" color="warning" on:click={toggleAddTask}>Add Task</Button>
-            <Button style="float:right; font-weight: bold; color: black;" color="warning" on:click={toggleUpdateApp}>Add App</Button>
-=======
             <!-- <Button style="float:right; font-weight: bold; color: black;" color="warning" on:click={toggleAddTask}>Add Task</Button> -->
-
+            <!-- <Button style="float:right; font-weight: bold; color: black;" color="warning" on:click={toggleUpdateTask}>Update Task</Button> -->
         </Col>
     </Row>
 </div>
 
-<Modal isOpen={open} {toggleAddTask} {size}>
-    <ModalHeader {toggleAddTask}>Create Task</ModalHeader>
-    <ModalBody>
-        <CreateTask bind:this={addTaskButton} {task_name} {task_description} {task_notes} {task_plan} />
-        <UpdateApplication bind:this={updateApplicationButton} {app_startDate} {app_endDate} {app_permitCreate} {app_permitOpen} {app_permitToDo} {app_permitDoing} {app_permitDone} />
-    </ModalBody>
-    <ModalFooter>
-        <Button style="color: #fffbf0;" color="warning" on:click={(e) => addTaskButton.handleSubmit(e)}>Create Task</Button>
-        <Button class="back-button" color="danger" on:click={toggleAddTask}>Back</Button>
-    </ModalFooter>
-</Modal>
+<MgtTask />
+

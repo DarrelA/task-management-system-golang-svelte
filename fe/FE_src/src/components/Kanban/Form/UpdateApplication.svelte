@@ -75,7 +75,6 @@
         <Col>
           <FormGroup>
             <Label>Application Description</Label>
-            <Input type="text" bind:value={}
           </FormGroup>
         </Col>
       </Row>
