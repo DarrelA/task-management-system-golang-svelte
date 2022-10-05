@@ -1,14 +1,14 @@
 <script>
   import axios from "axios";
-  import { onMount } from "svelte";
+  import { onMount, createEventDispatcher } from "svelte";
   import { Form, FormGroup, Input, Label, Col, Row, Spinner, Styles } from "sveltestrap";
   import { errorToast, successToast } from "../../toast";
 
-  //   import FetchGroups from "../../Home.svelte";
+  const dispatch = createEventDispatcher();
 
   let app_acronym = "";
   let app_description = "";
-  let app_Rnum = "";
+  let app_Rnum = 1;
   let start_date = "";
   let end_date = "";
   let app_permitCreate = "";
@@ -41,6 +41,17 @@
         if (!response.data.error) {
           successToast(response.data.message);
           loading = false;
+
+          app_acronym = "";
+          app_description = "";
+          app_Rnum = 1;
+          start_date = "";
+          end_date = "";
+          app_permitCreate = "";
+          app_permitOpen = "";
+          app_permitTodo = "";
+          app_permitDoing = "";
+          app_permitDone = "";
         }
       }, 500);
     } catch (error) {
@@ -49,22 +60,23 @@
   }
 
   let groups = [];
-  let data;
-
-  export async function FetchGroups() {
+  async function FetchGroups() {
     try {
       const response = await axios.get("http://localhost:4000/get-user-groups", { withCredentials: true });
       console.log(response);
-      //   data.forEach((group) => {
-      //     groups.push(group);
-      //   });
-      //   groups = groups;
+      response.data.forEach((group) => {
+        groups.push(group);
+      });
+      groups = groups;
+      dispatch("fetch", {
+        response,
+      });
     } catch (error) {}
   }
 
-  //   $: FetchGroups();
-
-  onMount(() => {});
+  onMount(() => {
+    FetchGroups();
+  });
 </script>
 
 <Styles />
@@ -93,8 +105,6 @@
     </Row>
 
     <Row>
-      <Col />
-
       <Col>
         <FormGroup>
           <Label>Description:</Label>
@@ -106,24 +116,72 @@
     <Row>
       <Col>
         <FormGroup>
-          <Label>Permit Create:</Label>
+          <Label>Create:</Label>
           <Input type="select" bind:value={app_permitCreate}>
-            <option>1</option>
+            {#each groups as group}
+              <option>{group}</option>
+            {/each}
           </Input>
         </FormGroup>
       </Col>
 
       <Col>
         <FormGroup>
-          <Label>Permit Open:</Label>
-          <Input type="select" bind:value={app_permitOpen} />
+          <Label>Open:</Label>
+          <Input type="select" bind:value={app_permitOpen}>
+            {#each groups as group}
+              <option>{group}</option>
+            {/each}
+          </Input>
         </FormGroup>
       </Col>
 
       <Col>
         <FormGroup>
-          <Label>Permit To Do:</Label>
-          <Input type="select" bind:value={app_permitTodo} />
+          <Label>To Do:</Label>
+          <Input type="select" bind:value={app_permitTodo}>
+            {#each groups as group}
+              <option>{group}</option>
+            {/each}
+          </Input>
+        </FormGroup>
+      </Col>
+
+      <Col>
+        <FormGroup>
+          <Label>Doing:</Label>
+          <Input type="select" bind:value={app_permitDoing}>
+            {#each groups as group}
+              <option>{group}</option>
+            {/each}
+          </Input>
+        </FormGroup>
+      </Col>
+
+      <Col>
+        <FormGroup>
+          <Label>Done:</Label>
+          <Input type="select" bind:value={app_permitDone}>
+            {#each groups as group}
+              <option>{group}</option>
+            {/each}
+          </Input>
+        </FormGroup>
+      </Col>
+    </Row>
+
+    <Row class="justify-content-md-center">
+      <Col xs lg="2">
+        <FormGroup>
+          <Label>Start:</Label>
+          <Input type="date" bind:value={start_date} />
+        </FormGroup>
+      </Col>
+
+      <Col xs lg="2">
+        <FormGroup>
+          <Label>End:</Label>
+          <Input type="date" bind:value={end_date} />
         </FormGroup>
       </Col>
     </Row>

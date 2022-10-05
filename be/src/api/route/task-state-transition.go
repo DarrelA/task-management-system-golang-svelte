@@ -1,12 +1,13 @@
 package route
 
 import (
-	"backend/api/middleware"
-	"backend/api/models"
 	"database/sql"
 	"fmt"
 	"net/http"
 	"strings"
+
+	"backend/api/middleware"
+	"backend/api/models"
 
 	"github.com/gin-gonic/gin"
 )
@@ -172,7 +173,7 @@ func TaskStateTransition(c *gin.Context) {
 	// send email to ALL project leads if any from team member once task state is updated from `Doing` to `Done`
 	if RecipientEmail.String != "" && TaskState.String == "Doing" && task.TaskState == "Done" {
 		fmt.Println("middleware.SendMail called from task-state-transition.go")
-		middleware.SendMail(c, emailList, SenderEmail.String, Username, task.TaskName)
+		// middleware.SendMail(c, emailList, SenderEmail.String, Username, task.TaskName)
 	}
 
 	// @TODO: discuss on what to return to FE

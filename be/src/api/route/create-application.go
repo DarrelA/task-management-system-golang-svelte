@@ -14,6 +14,8 @@ func CreateApplication(c *gin.Context) {
 	var (
 		application models.Application
 		acronym     sql.NullString
+		start       *string = nil
+		end         *string = nil
 	)
 
 	if err := c.BindJSON(&application); err != nil {
@@ -47,16 +49,26 @@ func CreateApplication(c *gin.Context) {
 	}
 
 	// Query if acronym exist
-	result := middleware.SelectSingleApplication(application.AppAcronym)
+	result := middleware.SelectApplicationByAcronym(application.AppAcronym)
 	switch err := result.Scan(&acronym); err {
 	// Create application
 	case sql.ErrNoRows:
-		_, err := middleware.InsertApplication(application.AppAcronym, application.Description, application.Rnumber, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone)
-		if err != nil {
-			middleware.ErrorHandler(c, 400, "Invalid request")
-			fmt.Println(err)
-			return
+		if application.StartDate == "" {
+			_, err := middleware.InsertApplicationNullDate(application.AppAcronym, application.Description, application.Rnumber, start, end, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone)
+			if err != nil {
+				middleware.ErrorHandler(c, 400, "Invalid request")
+				fmt.Println(err)
+				return
+			}
+		} else {
+			_, err := middleware.InsertApplication(application.AppAcronym, application.Description, application.Rnumber, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone)
+			if err != nil {
+				middleware.ErrorHandler(c, 400, "Invalid request")
+				fmt.Println(err)
+				return
+			}
 		}
+
 	case nil:
 		middleware.ErrorHandler(c, 400, "Invalid app acronym")
 		return

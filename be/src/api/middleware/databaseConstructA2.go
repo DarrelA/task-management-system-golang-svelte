@@ -14,6 +14,7 @@ var (
 	querySelectPlanColor                 = `SELECT plan_color FROM plan WHERE plan_mvp_name = ?;`
 	querySelectTaskNotes                 = `SELECT task_notes FROM task WHERE task_name = ? AND task_app_acronym = ?`
 	querySelectAllApplications           = `SELECT app_acronym, app_description, app_Rnum, app_startDate, app_endDate FROM application`
+	querySelectApplicationByAcronym      = `SELECT app_acronym FROM application WHERE app_acronym = ?`
 	querySelectSingleApplication         = `SELECT app_description, app_Rnum, app_permitCreate, app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone, app_createdDate, CONVERT(app_startDate, DATE), CONVERT(app_endDate, DATE) FROM application WHERE app_acronym = ?`
 	querySelectCreatedTaskNotesTimestamp = `SELECT DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, TIME_FORMAT(task_createDate, "%H:%i:%s") as formattedTime FROM task WHERE task_name = ? AND task_app_acronym = ?`
 	querySelectTaskNotesTimestamp        = `SELECT DATE_FORMAT(last_updated, "%d/%m/%Y") as formattedDate, TIME_FORMAT(last_updated, "%H:%i:%s") as formattedTime, task_note, task_owner, task_state FROM task_notes WHERE task_name = ? AND task_app_acronym = ? ORDER BY last_updated DESC;`
@@ -110,6 +111,11 @@ func SelectSingleApplication(AppAcronym string) *sql.Row {
 	return result
 }
 
+func SelectApplicationByAcronym(AppAcronym string) *sql.Row {
+	result := db.QueryRow(querySelectApplicationByAcronym, AppAcronym)
+	return result
+}
+
 func SelectCreatedTaskNotesTimestamp(TaskName string, TaskAppAcronym string) *sql.Row {
 	result := db.QueryRow(querySelectCreatedTaskNotesTimestamp, TaskName, TaskAppAcronym)
 	return result
@@ -139,6 +145,7 @@ func SelectEmailByUsername(username string) *sql.Row {
 	result := db.QueryRow(querySelectEmailByUsername, username)
 	return result
 }
+
 func SelectEmailByUserGroup(groupname string) (*sql.Rows, error) {
 	result, err := db.Query(querySelectEmailByUserGroup, groupname)
 	return result, err
@@ -174,6 +181,11 @@ func UpdateTaskWithoutPlan(TaskNotes string, TaskPlan *string, TaskPlanColor str
 
 // Insert Queries
 func InsertApplication(AppAcronym string, Description string, Rnum int, StartDate string, EndDate string, PermitCreate string, PermitOpen string, PermitToDo string, PermitDoing string, PermitDone string) (sql.Result, error) {
+	result, err := db.Exec(queryInsertApplication, AppAcronym, Description, Rnum, StartDate, EndDate, PermitCreate, PermitOpen, PermitToDo, PermitDoing, PermitDone)
+	return result, err
+}
+
+func InsertApplicationNullDate(AppAcronym string, Description string, Rnum int, StartDate *string, EndDate *string, PermitCreate string, PermitOpen string, PermitToDo string, PermitDoing string, PermitDone string) (sql.Result, error) {
 	result, err := db.Exec(queryInsertApplication, AppAcronym, Description, Rnum, StartDate, EndDate, PermitCreate, PermitOpen, PermitToDo, PermitDoing, PermitDone)
 	return result, err
 }
