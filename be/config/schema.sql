@@ -13,12 +13,12 @@ CREATE TABLE IF NOT EXISTS accounts (
   timestamp datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (username),
   UNIQUE KEY username_UNIQUE (username)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS groupnames (
   user_group varchar(255) NOT NULL,
   PRIMARY KEY (user_group)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS usergroup (
   username varchar(255) NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS usergroup (
   KEY groupname_idx (user_group),
   CONSTRAINT username FOREIGN KEY (username) REFERENCES accounts (username),
   CONSTRAINT user_group FOREIGN KEY (user_group) REFERENCES groupnames (user_group)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS application (
   app_acronym varchar(255) NOT NULL,
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS application (
   app_permitDone varchar(255) DEFAULT NULL,
   app_createdDate datetime DEFAULT CURRENT_TIMESTAMP,   -- insert with `now()`
   PRIMARY KEY (app_acronym)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS plan (
   plan_mvp_name varchar(255) NOT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS plan (
   KEY plan_app_acronym (plan_app_acronym),   -- index (find rows with specific column value quickly)
   KEY plan_color (plan_color),
   CONSTRAINT plan_app_acronym FOREIGN KEY (plan_app_acronym) REFERENCES application (app_acronym)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS task (
   task_app_acronym varchar(255) NOT NULL,
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS task (
   KEY task_color_idx (task_color),
   CONSTRAINT task_app_acronym FOREIGN KEY (task_app_acronym) REFERENCES application (app_acronym),
   CONSTRAINT task_plan FOREIGN KEY (task_plan) REFERENCES plan (plan_mvp_name)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS task_notes (
   task_notes_id int NOT NULL AUTO_INCREMENT,
@@ -87,8 +87,7 @@ CREATE TABLE IF NOT EXISTS task_notes (
   last_updated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (task_notes_id),
   CONSTRAINT task_name FOREIGN KEY (task_name) REFERENCES task (task_name)
-  CONSTRAINT task_app_acronym FOREIGN KEY (task_app_acronym) REFERENCES application (app_acronym)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO application (app_acronym, app_description, app_Rnum, app_startDate, app_endDate, app_permitCreate, app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone, app_createdDate)
 VALUES ("apple","","2", NOW(), NOW(), null, null, null, null, null, NOW());

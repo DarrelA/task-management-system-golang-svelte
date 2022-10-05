@@ -7,6 +7,7 @@
   import MgtGroup from './components/Admin/Pages/MgtGroup.svelte';
   import MgtUser from './components/Admin/Pages/MgtUser.svelte';
   import User from './components/User/Pages/MgtUser.svelte';
+  import Dashboard from './components/Kanban/Pages/Dashboard.svelte';
   import ProtectedRoute from './components/ProtectedRoute.svelte';
 </script>
 
@@ -32,11 +33,14 @@
   <Router>
     <Route path="/" component={Login} />
 
-    <!-- Need to change on protected route -->
+    <!-- Protected routes -->
     <ProtectedRoute path="/home" component={Home} />
     <ProtectedRoute path="/user" component={User} />
     <ProtectedRoute path="/user-management" component={MgtUser} />
     <ProtectedRoute path="/group-management" component={MgtGroup} />
+
+    <ProtectedRoute path="/dashboard" component={Dashboard} />
+
     <ProtectedRoute path="*" component={Login} />
   </Router>
 </main>
