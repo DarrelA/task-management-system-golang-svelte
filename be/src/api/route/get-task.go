@@ -4,7 +4,6 @@ import (
 	"backend/api/middleware"
 	"backend/api/models"
 	"database/sql"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -19,6 +18,7 @@ func GetOneTask(c *gin.Context) {
 	rows, err := middleware.SelectOneTask(TaskName, TaskAppAcronym)
 	if err != nil {
 		middleware.ErrorHandler(c, http.StatusBadRequest, "Failed to /get-one-task")
+		return
 	}
 	defer rows.Close()
 
@@ -26,6 +26,7 @@ func GetOneTask(c *gin.Context) {
 		err = rows.Scan(&TaskID, &TaskName, &TaskDescription, &TaskNotes, &TaskPlan, &TaskColor, &TaskState, &TaskCreator, &TaskOwner, &FormattedDate, &FormattedTime)
 		if err != nil {
 			middleware.ErrorHandler(c, http.StatusInternalServerError, "Failed to scan in /get-one-task")
+			return
 		}
 
 		data := models.Task{
@@ -48,8 +49,6 @@ func GetOneTask(c *gin.Context) {
 
 }
 
-// WARNING: This is POST request because have to take AppAcronym
-// from the params in the URL for tasks.
 // http://localhost:4000/get-all-tasks/?AppAcronym=durian
 func GetAllTasks(c *gin.Context) {
 	var data []models.Task
@@ -60,12 +59,14 @@ func GetAllTasks(c *gin.Context) {
 	rows, err := middleware.SelectAllTasks(TaskAppAcronym)
 	if err != nil {
 		middleware.ErrorHandler(c, http.StatusBadRequest, "Failed to /get-all-tasks")
+		return
 	}
 	defer rows.Close()
 	for rows.Next() {
 		err = rows.Scan(&TaskID, &TaskName, &TaskDescription, &TaskNotes, &TaskPlan, &TaskColor, &TaskState, &TaskCreator, &TaskOwner, &FormattedDate, &FormattedTime)
 		if err != nil {
 			middleware.ErrorHandler(c, http.StatusInternalServerError, "Failed to scan in /get-all-tasks")
+			return
 		}
 
 		response := models.Task{
@@ -87,18 +88,4 @@ func GetAllTasks(c *gin.Context) {
 	}
 
 	c.JSON(200, data)
-
-	err = rows.Err()
-	if err != nil {
-		middleware.ErrorHandler(c, http.StatusBadRequest, "Some other error occurred.")
-	}
-}
-
-// route: /get-task
-// remove this comment once added
-
-func checkGetError(message string, err error) {
-	if err != nil {
-		log.Fatalln(message, err)
-	}
 }

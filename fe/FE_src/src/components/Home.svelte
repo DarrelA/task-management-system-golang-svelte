@@ -5,7 +5,9 @@
   import Icon from "@iconify/svelte";
   import AdminNavbar from "./Admin/NavBar/IsLoggedInAdmin.svelte";
   import UserNavbar from "./User/Navbar/IsLoggedInUser.svelte";
-  import AddApplication from "./Admin/Form/AddApplication.svelte";
+
+  import { navigate } from "svelte-routing";
+  import AddApplication from "./Kanban/Form/AddApplication.svelte";
 
   const isAdmin = localStorage.getItem("isAdmin");
   let username = localStorage.getItem("username");
