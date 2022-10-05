@@ -28,7 +28,6 @@ func validatePermitCreate(task models.Task, c *gin.Context) {
 	var PermitCreate sql.NullString
 	result := middleware.SelectPermitCreate(task.TaskAppAcronym)
 	err := result.Scan(&PermitCreate)
-	fmt.Println("username", c.GetString("username"))
 	if err != sql.ErrNoRows {
 		checkGroup := middleware.CheckGroup(c.GetString("username"), PermitCreate.String)
 		if !checkGroup {
@@ -73,7 +72,6 @@ func validateTaskPlan(task models.Task, c *gin.Context) {
 			task.TaskColor = ""
 			validateTaskNotes(task, c)
 		case err != sql.ErrNoRows:
-			fmt.Println(PlanColor)
 			task.TaskColor = PlanColor.String
 			validateTaskNotes(task, c)
 		default:
@@ -89,11 +87,9 @@ func validateTaskNotes(task models.Task, c *gin.Context) {
 	var TaskNotesDate, TaskNotesTime sql.NullString
 	if !middleware.CheckLength(task.TaskNotes) {
 		insertTaskTable(task)
-		fmt.Println(task.TaskName, task.TaskAppAcronym)
 		result := middleware.SelectCreatedTaskNotesTimestamp(task.TaskName, task.TaskAppAcronym)
 		result.Scan(&TaskNotesDate, &TaskNotesTime)
 		taskNotesAuditString := TaskNotesDate.String + " " + TaskNotesTime.String + "\n" + "Task Owner: " + task.TaskOwner + ", Task State: " + task.TaskState + "\n" + task.TaskNotes + " \n"
-		fmt.Println("tasknotesAuditString: ", taskNotesAuditString)
 		_, err := middleware.UpdateTaskAuditNotes(taskNotesAuditString, task.TaskName, task.TaskAppAcronym)
 		checkError(err)
 		_, err = middleware.InsertCreateTaskNotes(task.TaskName, task.TaskNotes, task.TaskOwner, task.TaskState, task.TaskAppAcronym)
