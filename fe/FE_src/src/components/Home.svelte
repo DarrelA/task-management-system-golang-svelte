@@ -57,8 +57,6 @@
   <!-- 3. Display App -->
 {/if}
 
-<CreateTask />
-
 <br />
 
 <div class="masthead">
