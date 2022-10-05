@@ -39,9 +39,15 @@ type Plan struct {
 }
 
 type Email struct {
-	Sender  string
-	To      []string
-	Cc      []string
-	Subject string
-	Body    string
+	Sender     string
+	To         []string
+	Cc         []string
+	Subject    string
+	Body       string
+	Recipients Recipients
+}
+
+type Recipients struct {
+	RecipientUsername string `json:"recipient_username"`
+	RecipientEmail    string `json:"recipient_emails"`
 }
