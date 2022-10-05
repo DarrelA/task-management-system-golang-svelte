@@ -7,6 +7,8 @@
     import UserNavbar from "../../User/NavBar/IsLoggedInUser.svelte";
     import CreateTask from "../Form/CreateTask.svelte";
     import MgtTask from "./MgtTask.svelte"
+    import MgtPlan from "./MgtPlan.svelte"
+    import Icon from "@iconify/svelte"
 
     const isAdmin = localStorage.getItem("isAdmin");
 

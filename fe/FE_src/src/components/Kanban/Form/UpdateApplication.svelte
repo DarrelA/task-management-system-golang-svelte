@@ -13,6 +13,8 @@
   let app_permitDone = ""
   let app_acronym = ""
 
+  let appData = "";
+
   let size = "xl";
   let open = false; 
 
@@ -41,11 +43,18 @@
   async function GetApplicationData() {
     try {
       const response = await axios.get("http://localhost:4000/get-application", { withCredentials: true });
-      console.log(response);
-     
-    } catch (error) {}
+      if (response.data.error) {
+        console.log(response.data.error);
+      } else if (!response.data.error) {
+        appData = response.data
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
   
+  $: GetApplicationData()
+
   function handleClick() {
     open = !open
   }
@@ -75,6 +84,7 @@
         <Col>
           <FormGroup>
             <Label>Application Description</Label>
+            {appData.app_description}
           </FormGroup>
         </Col>
       </Row>
