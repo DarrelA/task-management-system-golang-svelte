@@ -6,20 +6,20 @@
     import AdminNavbar from "../../Admin/NavBar/IsLoggedInAdmin.svelte";
     import UserNavbar from "../../User/NavBar/IsLoggedInUser.svelte";
     import CreateTask from "../Form/CreateTask.svelte";
+<<<<<<< Updated upstream
     import MgtPlan from "../Pages/MgtPlan.svelte";
     import MgtTask from "../Pages/MgtTask.svelte";
     import Icon from '@iconify/svelte';
+=======
+    import MgtTask from "./MgtTask.svelte"
+>>>>>>> Stashed changes
 
     const isAdmin = localStorage.getItem("isAdmin");
-    let addTaskButton;
 
     export let task_name = ""
     export let task_description = ""
     export let task_notes = ""
     export let task_plan = ""
-
-    let size = "xl";
-    let open = false;
 
     function handleBack() {
         navigate("/home")
@@ -117,19 +117,19 @@
         <Col xs = "2">
             <MgtPlan />
         </Col>
+<<<<<<< Updated upstream
         <Col xs = "10">
             <MgtTask />
+=======
+        <Col>
+            <Button style="float:right; font-weight: bold; color: black;  margin-left: 10px;" color="warning" on:click={handleBack}>Back</Button> 
+            <!-- <Button style="float:right; font-weight: bold; color: black;" color="warning" on:click={toggleAddTask}>Add Task</Button> -->
+            <!-- <Button style="float:right; font-weight: bold; color: black;" color="warning" on:click={toggleUpdateTask}>Update Task</Button> -->
+>>>>>>> Stashed changes
         </Col>
     </Row>
 </div>
 
-<Modal isOpen={open} {toggleAddTask} {size}>
-    <ModalHeader {toggleAddTask}>Create Task</ModalHeader>
-    <ModalBody>
-        <CreateTask bind:this={addTaskButton} {task_name} {task_description} {task_notes} {task_plan} />
-    </ModalBody>
-    <ModalFooter>
-        <Button style="color: #fffbf0;" color="warning" on:click={(e) => addTaskButton.handleSubmit(e)}>Create Task</Button>
-        <Button class="back-button" color="danger" on:click={toggleAddTask}>Back</Button>
-    </ModalFooter>
-</Modal>
+<MgtTask />
+
+
