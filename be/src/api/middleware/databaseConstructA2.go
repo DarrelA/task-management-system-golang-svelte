@@ -154,6 +154,7 @@ func UpdateTaskState(Username string, TaskState string, TaskName string, TaskApp
 	result, err := db.Exec(queryUpdateTaskState, Username, TaskState, TaskName, TaskAppAcronym)
 	return result, err
 }
+
 func UpdateApplication(StartDate string, EndDate string, PermitCreate string, PermitOpen string, PermitToDo string, PermitDoing string, PermitDone string, AppAcronym string) (sql.Result, error) {
 	result, err := db.Exec(queryUpdateApplication, StartDate, EndDate, PermitCreate, PermitOpen, PermitToDo, PermitDoing, PermitDone, AppAcronym)
 	return result, err

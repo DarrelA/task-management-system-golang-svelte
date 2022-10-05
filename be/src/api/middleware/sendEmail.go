@@ -12,7 +12,7 @@ import (
 )
 
 // include taskname, sender email, recipient email as param
-func SendMail(c *gin.Context, recipient []string, senderEmail string, senderName string, taskName string) {
+func SendMail(c *gin.Context, recipient []string, senderEmail string, senderName string, taskName string, recipientUsername string) {
 	username := LoadENV("SMTP_USERNAME")
 	password := LoadENV("SMTP_PASSWORD")
 	host := LoadENV("SMTP_HOST")
@@ -27,8 +27,9 @@ func SendMail(c *gin.Context, recipient []string, senderEmail string, senderName
 	// body := fmt.Sprintf("<h3 style='font-family': Montserrat;>Task has been completed by %s.</h3>\r\n"+
 	// 	"<p style='font-family': Montserrat;>Review task: %s in TMS now!</p>\r\n", sender, taskName)
 
-	body := fmt.Sprintf("<h3>Task has been completed by %s.</h3>\r\n"+
-		"<p>Review task: %s in TMS now!</p>\r\n", senderName, taskName)
+	body := fmt.Sprintf("<h3>Hi %s \n"+
+		"Task has been completed by %s.</h3>\r\n"+
+		"<p>Review task: %s in TMS now!</p>\r\n", recipientUsername, senderName, taskName)
 
 	mail := models.Email{
 		Sender:  senderEmail,

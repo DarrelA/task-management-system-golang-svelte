@@ -82,27 +82,27 @@
     GetUserGroups();
   });
 
-  let openModal = false;
-  let size;
-  const toggle = (e) => {
-    e.preventDefault();
-    getUsers();
-    openModal = !openModal;
-    size = "xl";
+  // let openModal = false;
+  // let size;
+  // const toggle = (e) => {
+  //   e.preventDefault();
+  //   getUsers();
+  //   openModal = !openModal;
+  //   size = "xl";
 
-    username = "";
-    password = "";
-    email = "";
-    selected = [];
-    status = "Active";
-  };
+  //   username = "";
+  //   password = "";
+  //   email = "";
+  //   selected = [];
+  //   status = "Active";
+  // };
 </script>
 
 <Styles />
 <div>
   {#if loading}
     <div class="loading-spinner">
-      <Spinner size="lg"/>
+      <Spinner size="lg" />
     </div>
   {/if}
   <Form>
