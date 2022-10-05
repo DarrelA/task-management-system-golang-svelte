@@ -1,13 +1,12 @@
 <script>
-  import CreateTask from "../components/Kanban/Form/CreateTask.svelte";
   import axios from "axios";
   import { onMount } from "svelte";
   import { Button, Modal, ModalBody, ModalHeader, ModalFooter } from "sveltestrap";
   import Icon from "@iconify/svelte";
   import AdminNavbar from "./Admin/NavBar/IsLoggedInAdmin.svelte";
   import UserNavbar from "./User/Navbar/IsLoggedInUser.svelte";
-  import AddApplication from "./Admin/Form/AddApplication.svelte";
   import { navigate } from "svelte-routing";
+  import AddApplication from "./Kanban/Form/AddApplication.svelte";
 
   const isAdmin = localStorage.getItem("isAdmin");
   let username = localStorage.getItem("username");
