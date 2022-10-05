@@ -1,5 +1,4 @@
 <script>
-  import CreateTask from "../components/Kanban/Form/CreateTask.svelte";
   import axios from "axios";
   import { onMount } from "svelte";
   import { Button, Modal, ModalBody, ModalHeader, ModalFooter } from "sveltestrap";
@@ -7,7 +6,6 @@
   import AdminNavbar from "./Admin/NavBar/IsLoggedInAdmin.svelte";
   import UserNavbar from "./User/Navbar/IsLoggedInUser.svelte";
   import AddApplication from "./Admin/Form/AddApplication.svelte";
-  import { navigate } from "svelte-routing";
 
   const isAdmin = localStorage.getItem("isAdmin");
   let username = localStorage.getItem("username");
@@ -23,17 +21,11 @@
     size = "xl";
   };
 
-  // $: fetchApplications();
   let applications = [];
   async function fetchApplications() {
     try {
       const response = await axios.get("http://localhost:4000/get-all-applications", { withCredentials: true });
       applications = response.data;
-
-      // data.forEach((app) => {
-      //   applications.push(app);
-      // });
-      // applications = applications;
     } catch (e) {}
   }
 
@@ -58,7 +50,7 @@
 {/if}
 
 <br />
-<br/>
+<br />
 
 <div class="masthead">
   <h2>Welcome {username} &#x1F642;</h2>
