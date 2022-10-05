@@ -1,11 +1,11 @@
 <script>
-  import AdminNavbar from "../components/Admin/Navbar/IsLoggedInAdmin.svelte";
-  import UserNavbar from "../components/User/NavBar/IsLoggedInUser.svelte";
   import CreateTask from "../components/Kanban/Form/CreateTask.svelte";
   import axios from "axios";
   import { onMount } from "svelte";
   import { Button, Modal, ModalBody, ModalHeader, ModalFooter } from "sveltestrap";
   import Icon from "@iconify/svelte";
+  import AdminNavbar from "./Admin/NavBar/IsLoggedInAdmin.svelte";
+  import UserNavbar from "./User/Navbar/IsLoggedInUser.svelte";
   import AddApplication from "./Admin/Form/AddApplication.svelte";
   import { navigate } from "svelte-routing";
 
@@ -57,9 +57,8 @@
   <!-- 3. Display App -->
 {/if}
 
-<CreateTask />
-
 <br />
+<br/>
 
 <div class="masthead">
   <h2>Welcome {username} &#x1F642;</h2>
