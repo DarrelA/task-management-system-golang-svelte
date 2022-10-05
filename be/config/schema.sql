@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS task_notes (
   task_app_acronym varchar(255) NOT NULL,
   last_updated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (task_notes_id),
-  CONSTRAINT task_name FOREIGN KEY (task_name) REFERENCES task (task_name),
+  CONSTRAINT task_name FOREIGN KEY (task_name) REFERENCES task (task_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO application (app_acronym, app_description, app_Rnum, app_startDate, app_endDate, app_permitCreate, app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone, app_createdDate)

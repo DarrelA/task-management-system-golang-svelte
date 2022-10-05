@@ -149,13 +149,14 @@ func TaskStateTransition(c *gin.Context) {
 	}
 	defer rows.Close()
 
-	var emailList []string
+	// net/smtp in middleware.SendMail requires a slice of email(s)
+	// calling the method x times the number of people in `app_permitDone` usergroup
+	oneEmail := make([]string, 1)
 	var RecipientUsername, RecipientEmail sql.NullString
 
 	for rows.Next() {
 		err = rows.Scan(&RecipientUsername, &RecipientEmail)
 		if err != nil {
-			fmt.Println(err)
 			middleware.ErrorHandler(c, http.StatusInternalServerError, "Failed to scan recipients info in /task-state-transition")
 			return
 		}
@@ -166,23 +167,23 @@ func TaskStateTransition(c *gin.Context) {
 		}
 
 		// return null if no one is in `PermitDone.String` user_group
-		emailList = append(emailList, response.RecipientEmail)
-	}
+		oneEmail[0] = response.RecipientEmail
 
-	// send email to ALL project leads if any from team member once task state is updated from `Doing` to `Done`
-	if RecipientEmail.String != "" && TaskState.String == "Doing" && task.TaskState == "Done" {
-		fmt.Println("middleware.SendMail called from task-state-transition.go")
-		middleware.SendMail(c, emailList, SenderEmail.String, Username, task.TaskName)
+		// send email to ALL project leads if any from team member once task state is updated from `Doing` to `Done`
+		if RecipientEmail.String != "" && TaskState.String == "Doing" && task.TaskState == "Done" {
+			fmt.Println("middleware.SendMail called from task-state-transition.go")
+			middleware.SendMail(c, oneEmail, SenderEmail.String, Username, task.TaskName, response.RecipientUsername)
+		}
 	}
 
 	// @TODO: discuss on what to return to FE
 	// Below is for dev testing
 	c.JSON(200, gin.H{
-		"PermitOpen":     PermitOpen.String,
-		"PermitToDo":     PermitToDo.String,
-		"PermitDoing":    PermitDoing.String,
-		"PermitDone":     PermitDone.String,
-		"UserGroups":     UserGroups.String,
-		"PermitDoneInfo": emailList,
+		"PermitOpen":  PermitOpen.String,
+		"PermitToDo":  PermitToDo.String,
+		"PermitDoing": PermitDoing.String,
+		"PermitDone":  PermitDone.String,
+		"SenderEmail": SenderEmail.String,
+		"UserGroups":  UserGroups.String,
 	})
 }
