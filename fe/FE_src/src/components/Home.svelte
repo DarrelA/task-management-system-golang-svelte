@@ -7,6 +7,7 @@
   import AdminNavbar from "./Admin/NavBar/IsLoggedInAdmin.svelte";
   import UserNavbar from "./User/Navbar/IsLoggedInUser.svelte";
   import AddApplication from "./Admin/Form/AddApplication.svelte";
+  import { navigate } from "svelte-routing";
 
   const isAdmin = localStorage.getItem("isAdmin");
   let username = localStorage.getItem("username");
@@ -15,34 +16,29 @@
   let size = "lg";
   let addButton;
   const toggle = (e) => {
+    fetchApplications();
+    callbackFetchGroups(e);
     e.preventDefault();
     openModal = !openModal;
     size = "xl";
   };
 
+  // $: fetchApplications();
   let applications = [];
-
   async function fetchApplications() {
     try {
       const response = await axios.get("http://localhost:4000/get-all-applications", { withCredentials: true });
-      const data = response.data;
+      applications = response.data;
 
-      data.forEach((app) => {
-        applications.push(app);
-      });
-      applications = applications;
+      // data.forEach((app) => {
+      //   applications.push(app);
+      // });
+      // applications = applications;
     } catch (e) {}
   }
 
-  export async function FetchGroups() {
-    try {
-      const response = await axios.get("http://localhost:4000/get-user-groups", { withCredentials: true });
-      console.log(response);
-      //   data.forEach((group) => {
-      //     groups.push(group);
-      //   });
-      //   groups = groups;
-    } catch (error) {}
+  function callbackFetchGroups(event) {
+    console.log(event.detail);
   }
 
   onMount(() => {
@@ -73,14 +69,20 @@
 <div class="applications">
   {#each applications as application}
     <div class="application">
-      <h3>{application.app_acronym}</h3>
-      <div class="description">
+      <h4>
+        {application.app_acronym}
+        <a href="/dashboard"><Icon icon="bi:send" width="15" height="15" /></a>
+      </h4>
+
+      <div class="text-container">
         <p>{application.app_description}</p>
       </div>
 
       <br />
-      <p>{application.start_date}</p>
-      <p>{application.end_date}</p>
+      <div>
+        <p>{application.start_date}</p>
+        <p>{application.end_date}</p>
+      </div>
     </div>
   {/each}
 
@@ -93,7 +95,7 @@
   <Modal isOpen={openModal} {toggle} {size}>
     <ModalHeader {toggle}>Add Application</ModalHeader>
     <ModalBody>
-      <AddApplication bind:this={addButton} />
+      <AddApplication bind:this={addButton} on:fetch={callbackFetchGroups} on:fetch={callbackFetchGroups} />
     </ModalBody>
 
     <ModalFooter>
@@ -120,11 +122,13 @@
 
   .applications {
     margin: 2% auto;
+    width: 85%;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 20px;
     flex-direction: row;
+    flex-wrap: wrap;
   }
 
   .application {
@@ -136,7 +140,7 @@
     box-shadow: 6px 9px 10px 5px rgba(0, 0, 0, 0.08);
   }
 
-  .description {
+  .text-container {
     height: 30px;
     width: 100%;
     white-space: nowrap;

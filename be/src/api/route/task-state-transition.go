@@ -1,12 +1,13 @@
 package route
 
 import (
-	"backend/api/middleware"
-	"backend/api/models"
 	"database/sql"
 	"fmt"
 	"net/http"
 	"strings"
+
+	"backend/api/middleware"
+	"backend/api/models"
 
 	"github.com/gin-gonic/gin"
 )
@@ -174,6 +175,7 @@ func TaskStateTransition(c *gin.Context) {
 			fmt.Println("middleware.SendMail called from task-state-transition.go")
 			middleware.SendMail(c, oneEmail, SenderEmail.String, Username, task.TaskName, response.RecipientUsername)
 		}
+
 	}
 
 	// @TODO: discuss on what to return to FE
