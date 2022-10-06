@@ -19,19 +19,14 @@
   export let appacronym = null;
   export let tasksData = [];
 
-  // let userAppPermits = JSON.parse(localStorage.getItem("userAppPermits"));
-  // let {
-  //   IsPermitCreate,
-  //   IsPermitOpen,
-  //   IsPermitToDo,
-  //   IsPermitDoing,
-  //   IsPermitDone,
-  // } = userAppPermits;
-
-  let IsPermitCreate = "Project Lead";
-  let IsPermitOpen = "Project Manager";
-  let IsPermitToDo = "Team Member";
-  let IsPermitDone = "Team Member";
+  let userAppPermits = JSON.parse(localStorage.getItem("userAppPermits"));
+  let {
+    IsPermitCreate,
+    IsPermitOpen,
+    IsPermitToDo,
+    IsPermitDoing,
+    IsPermitDone,
+  } = userAppPermits;
 
   export async function GetAllTasks() {
     try {
@@ -57,6 +52,7 @@
         }
       );
       if (response) {
+        console.log(response);
         localStorage.setItem("userAppPermits", JSON.stringify(response.data));
       }
     } catch (e) {
