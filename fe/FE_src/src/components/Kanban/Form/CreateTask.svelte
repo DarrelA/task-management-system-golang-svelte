@@ -10,7 +10,7 @@
     let task_notes = ""
     let task_state = "Open"
     let task_plan = ""
-    let task_app_acronym = "durian"
+    let task_app_acronym = "durian"  // hard coded for now, will remove when URL params is available
     
     let username = localStorage.getItem("username")
     let message = ""

@@ -6,13 +6,9 @@
     import AdminNavbar from "../../Admin/NavBar/IsLoggedInAdmin.svelte";
     import UserNavbar from "../../User/NavBar/IsLoggedInUser.svelte";
     import CreateTask from "../Form/CreateTask.svelte";
-<<<<<<< Updated upstream
     import MgtPlan from "../Pages/MgtPlan.svelte";
     import MgtTask from "../Pages/MgtTask.svelte";
     import Icon from '@iconify/svelte';
-=======
-    import MgtTask from "./MgtTask.svelte"
->>>>>>> Stashed changes
 
     const isAdmin = localStorage.getItem("isAdmin");
 
@@ -117,19 +113,10 @@
         <Col xs = "2">
             <MgtPlan />
         </Col>
-<<<<<<< Updated upstream
         <Col xs = "10">
             <MgtTask />
-=======
-        <Col>
-            <Button style="float:right; font-weight: bold; color: black;  margin-left: 10px;" color="warning" on:click={handleBack}>Back</Button> 
-            <!-- <Button style="float:right; font-weight: bold; color: black;" color="warning" on:click={toggleAddTask}>Add Task</Button> -->
-            <!-- <Button style="float:right; font-weight: bold; color: black;" color="warning" on:click={toggleUpdateTask}>Update Task</Button> -->
->>>>>>> Stashed changes
         </Col>
     </Row>
 </div>
-
-<MgtTask />
 
 

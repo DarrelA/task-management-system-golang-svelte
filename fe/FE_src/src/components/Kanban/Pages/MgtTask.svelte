@@ -1,11 +1,9 @@
 <script>
   import axios from "axios";
   import { errorToast, successToast } from "../../toast";
-<<<<<<< Updated upstream
-  import {  Button, Card, CardBody, CardFooter, CardHeader, CardSubtitle, CardText, CardTitle, Row, Col } from "sveltestrap";
-=======
   import { Table, Row, Col, Button, Modal, ModalBody, ModalHeader, ModalFooter } from "sveltestrap";
   import CreateTask from "../Form/CreateTask.svelte";
+  import Card from "./Card.svelte"
 
   let addTaskButton;
 
@@ -13,6 +11,7 @@
   export let task_description = ""
   export let task_notes = ""
   export let task_plan = ""
+  let tasksData = ""
 
   let size = "lg";
   let open = false;
@@ -25,100 +24,58 @@
         task_notes = ""
         task_plan = ""
     }
->>>>>>> Stashed changes
+
+    async function GetAllTasks() {
+    
+    try {
+      const response = await axios.get("http://localhost:4000/get-all-tasks?AppAcronym=durian", { withCredentials: true });
+
+      if (response.data.error) {
+        console.log(response.data.error);
+      } else if (!response.data.error) {
+        console.log(response.data)
+        tasksData = response.data
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  $: GetAllTasks()
 </script>   
 
 <style>
 </style>
 
-<<<<<<< Updated upstream
+<Button style="float:right; font-weight: bold; color: black;" color="warning" on:click={toggleAddTask}>Create Task</Button>
 
-<div class="text-center">
-  <Row>
-    <!-- Task: Open -->
-    <Col>
-      <Card class="mb-3">
-        <CardHeader>
-          <CardTitle>Open</CardTitle>
-        </CardHeader>
-        <CardBody>
-          <CardSubtitle>Card subtitle</CardSubtitle>
-          <CardText>
-            Some quick example text to build on the card title and make up the bulk of
-            the card's content.
-          </CardText>
-          <Button>Button</Button>
-        </CardBody>
-      </Card>
-    </Col>
-    <!-- Task: To Do -->
-    <Col>
-      <Card class="mb-3">
-        <CardHeader>
-          <CardTitle>To Do</CardTitle>
-        </CardHeader>
-        <CardBody>
-          <CardSubtitle>Card subtitle</CardSubtitle>
-          <CardText>
-            Some quick example text to build on the card title and make up the bulk of
-            the card's content.
-          </CardText>
-          <Button>Button</Button>
-        </CardBody>
-      </Card>
-    </Col>
-    <!-- Task: Doing -->
-    <Col>
-      <Card class="mb-3">
-        <CardHeader>
-          <CardTitle>Doing</CardTitle>
-        </CardHeader>
-        <CardBody>
-          <CardSubtitle>Card subtitle</CardSubtitle>
-          <CardText>
-            Some quick example text to build on the card title and make up the bulk of
-            the card's content.
-          </CardText>
-          <Button>Button</Button>
-        </CardBody>
-      </Card>
-    </Col>
-    <!-- Task: Done -->
-    <Col>
-      <Card class="mb-3">
-        <CardHeader>
-          <CardTitle>Done</CardTitle>
-        </CardHeader>
-        <CardBody>
-          <CardSubtitle>Card subtitle</CardSubtitle>
-          <CardText>
-            Some quick example text to build on the card title and make up the bulk of
-            the card's content.
-          </CardText>
-          <Button>Button</Button>
-        </CardBody>
-      </Card>
-    </Col>
-    <!-- Task: Closed -->
-    <Col>
-      <Card class="mb-3">
-        <CardHeader>
-          <CardTitle>Closed</CardTitle>
-        </CardHeader>
-        <CardBody>
-          <CardSubtitle>Card subtitle</CardSubtitle>
-          <CardText>
-            Some quick example text to build on the card title and make up the bulk of
-            the card's content.
-          </CardText>
-          <Button>Button</Button>
-        </CardBody>
-      </Card>
-    </Col>
-  </Row>
-=======
-<!-- This is dashboard where task(s) will be displayed after clicking into an application -->
-<!-- 1. Open -->
+<Row>
+{#each tasksData as task}
+{#if task.task_state === "Open"}
+<Card>
+  <span slot="task-name">{task.task_name}</span>
+  <span slot="task-owner">Task Owner</span>
+  <span slot="task-description">Task Description</span>
+  <Button slot="move-left" on:left>&#8592;</Button>
+  <Button slot="update-task" on:update-task>Update Task</Button>
+  <Button slot="move-right" on:right>&#8594;</Button>
+</Card>
+{/if}
+{/each}
+
+{#each tasksData as task}
+{#if task.task_state === "To Do"}
+<Card>
+  <span slot="task-name">{task.task_name}</span>
+  <span slot="task-owner">Task Owner</span>
+  <span slot="task-description">Task Description</span>
+  <Button slot="move-left" on:left>&#8592;</Button>
+  <Button slot="update-task" on:update-task>Update Task</Button>
+  <Button slot="move-right" on:right>&#8594;</Button>
+</Card>
+{/if}
+{/each}
+</Row>
 
 <Modal isOpen={open} {toggleAddTask} {size}>
   <ModalHeader {toggleAddTask}>Create Task</ModalHeader>
@@ -130,13 +87,3 @@
       <Button class="back-button" color="danger" on:click={toggleAddTask}>Back</Button>
   </ModalFooter>
 </Modal>
-
-<!-- 2. To Do -->
-<!-- 3. Doing -->
-<!-- 4. Done -->
-<!-- 5. Closed -->
-<div class="container-fluid">
-  <br/>
-  <Button style="float:right; font-weight: bold; color: black;" color="warning" on:click={toggleAddTask}>Create Task</Button>
->>>>>>> Stashed changes
-</div>
