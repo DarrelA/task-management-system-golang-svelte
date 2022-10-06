@@ -28,6 +28,11 @@
   //   IsPermitDone,
   // } = userAppPermits;
 
+  let IsPermitCreate = "Project Lead";
+  let IsPermitOpen = "Project Manager";
+  let IsPermitToDo = "Team Member";
+  let IsPermitDone = "Team Member";
+
   export async function GetAllTasks() {
     try {
       const response = await axios.get(
@@ -39,83 +44,77 @@
         tasksData = response.data;
       }
     } catch (error) {
-      console.log(error);
+      console.log("error");
     }
   }
 
-  // const GetUserAppPermits = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `http://localhost:4000/get-user-app-permits?appacronym=${appacronym}`,
-  //       {
-  //         withCredentials: true,
-  //       }
-  //     );
-  //     if (response) {
-  //       localStorage.setItem('userAppPermits', JSON.stringify(response.data));
-  //     }
-  //   } catch (e) {
-  //     e.response && e.response.data.message
-  //       ? errorToast(e.response.data.message)
-  //       : errorToast(e.message);
-  //   }
-  // };
+  const GetUserAppPermits = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/get-user-app-permits?appacronym=${appacronym}`,
+        {
+          withCredentials: true,
+        }
+      );
+      if (response) {
+        localStorage.setItem("userAppPermits", JSON.stringify(response.data));
+      }
+    } catch (e) {
+      e.response && e.response.data.message
+        ? errorToast(e.response.data.message)
+        : errorToast(e.message);
+    }
+  };
 
-  // const demoteTask = async (task_name, task_state) => {
-  //   const json = { task_app_acronym: appacronym, task_name, task_state };
+  const demoteTask = async (task_name, task_state) => {
+    const json = { task_app_acronym: appacronym, task_name, task_state };
 
-  //   try {
-  //     const response = await axios.put(
-  //       'http://localhost:4000/task-state-transition',
-  //       json,
-  //       {
-  //         withCredentials: true,
-  //       }
-  //     );
-  //     if (response) {
-  //       GetAllTasks();
-  //     }
-  //   } catch (e) {
-  //     e.response && e.response.data.message
-  //       ? errorToast(e.response.data.message)
-  //       : errorToast(e.message);
-  //   }
-  // };
+    try {
+      const response = await axios.put(
+        "http://localhost:4000/task-state-transition",
+        json,
+        {
+          withCredentials: true,
+        }
+      );
+      if (response) {
+        GetAllTasks();
+      }
+    } catch (e) {
+      e.response && e.response.data.message
+        ? errorToast(e.response.data.message)
+        : errorToast(e.message);
+    }
+  };
 
-  // const promoteTask = async (task_name, task_state) => {
-  //   const json = { task_app_acronym: appacronym, task_name, task_state };
+  const promoteTask = async (task_name, task_state) => {
+    const json = { task_app_acronym: appacronym, task_name, task_state };
 
-  //   try {
-  //     const response = await axios.put(
-  //       'http://localhost:4000/task-state-transition',
-  //       json,
-  //       {
-  //         withCredentials: true,
-  //       }
-  //     );
-  //     if (response) {
-  //       GetAllTasks();
-  //     }
-  //   } catch (e) {
-  //     e.response && e.response.data.message
-  //       ? errorToast(e.response.data.message)
-  //       : errorToast(e.message);
-  //   }
-  // };
+    try {
+      const response = await axios.put(
+        "http://localhost:4000/task-state-transition",
+        json,
+        {
+          withCredentials: true,
+        }
+      );
+      if (response) {
+        GetAllTasks();
+      }
+    } catch (e) {
+      e.response && e.response.data.message
+        ? errorToast(e.response.data.message)
+        : errorToast(e.message);
+    }
+  };
 
   $: GetAllTasks();
-  // $: GetUserAppPermits();
+  $: GetUserAppPermits();
 </script>
 
-<!-- {#if IsPermitCreate}
-  <Button
-    style="float:click={promoteTask}; font-weight: bold; color: black;"
-    color="warning"
-    on:click={toggleAddTask}>Create Task</Button
-  >
-{/if} -->
-
-<CreateTask {appacronym} />
+{#if IsPermitCreate}
+  <CreateTask {appacronym} />
+{/if}
 
 <Row>
   <Col>
@@ -127,16 +126,16 @@
           <span slot="task-owner">{task.task_owner}</span>
           <span slot="task-description">{task.task_description}</span>
           <Row slot="task-actions">
-            <!-- {#if IsPermitOpen} -->
-            <Col><Button on:update-task><UpdateTask /></Button></Col>
-            <Col
-              ><Button
-                color="primary"
-                on:click={() => promoteTask(task.task_name, "ToDo")}
-                >&#8594;</Button
-              ></Col
-            >
-            <!-- {/if} -->
+            {#if IsPermitOpen}
+              <Col><Button on:update-task><UpdateTask /></Button></Col>
+              <Col
+                ><Button
+                  color="primary"
+                  on:click={() => promoteTask(task.task_name, "ToDo")}
+                  >&#8594;</Button
+                ></Col
+              >
+            {/if}
           </Row>
         </Card>
       {/if}
@@ -152,16 +151,16 @@
           <span slot="task-owner">{task.task_owner}</span>
           <span slot="task-description">{task.task_description}</span>
           <Row slot="task-actions">
-            <!-- {#if IsPermitToDo} -->
-            <Col><Button on:update-task><UpdateTask /></Button></Col>
-            <Col
-              ><Button
-                color="primary"
-                on:click={() => promoteTask(task.task_name, "Doing")}
-                >&#8594;</Button
-              ></Col
-            >
-            <!-- {/if} -->
+            {#if IsPermitToDo}
+              <Col><Button on:update-task><UpdateTask /></Button></Col>
+              <Col
+                ><Button
+                  color="primary"
+                  on:click={() => promoteTask(task.task_name, "Doing")}
+                  >&#8594;</Button
+                ></Col
+              >
+            {/if}
           </Row>
         </Card>
       {/if}
@@ -178,23 +177,23 @@
           <span slot="task-owner">{task.task_owner}</span>
           <span slot="task-description">{task.task_description}</span>
           <Row slot="task-actions">
-            <!-- {#if IsPermitDoing} -->
-            <Col
-              ><Button
-                color="primary"
-                on:click={() => demoteTask(task.task_name, "ToDo")}
-                >&#8592;</Button
-              ></Col
-            >
-            <Col><Button on:update-task><UpdateTask /></Button></Col>
-            <Col
-              ><Button
-                color="primary"
-                on:click={() => promoteTask(task.task_name, "Done")}
-                >&#8594;</Button
-              ></Col
-            >
-            <!-- {/if} -->
+            {#if IsPermitDoing}
+              <Col
+                ><Button
+                  color="primary"
+                  on:click={() => demoteTask(task.task_name, "ToDo")}
+                  >&#8592;</Button
+                ></Col
+              >
+              <Col><Button on:update-task><UpdateTask /></Button></Col>
+              <Col
+                ><Button
+                  color="primary"
+                  on:click={() => promoteTask(task.task_name, "Done")}
+                  >&#8594;</Button
+                ></Col
+              >
+            {/if}
           </Row>
         </Card>
       {/if}
@@ -210,23 +209,23 @@
           <span slot="task-owner">{task.task_owner}</span>
           <span slot="task-description">{task.task_description}</span>
           <Row slot="task-actions">
-            <!-- {#if IsPermitDone} -->
-            <Col
-              ><Button
-                color="primary"
-                on:click={() => demoteTask(task.task_name, "Doing")}
-                >&#8592;</Button
-              ></Col
-            >
-            <Col><Button on:update-task><UpdateTask /></Button></Col>
-            <Col
-              ><Button
-                color="primary"
-                on:click={() => promoteTask(task.task_name, "Closed")}
-                >&#8594;</Button
-              ></Col
-            >
-            <!-- {/if} -->
+            {#if IsPermitDone}
+              <Col
+                ><Button
+                  color="primary"
+                  on:click={() => demoteTask(task.task_name, "Doing")}
+                  >&#8592;</Button
+                ></Col
+              >
+              <Col><Button on:update-task><UpdateTask /></Button></Col>
+              <Col
+                ><Button
+                  color="primary"
+                  on:click={() => promoteTask(task.task_name, "Closed")}
+                  >&#8594;</Button
+                ></Col
+              >
+            {/if}
           </Row>
         </Card>
       {/if}

@@ -82,6 +82,8 @@
     }
   }
 
+  $: GetPlans();
+
   async function GetAllTasks() {
     try {
       const response = await axios.get(
@@ -99,13 +101,12 @@
 
   function toggleAddTask(e) {
     e.preventDefault();
-    GetPlans();
-    GetAllTasks();
     open = !open;
     task_name = "";
     task_description = "";
     task_notes = "";
     task_plan = "";
+    GetAllTasks();
   }
 </script>
 
