@@ -8,8 +8,10 @@
     CardTitle,
     Col,
     Button,
-  } from 'sveltestrap';
-  import { createEventDispatcher } from 'svelte';
+  } from "sveltestrap";
+  import { createEventDispatcher } from "svelte";
+
+  export let color = null;
 </script>
 
 <Col>
@@ -19,7 +21,7 @@
         <slot name="task-name" />
       </CardTitle>
     </CardHeader>
-    <CardBody>
+    <CardBody style={color ? `border-left:5px solid ${color}` : ""}>
       <CardSubtitle>
         <slot name="task-owner" />
       </CardSubtitle>

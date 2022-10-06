@@ -135,7 +135,7 @@
     Open
     {#each tasksData as task}
       {#if task.task_state === "Open"}
-        <Card>
+        <Card color={task.task_color}>
           <span slot="task-name">{task.task_name}</span>
           <span slot="task-owner">{task.task_owner}</span>
           <span slot="task-description">{task.task_description}</span>
@@ -160,7 +160,7 @@
     To Do
     {#each tasksData as task}
       {#if task.task_state === "ToDo"}
-        <Card>
+        <Card color={task.task_color}>
           <span slot="task-name">{task.task_name}</span>
           <span slot="task-owner">{task.task_owner}</span>
           <span slot="task-description">{task.task_description}</span>
@@ -186,7 +186,7 @@
     Doing
     {#each tasksData as task}
       {#if task.task_state === "Doing"}
-        <Card>
+        <Card color={task.task_color}>
           <span slot="task-name">{task.task_name}</span>
           <span slot="task-owner">{task.task_owner}</span>
           <span slot="task-description">{task.task_description}</span>
@@ -218,7 +218,7 @@
     Done
     {#each tasksData as task}
       {#if task.task_state === "Done"}
-        <Card>
+        <Card color={task.task_color}>
           <span slot="task-name">{task.task_name}</span>
           <span slot="task-owner">{task.task_owner}</span>
           <span slot="task-description">{task.task_description}</span>
@@ -250,7 +250,7 @@
     Close
     {#each tasksData as task}
       {#if task.task_state === "Closed"}
-        <Card>
+        <Card color={task.task_color}>
           <span slot="task-name">{task.task_name}</span>
           <span slot="task-owner">{task.task_owner}</span>
           <span slot="task-description">{task.task_description}</span>
