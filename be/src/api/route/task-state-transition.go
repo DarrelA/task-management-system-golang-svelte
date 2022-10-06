@@ -62,8 +62,8 @@ func TaskStateTransition(c *gin.Context) {
 	// `UserGroups` is case sensitive
 	appPermits := middleware.SelectAppPermits(task.TaskAppAcronym)
 
-	var PermitOpen, PermitToDo, PermitDoing, PermitDone sql.NullString
-	err = appPermits.Scan(&PermitOpen, &PermitToDo, &PermitDoing, &PermitDone)
+	var PermitCreate, PermitOpen, PermitToDo, PermitDoing, PermitDone sql.NullString
+	err = appPermits.Scan(&PermitCreate, &PermitOpen, &PermitToDo, &PermitDoing, &PermitDone)
 	if err != nil {
 		middleware.ErrorHandler(c, http.StatusInternalServerError, "Failed to scan in /task-state-transition")
 		return
@@ -170,6 +170,7 @@ func TaskStateTransition(c *gin.Context) {
 		// return null if no one is in `PermitDone.String` user_group
 		oneEmail[0] = response.RecipientEmail
 
+		// @TODO: Fix delay in ui because of sending email
 		// send email to ALL project leads if any from team member once task state is updated from `Doing` to `Done`
 		if RecipientEmail.String != "" && TaskState.String == "Doing" && task.TaskState == "Done" {
 			fmt.Println("middleware.SendMail called from task-state-transition.go")
@@ -178,14 +179,55 @@ func TaskStateTransition(c *gin.Context) {
 
 	}
 
-	// @TODO: discuss on what to return to FE
-	// Below is for dev testing
+	c.JSON(200, gin.H{"message": "success"})
+}
+
+func GetUserAppPermits(c *gin.Context) {
+	var task models.Task
+
+	// validation for app permit rights
+	// `UserGroups` is case sensitive
+	task.TaskAppAcronym = c.Query("appacronym")
+	appPermits := middleware.SelectAppPermits(task.TaskAppAcronym)
+
+	var PermitCreate, PermitOpen, PermitToDo, PermitDoing, PermitDone sql.NullString
+	err := appPermits.Scan(&PermitCreate, &PermitOpen, &PermitToDo, &PermitDoing, &PermitDone)
+	if err != nil {
+		fmt.Println(err)
+		middleware.ErrorHandler(c, http.StatusInternalServerError, "Failed to scan in /task-state-transition")
+		return
+	}
+
+	Username := c.GetString("username")
+	userGroups := middleware.SelectUserFromUserGroupByUsername(Username)
+	var UserGroups sql.NullString
+	err = userGroups.Scan(&UserGroups)
+	if err != nil {
+		middleware.ErrorHandler(c, http.StatusInternalServerError, "Failed to scan in /task-state-transition")
+		return
+	}
+
+	type UserAppPermits struct {
+		IsPermitCreate bool
+		IsPermitOpen   bool
+		IsPermitToDo   bool
+		IsPermitDoing  bool
+		IsPermitDone   bool
+	}
+
+	var userAppPermits UserAppPermits
+
+	userAppPermits.IsPermitCreate = strings.Contains(UserGroups.String, PermitCreate.String)
+	userAppPermits.IsPermitOpen = strings.Contains(UserGroups.String, PermitOpen.String)
+	userAppPermits.IsPermitToDo = strings.Contains(UserGroups.String, PermitToDo.String)
+	userAppPermits.IsPermitDoing = strings.Contains(UserGroups.String, PermitDoing.String)
+	userAppPermits.IsPermitDone = strings.Contains(UserGroups.String, PermitDone.String)
+
 	c.JSON(200, gin.H{
-		"PermitOpen":  PermitOpen.String,
-		"PermitToDo":  PermitToDo.String,
-		"PermitDoing": PermitDoing.String,
-		"PermitDone":  PermitDone.String,
-		"SenderEmail": SenderEmail.String,
-		"UserGroups":  UserGroups.String,
+		"IsPermitCreate": userAppPermits.IsPermitCreate,
+		"IsPermitOpen":   userAppPermits.IsPermitOpen,
+		"IsPermitToDo":   userAppPermits.IsPermitToDo,
+		"IsPermitDoing":  userAppPermits.IsPermitDoing,
+		"IsPermitDone":   userAppPermits.IsPermitDone,
 	})
 }
