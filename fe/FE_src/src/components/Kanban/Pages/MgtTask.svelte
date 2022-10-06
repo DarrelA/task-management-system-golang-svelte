@@ -12,10 +12,13 @@
   export let task_description = ""
   export let task_notes = ""
   export let task_plan = ""
+  export let appacronym;
   let tasksData = ""
 
   let size = "lg";
   let open = false;
+
+  $: console.log(appacronym)
 
   function toggleAddTask(e) {
         e.preventDefault()
@@ -31,7 +34,7 @@
     async function GetAllTasks() {
     
     try {
-      const response = await axios.get("http://localhost:4000/get-all-tasks?AppAcronym=durian", { withCredentials: true });
+      const response = await axios.get(`http://localhost:4000/get-all-tasks?AppAcronym=${appacronym}`, { withCredentials: true });
 
       if (response.data.error) {
         console.log(response.data.error);
@@ -136,7 +139,7 @@ Close
 <Modal isOpen={open} {toggleAddTask} {size}>
   <ModalHeader {toggleAddTask}>Create Task</ModalHeader>
   <ModalBody>
-      <CreateTask bind:this={addTaskButton} {task_name} {task_description} {task_notes} {task_plan} />
+      <CreateTask bind:this={addTaskButton} {task_name} {task_description} {task_notes} {task_plan} {appacronym} />
   </ModalBody>
   <ModalFooter>
       <Button style="color: #fffbf0;" color="warning" on:click={(e) => addTaskButton.handleSubmit(e)}>Create Task</Button>

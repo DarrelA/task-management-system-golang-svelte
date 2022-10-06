@@ -1,16 +1,18 @@
 <script>
     import { errorToast, successToast } from "../../toast";
-    import { Form, FormGroup, Input, Label, Button, Modal, ModalHeader, ModalFooter, Col, Row, Spinner, ModalBody, Styles } from "sveltestrap";
+    import { Form, FormGroup, Input, Label, Col, Row } from "sveltestrap";
     import { Dropdown, DropdownToggle, DropdownItem, DropdownMenu } from "sveltestrap";
     import MultiSelect from "svelte-multiselect";
     import axios from "axios";
+
+    export let appacronym; // url params
 
     let task_name = ""
     let task_description = ""
     let task_notes = ""
     let task_state = "Open"
     let task_plan = ""
-    let task_app_acronym = "durian"  // hard coded for now, will remove when URL params is available
+    let task_app_acronym = appacronym
     
     let username = localStorage.getItem("username")
     let message = ""
@@ -39,19 +41,20 @@
 
     async function GetPlans() {
     
-    try {
-      const response = await axios.get("http://localhost:4000/get-all-plans?AppAcronym=durian", { withCredentials: true });
+        try {
+        console.log(appacronym)
+        const response = await axios.get(`http://localhost:4000/get-all-plans?AppAcronym=${appacronym}`, { withCredentials: true });
 
-      if (response.data.error) {
-        console.log(response.data.error);
-      } else if (!response.data.error) {
-        planData = response.data
-      }
-    } catch (error) {
-      console.log(error);
+        if (response.data.error) {
+            console.log(response.data.error);
+        } else if (!response.data.error) {
+            planData = response.data
+        }
+        } catch (error) {
+        console.log(error);
+        }
     }
-  }
-  $: GetPlans()
+    $: GetPlans()
 </script>
 
 <Form>

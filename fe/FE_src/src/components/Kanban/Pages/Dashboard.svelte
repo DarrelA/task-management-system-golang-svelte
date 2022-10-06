@@ -6,15 +6,9 @@
     import AdminNavbar from "../../Admin/NavBar/IsLoggedInAdmin.svelte";
     import UserNavbar from "../../User/NavBar/IsLoggedInUser.svelte";
     import CreateTask from "../Form/CreateTask.svelte";
-<<<<<<< HEAD
-    import MgtPlan from "../Pages/MgtPlan.svelte";
-    import MgtTask from "../Pages/MgtTask.svelte";
-    import Icon from '@iconify/svelte';
-=======
     import MgtTask from "./MgtTask.svelte"
     import MgtPlan from "./MgtPlan.svelte"
     import Icon from "@iconify/svelte"
->>>>>>> 1c2ec3ec2d766e7af79147c1ce9bc26807a73b82
 
     const isAdmin = localStorage.getItem("isAdmin");
     let addTaskButton;
@@ -23,6 +17,7 @@
     export let task_description = ""
     export let task_notes = ""
     export let task_plan = ""
+    export let appacronym;
 
     let size = "xl";
     let open = false;
@@ -121,10 +116,11 @@
 <div class="container-fluid">
     <Row>
         <Col xs = "2">
-            <MgtPlan />
+            <MgtPlan appacronym={appacronym} />
         </Col>
 <<<<<<< HEAD
         <Col xs = "10">
+<<<<<<< HEAD
             <MgtTask />
 =======
         <Col>
@@ -132,6 +128,9 @@
             <!-- <Button style="float:right; font-weight: bold; color: black;" color="warning" on:click={toggleAddTask}>Add Task</Button> -->
             <!-- <Button style="float:right; font-weight: bold; color: black;" color="warning" on:click={toggleUpdateTask}>Update Task</Button> -->
 >>>>>>> 1c2ec3ec2d766e7af79147c1ce9bc26807a73b82
+=======
+            <MgtTask appacronym={appacronym} />
+>>>>>>> main
         </Col>
     </Row>
 </div>
