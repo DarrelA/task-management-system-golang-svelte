@@ -5,6 +5,7 @@
   import Icon from "@iconify/svelte";
   import AdminNavbar from "./Admin/NavBar/IsLoggedInAdmin.svelte";
   import UserNavbar from "./User/Navbar/IsLoggedInUser.svelte";
+
   import { navigate } from "svelte-routing";
   import AddApplication from "./Kanban/Form/AddApplication.svelte";
 
@@ -22,17 +23,11 @@
     size = "xl";
   };
 
-  // $: fetchApplications();
   let applications = [];
   async function fetchApplications() {
     try {
       const response = await axios.get("http://localhost:4000/get-all-applications", { withCredentials: true });
       applications = response.data;
-
-      // data.forEach((app) => {
-      //   applications.push(app);
-      // });
-      // applications = applications;
     } catch (e) {}
   }
 
@@ -57,7 +52,7 @@
 {/if}
 
 <br />
-<br/>
+<br />
 
 <div class="masthead">
   <h2>Welcome {username} &#x1F642;</h2>
