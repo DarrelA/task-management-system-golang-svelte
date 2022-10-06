@@ -2,8 +2,6 @@
       import {Card, CardBody, CardHeader, CardSubtitle, CardText, CardTitle, Col, Button} from "sveltestrap"
       import {createEventDispatcher} from 'svelte'
 
-      export let captionLeft = "";
-
       const dispatch = createEventDispatcher()
 </script>
 
@@ -22,7 +20,7 @@
             <slot name="task-description" />
         </CardText>
         <slot name="move-left"><Button on:click={() => dispatch("left", "darrel")}></Button></slot>
-        <slot name="update-task"><Button on:click={() => dispatch("update-task")}></Button></slot>
+        <slot name="update-task"><span on:click={() => dispatch("update-task")}></span></slot>
         <slot name="move-right"><Button on:click={() => dispatch("left", "darrel")}></Button></slot>
         </CardBody>
     </Card>

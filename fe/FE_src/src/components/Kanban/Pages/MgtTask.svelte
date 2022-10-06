@@ -4,6 +4,7 @@
   import { Table, Row, Col, Button, Modal, ModalBody, ModalHeader, ModalFooter } from "sveltestrap";
   import CreateTask from "../Form/CreateTask.svelte";
   import Card from "./Card.svelte"
+  import UpdateTask from "../Form/UpdateTask.svelte"
 
   let addTaskButton;
 
@@ -23,6 +24,7 @@
         task_description = ""
         task_notes = ""
         task_plan = ""
+        GetAllTasks()
     }
 
     async function GetAllTasks() {
@@ -49,33 +51,79 @@
 
 <Button style="float:right; font-weight: bold; color: black;" color="warning" on:click={toggleAddTask}>Create Task</Button>
 
+
 <Row>
+  Open
 {#each tasksData as task}
 {#if task.task_state === "Open"}
 <Card>
   <span slot="task-name">{task.task_name}</span>
-  <span slot="task-owner">Task Owner</span>
-  <span slot="task-description">Task Description</span>
+  <span slot="task-owner">{task.task_owner}</span>
+  <span slot="task-description">{task.task_description}</span>
+  <Button color="primary" slot="move-left" on:left>&#8592;</Button>
+  <span slot="update-task" on:update-task><UpdateTask /></span>
+  <Button color="primary" slot="move-right" on:right>&#8594;</Button>
+</Card>
+{/if}
+{/each}
+
+To Do
+{#each tasksData as task}
+{#if task.task_state === "ToDo"}
+<Card>
+  <span slot="task-name">{task.task_name}</span>
+  <span slot="task-owner">{task.task_owner}</span>
+  <span slot="task-description">{task.task_description}</span>
   <Button slot="move-left" on:left>&#8592;</Button>
-  <Button slot="update-task" on:update-task>Update Task</Button>
+  <span slot="update-task" on:update-task><UpdateTask /></span>
   <Button slot="move-right" on:right>&#8594;</Button>
 </Card>
 {/if}
 {/each}
 
-{#each tasksData as task}
-{#if task.task_state === "To Do"}
-<Card>
-  <span slot="task-name">{task.task_name}</span>
-  <span slot="task-owner">Task Owner</span>
-  <span slot="task-description">Task Description</span>
-  <Button slot="move-left" on:left>&#8592;</Button>
-  <Button slot="update-task" on:update-task>Update Task</Button>
-  <Button slot="move-right" on:right>&#8594;</Button>
-</Card>
-{/if}
-{/each}
+Doing
+  {#each tasksData as task}
+  {#if task.task_state === "Doing"}
+  <Card>
+    <span slot="task-name">{task.task_name}</span>
+    <span slot="task-owner">{task.task_owner}</span>
+    <span slot="task-description">{task.task_description}</span>
+    <Button slot="move-left" on:left>&#8592;</Button>
+    <span slot="update-task" on:update-task><UpdateTask /></span>
+    <Button slot="move-right" on:right>&#8594;</Button>
+  </Card>
+  {/if}
+  {/each}
+
+  Done
+  {#each tasksData as task}
+  {#if task.task_state === "Done"}
+  <Card>
+    <span slot="task-name">{task.task_name}</span>
+    <span slot="task-owner">{task.task_owner}</span>
+    <span slot="task-description">{task.task_description}</span>
+    <Button slot="move-left" on:left>&#8592;</Button>
+    <span slot="update-task" on:update-task><UpdateTask /></span>
+    <Button slot="move-right" on:right>&#8594;</Button>
+  </Card>
+  {/if}
+  {/each}
+
+Close
+  {#each tasksData as task}
+  {#if task.task_state === "Closed"}
+  <Card>
+    <span slot="task-name">{task.task_name}</span>
+    <span slot="task-owner">{task.task_owner}</span>
+    <span slot="task-description">{task.task_description}</span>
+    <Button slot="move-left" on:left>&#8592;</Button>
+    <span slot="update-task" on:update-task><UpdateTask /></span>
+    <Button slot="move-right" on:right>&#8594;</Button>
+  </Card>
+  {/if}
+  {/each}
 </Row>
+
 
 <Modal isOpen={open} {toggleAddTask} {size}>
   <ModalHeader {toggleAddTask}>Create Task</ModalHeader>

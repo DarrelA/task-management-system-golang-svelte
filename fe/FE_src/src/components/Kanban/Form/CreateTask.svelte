@@ -32,6 +32,7 @@
                 task_plan = ""
             }
         } catch(error) {
+            console.log(error)
             errorToast(error.response.data.message);
         }
     }
