@@ -11,11 +11,15 @@
     import Icon from '@iconify/svelte';
 
     const isAdmin = localStorage.getItem("isAdmin");
+    let addTaskButton;
 
     export let task_name = ""
     export let task_description = ""
     export let task_notes = ""
     export let task_plan = ""
+
+    let size = "xl";
+    let open = false;
 
     function handleBack() {
         navigate("/home")
@@ -119,4 +123,13 @@
     </Row>
 </div>
 
-
+<Modal isOpen={open} {toggleAddTask} {size}>
+    <ModalHeader {toggleAddTask}>Create Task</ModalHeader>
+    <ModalBody>
+        <CreateTask bind:this={addTaskButton} {task_name} {task_description} {task_notes} {task_plan} />
+    </ModalBody>
+    <ModalFooter>
+        <Button style="color: #fffbf0;" color="warning" on:click={(e) => addTaskButton.handleSubmit(e)}>Create Task</Button>
+        <Button class="back-button" color="danger" on:click={toggleAddTask}>Back</Button>
+    </ModalFooter>
+</Modal>
