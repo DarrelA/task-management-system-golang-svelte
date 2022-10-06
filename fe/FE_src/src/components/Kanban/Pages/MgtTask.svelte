@@ -29,13 +29,104 @@
         task_plan = ""
         GetAllTasks()
     }
+
+    async function GetAllTasks() {
+    
+    try {
+      const response = await axios.get(`http://localhost:4000/get-all-tasks?AppAcronym=${appacronym}`, { withCredentials: true });
+
+      if (response.data.error) {
+        console.log(response.data.error);
+      } else if (!response.data.error) {
+        console.log(response.data)
+        tasksData = response.data
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  $: GetAllTasks()
 </script>   
 
 <style>
 </style>
 
-<!-- This is dashboard where task(s) will be displayed after clicking into an application -->
-<!-- 1. Open -->
+<Button style="float:right; font-weight: bold; color: black;" color="warning" on:click={toggleAddTask}>Create Task</Button>
+
+
+<Row>
+  Open
+{#each tasksData as task}
+{#if task.task_state === "Open"}
+<Card>
+  <span slot="task-name">{task.task_name}</span>
+  <span slot="task-owner">{task.task_owner}</span>
+  <span slot="task-description">{task.task_description}</span>
+  <Button color="primary" slot="move-left" on:left>&#8592;</Button>
+  <span slot="update-task" on:update-task><UpdateTask /></span>
+  <Button color="primary" slot="move-right" on:right>&#8594;</Button>
+</Card>
+{/if}
+{/each}
+
+To Do
+{#each tasksData as task}
+{#if task.task_state === "ToDo"}
+<Card>
+  <span slot="task-name">{task.task_name}</span>
+  <span slot="task-owner">{task.task_owner}</span>
+  <span slot="task-description">{task.task_description}</span>
+  <Button slot="move-left" on:left>&#8592;</Button>
+  <span slot="update-task" on:update-task><UpdateTask /></span>
+  <Button slot="move-right" on:right>&#8594;</Button>
+</Card>
+{/if}
+{/each}
+
+Doing
+  {#each tasksData as task}
+  {#if task.task_state === "Doing"}
+  <Card>
+    <span slot="task-name">{task.task_name}</span>
+    <span slot="task-owner">{task.task_owner}</span>
+    <span slot="task-description">{task.task_description}</span>
+    <Button slot="move-left" on:left>&#8592;</Button>
+    <span slot="update-task" on:update-task><UpdateTask /></span>
+    <Button slot="move-right" on:right>&#8594;</Button>
+  </Card>
+  {/if}
+  {/each}
+
+  Done
+  {#each tasksData as task}
+  {#if task.task_state === "Done"}
+  <Card>
+    <span slot="task-name">{task.task_name}</span>
+    <span slot="task-owner">{task.task_owner}</span>
+    <span slot="task-description">{task.task_description}</span>
+    <Button slot="move-left" on:left>&#8592;</Button>
+    <span slot="update-task" on:update-task><UpdateTask /></span>
+    <Button slot="move-right" on:right>&#8594;</Button>
+  </Card>
+  {/if}
+  {/each}
+
+Close
+  {#each tasksData as task}
+  {#if task.task_state === "Closed"}
+  <Card>
+    <span slot="task-name">{task.task_name}</span>
+    <span slot="task-owner">{task.task_owner}</span>
+    <span slot="task-description">{task.task_description}</span>
+    <Button slot="move-left" on:left>&#8592;</Button>
+    <span slot="update-task" on:update-task><UpdateTask /></span>
+    <Button slot="move-right" on:right>&#8594;</Button>
+  </Card>
+  {/if}
+  {/each}
+</Row>
+
 
 <Modal isOpen={open} {toggleAddTask} {size}>
   <ModalHeader {toggleAddTask}>Create Task</ModalHeader>
@@ -47,12 +138,3 @@
       <Button class="back-button" color="danger" on:click={toggleAddTask}>Back</Button>
   </ModalFooter>
 </Modal>
-
-<!-- 2. To Do -->
-<!-- 3. Doing -->
-<!-- 4. Done -->
-<!-- 5. Closed -->
-<div class="container-fluid">
-  <br/>
-  <Button style="float:right; font-weight: bold; color: black;" color="warning" on:click={toggleAddTask}>Create Task</Button>
-</div>
