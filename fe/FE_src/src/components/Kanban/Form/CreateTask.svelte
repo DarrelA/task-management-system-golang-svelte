@@ -69,7 +69,7 @@
                      <DropdownMenu>
                         {#each planData as plan}
                           <DropdownItem on:click={() => (task_plan = plan.plan_name)} placeholder={plan}>
-                            {plan.plan_name}
+                            {plan.plan_name} {plan.plan}
                           </DropdownItem>
                         {/each}
                       </DropdownMenu>

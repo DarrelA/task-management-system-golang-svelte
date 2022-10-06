@@ -6,9 +6,15 @@
     import AdminNavbar from "../../Admin/NavBar/IsLoggedInAdmin.svelte";
     import UserNavbar from "../../User/NavBar/IsLoggedInUser.svelte";
     import CreateTask from "../Form/CreateTask.svelte";
+<<<<<<< HEAD
     import MgtPlan from "../Pages/MgtPlan.svelte";
     import MgtTask from "../Pages/MgtTask.svelte";
     import Icon from '@iconify/svelte';
+=======
+    import MgtTask from "./MgtTask.svelte"
+    import MgtPlan from "./MgtPlan.svelte"
+    import Icon from "@iconify/svelte"
+>>>>>>> 1c2ec3ec2d766e7af79147c1ce9bc26807a73b82
 
     const isAdmin = localStorage.getItem("isAdmin");
     let addTaskButton;
@@ -117,12 +123,20 @@
         <Col xs = "2">
             <MgtPlan />
         </Col>
+<<<<<<< HEAD
         <Col xs = "10">
             <MgtTask />
+=======
+        <Col>
+            <Button style="float:right; font-weight: bold; color: black;  margin-left: 10px;" color="warning" on:click={handleBack}>Back</Button> 
+            <!-- <Button style="float:right; font-weight: bold; color: black;" color="warning" on:click={toggleAddTask}>Add Task</Button> -->
+            <!-- <Button style="float:right; font-weight: bold; color: black;" color="warning" on:click={toggleUpdateTask}>Update Task</Button> -->
+>>>>>>> 1c2ec3ec2d766e7af79147c1ce9bc26807a73b82
         </Col>
     </Row>
 </div>
 
+<<<<<<< HEAD
 <Modal isOpen={open} {toggleAddTask} {size}>
     <ModalHeader {toggleAddTask}>Create Task</ModalHeader>
     <ModalBody>
@@ -133,3 +147,7 @@
         <Button class="back-button" color="danger" on:click={toggleAddTask}>Back</Button>
     </ModalFooter>
 </Modal>
+=======
+<MgtTask />
+
+>>>>>>> 1c2ec3ec2d766e7af79147c1ce9bc26807a73b82

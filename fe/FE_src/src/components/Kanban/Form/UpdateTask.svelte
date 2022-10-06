@@ -12,6 +12,8 @@
     let task_owner = ""
     let task_creator = ""
 
+    
+
     let username = localStorage.getItem("username")
 
     let size = "xl";

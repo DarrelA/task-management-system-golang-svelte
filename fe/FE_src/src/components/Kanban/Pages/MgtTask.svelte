@@ -26,6 +26,7 @@
         task_plan = ""
         GetAllTasks()
     }
+<<<<<<< HEAD
 
     async function GetAllTasks() {
     
@@ -44,11 +45,14 @@
   }
 
   $: GetAllTasks()
+=======
+>>>>>>> 1c2ec3ec2d766e7af79147c1ce9bc26807a73b82
 </script>   
 
 <style>
 </style>
 
+<<<<<<< HEAD
 <Button style="float:right; font-weight: bold; color: black;" color="warning" on:click={toggleAddTask}>Create Task</Button>
 
 
@@ -124,6 +128,10 @@ Close
   {/each}
 </Row>
 
+=======
+<!-- This is dashboard where task(s) will be displayed after clicking into an application -->
+<!-- 1. Open -->
+>>>>>>> 1c2ec3ec2d766e7af79147c1ce9bc26807a73b82
 
 <Modal isOpen={open} {toggleAddTask} {size}>
   <ModalHeader {toggleAddTask}>Create Task</ModalHeader>
@@ -134,4 +142,17 @@ Close
       <Button style="color: #fffbf0;" color="warning" on:click={(e) => addTaskButton.handleSubmit(e)}>Create Task</Button>
       <Button class="back-button" color="danger" on:click={toggleAddTask}>Back</Button>
   </ModalFooter>
+<<<<<<< HEAD
 </Modal>
+=======
+</Modal>
+
+<!-- 2. To Do -->
+<!-- 3. Doing -->
+<!-- 4. Done -->
+<!-- 5. Closed -->
+<div class="container-fluid">
+  <br/>
+  <Button style="float:right; font-weight: bold; color: black;" color="warning" on:click={toggleAddTask}>Create Task</Button>
+</div>
+>>>>>>> 1c2ec3ec2d766e7af79147c1ce9bc26807a73b82
