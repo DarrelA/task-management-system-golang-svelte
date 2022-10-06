@@ -19,30 +19,29 @@
   export let appacronym = null;
   export let tasksData = [];
 
-  let getTasks;
+  // let userAppPermits = JSON.parse(localStorage.getItem("userAppPermits"));
+  // let {
+  //   IsPermitCreate,
+  //   IsPermitOpen,
+  //   IsPermitToDo,
+  //   IsPermitDoing,
+  //   IsPermitDone,
+  // } = userAppPermits;
 
-  $: console.log(tasksData);
+  export async function GetAllTasks() {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/get-all-tasks?AppAcronym=${appacronym}`,
+        { withCredentials: true }
+      );
 
-  // let userAppPermits = JSON.parse(localStorage.getItem('userAppPermits'));
-  // let { IsPermitCreate, IsPermitOpen, IsPermitToDo, IsPermitDoing, IsPermitDone } =
-  //   userAppPermits;
-
-  // export async function GetAllTasks() {
-  //   try {
-  //     const response = await axios.get(
-  //       `http://localhost:4000/get-all-tasks?AppAcronym=${appacronym}`,
-  //       { withCredentials: true }
-  //     );
-
-  //     if (response.data) {
-  //       tasksData = response.data;
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
-
-  $: getTasks.GetAllTasks();
+      if (response.data) {
+        tasksData = response.data;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   // const GetUserAppPermits = async () => {
   //   try {
@@ -104,7 +103,7 @@
   //   }
   // };
 
-  // $: GetAllTasks();
+  $: GetAllTasks();
   // $: GetUserAppPermits();
 </script>
 
@@ -116,7 +115,7 @@
   >
 {/if} -->
 
-<CreateTask bind:this={getTasks} {appacronym} />
+<CreateTask {appacronym} />
 
 <Row>
   <Col>
