@@ -19,6 +19,15 @@
   export let appacronym = null;
   export let tasksData = [];
 
+  let size = "lg";
+  let open = false;
+  export let createTaskButton;
+
+  let task_name = "";
+  let task_description = "";
+  let task_notes = "";
+  let task_plan = "";
+
   let userAppPermits = JSON.parse(localStorage.getItem("userAppPermits"));
   let {
     IsPermitCreate,
@@ -52,7 +61,6 @@
         }
       );
       if (response) {
-        console.log(response);
         localStorage.setItem("userAppPermits", JSON.stringify(response.data));
       }
     } catch (e) {
@@ -104,12 +112,22 @@
     }
   };
 
+  function toggle(e) {
+    e.preventDefault();
+    open = !open;
+    task_name = "";
+    task_description = "";
+    task_notes = "";
+    task_plan = "";
+    GetAllTasks();
+  }
+
   $: GetAllTasks();
   $: GetUserAppPermits();
 </script>
 
 {#if IsPermitCreate}
-  <CreateTask {appacronym} />
+  <Button color="primary" on:click={toggle}>Create Task</Button>
 {/if}
 
 <Row>
@@ -241,6 +259,29 @@
     {/each}
   </Col>
 </Row>
+
+<!-- Modal for Create task -->
+<Modal isOpen={open} {toggle} {size}>
+  <ModalHeader {toggle}>Create Task</ModalHeader>
+  <ModalBody>
+    <CreateTask
+      bind:this={createTaskButton}
+      {task_name}
+      {task_description}
+      {task_notes}
+      {task_plan}
+      {appacronym}
+    />
+  </ModalBody>
+  <ModalFooter>
+    <Button
+      style="color: #fffbf0;"
+      color="warning"
+      on:click={(e) => createTaskButton.handleSubmit(e)}>Create Task</Button
+    >
+    <Button class="back-button" color="danger" on:click={toggle}>Back</Button>
+  </ModalFooter>
+</Modal>
 
 <style>
 </style>
