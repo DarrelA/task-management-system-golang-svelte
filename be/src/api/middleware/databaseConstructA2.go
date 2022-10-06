@@ -41,7 +41,7 @@ var (
 	queryInsertApplication = `INSERT INTO application (app_acronym, app_description, app_Rnum, app_startDate, app_endDate, app_permitCreate, app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone, app_createdDate)
 	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()); `
 	
-	queryInsertPlan = `INSERT INTO plan (plan_name, plan_app_acronym, plan_color, plan_startDate, plan_endDate) VALUES (?,?,?,?,?);`
+	queryInsertPlan = `INSERT INTO plan (plan_mvp_name, plan_app_acronym, plan_color, plan_startDate, plan_endDate) VALUES (?,?,?,?,?);`
 
 	queryInsertTask            = `INSERT INTO task (task_app_acronym, task_id, task_name, task_description, task_notes, task_plan, task_color, task_state, task_creator, task_owner, task_createDate) VALUES (?,?,?,?,?,?,?,?,?,?,now());`
 	queryInsertCreateTaskNotes = `INSERT INTO task_notes (task_name, task_note, task_owner, task_state, task_app_acronym, last_updated) VALUES (?,?,?,?,?,now());`
