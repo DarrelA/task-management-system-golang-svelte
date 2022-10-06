@@ -16,6 +16,7 @@
     export let task_description = ""
     export let task_notes = ""
     export let task_plan = ""
+    export let appacronym;
 
     function handleBack() {
         navigate("/home")
@@ -111,10 +112,10 @@
 <div class="container-fluid">
     <Row>
         <Col xs = "2">
-            <MgtPlan />
+            <MgtPlan appacronym={appacronym} />
         </Col>
         <Col xs = "10">
-            <MgtTask />
+            <MgtTask appacronym={appacronym} />
         </Col>
     </Row>
 </div>

@@ -65,7 +65,7 @@
     <div class="application">
       <h4>
         {application.app_acronym}
-        <a href="/dashboard"><Icon icon="bi:send" width="15" height="15" /></a>
+        <a href="/dashboard/{application.app_acronym}"><Icon icon="bi:send" width="15" height="15" /></a>
       </h4>
 
       <div class="text-container">

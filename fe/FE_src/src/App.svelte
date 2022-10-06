@@ -9,6 +9,8 @@
   import User from './components/User/Pages/MgtUser.svelte';
   import Dashboard from './components/Kanban/Pages/Dashboard.svelte';
   import ProtectedRoute from './components/ProtectedRoute.svelte';
+
+  let params = {}
 </script>
 
 <style>
@@ -39,7 +41,9 @@
     <ProtectedRoute path="/user-management" component={MgtUser} />
     <ProtectedRoute path="/group-management" component={MgtGroup} />
 
-    <ProtectedRoute path="/dashboard" component={Dashboard} />
+    <ProtectedRoute path="/dashboard/:appacronym" let:params component={Dashboard}>
+      <Dashboard appacronym={params.appacronym} />
+    </ProtectedRoute>
 
     <ProtectedRoute path="*" component={Login} />
   </Router>
