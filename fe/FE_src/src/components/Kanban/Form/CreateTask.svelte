@@ -37,7 +37,7 @@
   let size = "lg";
   let open = false;
 
-  let tasksData = "";
+  let tasksData = [];
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -48,7 +48,6 @@
       task_notes,
       task_plan,
     };
-    console.log(task_app_acronym);
     try {
       const response = await axios.post(
         "http://localhost:4000/create-task",
@@ -70,22 +69,18 @@
 
   async function GetPlans() {
     try {
-      console.log(appacronym);
       const response = await axios.get(
         `http://localhost:4000/get-all-plans?AppAcronym=${appacronym}`,
         { withCredentials: true }
       );
 
-      if (response.data.error) {
-        console.log(response.data.error);
-      } else if (!response.data.error) {
+      if (response.data) {
         planData = response.data;
       }
     } catch (error) {
       console.log(error);
     }
   }
-  $: GetPlans();
 
   async function GetAllTasks() {
     try {
@@ -94,10 +89,7 @@
         { withCredentials: true }
       );
 
-      if (response.data.error) {
-        console.log(response.data.error);
-      } else if (!response.data.error) {
-        console.log(response.data);
+      if (response.data) {
         tasksData = response.data;
       }
     } catch (error) {
@@ -107,12 +99,13 @@
 
   function toggleAddTask(e) {
     e.preventDefault();
+    GetPlans();
+    GetAllTasks();
     open = !open;
     task_name = "";
     task_description = "";
     task_notes = "";
     task_plan = "";
-    GetAllTasks();
   }
 </script>
 

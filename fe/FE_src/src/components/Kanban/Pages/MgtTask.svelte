@@ -15,33 +15,34 @@
   import CreateTask from "../Form/CreateTask.svelte";
   import Card from "./Card.svelte";
   import UpdateTask from "../Form/UpdateTask.svelte";
-  
-  let appacronym;
-  let tasksData = "";
+
+  export let appacronym = null;
+  export let tasksData = [];
+
+  let getTasks;
+
+  $: console.log(tasksData);
 
   // let userAppPermits = JSON.parse(localStorage.getItem('userAppPermits'));
   // let { IsPermitCreate, IsPermitOpen, IsPermitToDo, IsPermitDoing, IsPermitDone } =
   //   userAppPermits;
 
-  $: console.log(appacronym);
+  // export async function GetAllTasks() {
+  //   try {
+  //     const response = await axios.get(
+  //       `http://localhost:4000/get-all-tasks?AppAcronym=${appacronym}`,
+  //       { withCredentials: true }
+  //     );
 
-  async function GetAllTasks() {
-    try {
-      const response = await axios.get(
-        `http://localhost:4000/get-all-tasks?AppAcronym=${appacronym}`,
-        { withCredentials: true }
-      );
+  //     if (response.data) {
+  //       tasksData = response.data;
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 
-      if (response.data.error) {
-        console.log(response.data.error);
-      } else if (!response.data.error) {
-        console.log(response.data);
-        tasksData = response.data;
-      }
-    } catch (error) {
-      console.log("error");
-    }
-  }
+  $: getTasks.GetAllTasks();
 
   // const GetUserAppPermits = async () => {
   //   try {
@@ -103,7 +104,7 @@
   //   }
   // };
 
-  $: GetAllTasks();
+  // $: GetAllTasks();
   // $: GetUserAppPermits();
 </script>
 
@@ -115,7 +116,7 @@
   >
 {/if} -->
 
-<CreateTask {appacronym} />
+<CreateTask bind:this={getTasks} {appacronym} />
 
 <Row>
   <Col>
