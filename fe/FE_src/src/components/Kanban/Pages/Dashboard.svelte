@@ -11,28 +11,12 @@
     import Icon from '@iconify/svelte';
 
     const isAdmin = localStorage.getItem("isAdmin");
-
-    export let task_name = ""
-    export let task_description = ""
-    export let task_notes = ""
-    export let task_plan = ""
+    
     export let appacronym;
 
     function handleBack() {
         navigate("/home")
     }
-
-    function toggleAddTask(e) {
-        e.preventDefault()
-        open = !open;
-        task_name = ""
-        task_description = ""
-        task_notes = ""
-        task_plan = ""
-    }
-
-    let isOpen = false;
-    const toggle = () => (isOpen = !isOpen);
 </script>   
   
 <style>
@@ -110,11 +94,18 @@
 <br/>
 
 <div class="container-fluid">
+    <Icon icon="bi:plus-lg" width="25" height="25" /> Plan
+    <Icon icon="bi:plus-lg" width="25" height="25" /> Task
+</div>
+
+<br/>
+
+<div class="container-fluid">
     <Row>
-        <Col xs = "2">
+        <Col xs="2">
             <MgtPlan appacronym={appacronym} />
         </Col>
-        <Col xs = "10">
+        <Col xs="10">
             <MgtTask appacronym={appacronym} />
         </Col>
     </Row>

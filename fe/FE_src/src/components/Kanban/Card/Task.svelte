@@ -1,15 +1,5 @@
 <script>
-  import {
-    Card,
-    CardBody,
-    CardHeader,
-    CardSubtitle,
-    CardText,
-    CardTitle,
-    Col,
-    Button,
-  } from "sveltestrap";
-  import { createEventDispatcher } from "svelte";
+    import {Card, CardBody, CardHeader, CardSubtitle, CardText, CardTitle, Col, Button } from "sveltestrap";
 
   export let color = null;
 </script>

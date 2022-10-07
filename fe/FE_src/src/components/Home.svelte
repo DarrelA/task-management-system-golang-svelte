@@ -89,7 +89,7 @@
   <Modal isOpen={openModal} {toggle} {size}>
     <ModalHeader {toggle}>Add Application</ModalHeader>
     <ModalBody>
-      <AddApplication bind:this={addButton} on:fetch={callbackFetchGroups} on:fetch={callbackFetchGroups} />
+      <AddApplication bind:this={addButton} on:fetch={callbackFetchGroups} />
     </ModalBody>
 
     <ModalFooter>

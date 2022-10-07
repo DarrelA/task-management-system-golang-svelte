@@ -1,24 +1,6 @@
 <script>
   import { errorToast, successToast } from "../../toast";
-  import {
-    Form,
-    FormGroup,
-    Input,
-    Label,
-    Col,
-    Row,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Button,
-  } from "sveltestrap";
-  import {
-    Dropdown,
-    DropdownToggle,
-    DropdownItem,
-    DropdownMenu,
-  } from "sveltestrap";
+  import { Form, FormGroup, Input, Label, Col, Row, Dropdown, DropdownToggle, DropdownItem, DropdownMenu } from "sveltestrap";
   import axios from "axios";
 
   export let appacronym; // url params
