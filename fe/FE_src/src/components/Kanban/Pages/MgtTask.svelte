@@ -21,6 +21,7 @@
   import CreateTask from "../Form/CreateTask.svelte";
   import UpdateTask from "../Form/UpdateTask.svelte";
   import Task from "../Card/Task.svelte";
+  import TaskState from "../Card/TaskState.svelte";
   import Icon from "@iconify/svelte";
 
   export let appacronym = null;
@@ -157,207 +158,167 @@
 <div class="text-center" />
 <Row>
   <Col>
-    <Card class="mb-3">
-      <CardHeader>
-        <CardTitle>Open</CardTitle>
-      </CardHeader>
-      <CardBody>
-        <CardSubtitle>
-          <Button>
-            <Icon icon="bi:plus-lg" width="25" height="25" />
-          </Button>
-        </CardSubtitle>
-        <CardText>
-          <!-- All Open task will be displayed here -->
-          <br />
-          {#each tasksData as task}
-            {#if task.task_state === "Open"}
-              <Task color={task.task_color}>
-                <span slot="task-name">{task.task_name}</span>
-                <span slot="task-owner">{task.task_owner}</span>
-                <span slot="task-description">{task.task_description}</span>
-                <Row slot="task-actions">
-                  {#if IsPermitOpen}
-                    <Col>
-                      <Button on:click={() => editTask(task.task_name)}
-                        >Update Task</Button
-                      >
-                    </Col>
-                    <Col>
-                      <Button
-                        color="primary"
-                        on:click={() => promoteTask(task.task_name, "ToDo")}
-                      >
-                        &#8594;
-                      </Button>
-                    </Col>
-                  {/if}
-                </Row>
-              </Task>
-            {/if}
-          {/each}
-        </CardText>
-      </CardBody>
-    </Card>
+    <TaskState title="Open">
+      <span slot="button">
+        <Button>
+          <Icon icon="bi:plus-lg" width="25" height="25" />
+        </Button></span
+      >
+      <br />
+      {#each tasksData as task}
+        {#if task.task_state === "Open"}
+          <Task color={task.task_color}>
+            <span slot="task-name">{task.task_name}</span>
+            <span slot="task-owner">{task.task_owner}</span>
+            <span slot="task-description">{task.task_description}</span>
+            <Row slot="task-actions">
+              {#if IsPermitOpen}
+                <Col>
+                  <Button on:click={() => editTask(task.task_name)}
+                    >Update Task</Button
+                  >
+                </Col>
+                <Col>
+                  <Button
+                    color="primary"
+                    on:click={() => promoteTask(task.task_name, "ToDo")}
+                  >
+                    &#8594;
+                  </Button>
+                </Col>
+              {/if}
+            </Row>
+          </Task>
+        {/if}
+      {/each}
+    </TaskState>
   </Col>
 
   <Col>
-    <Card class="mb-3">
-      <CardHeader>
-        <CardTitle>To Do</CardTitle>
-      </CardHeader>
-      <CardBody>
-        <CardText>
-          <!-- All To Do task will be displayed here -->
-          <br />
-          {#each tasksData as task}
-            {#if task.task_state === "ToDo"}
-              <Task color={task.task_color}>
-                <span slot="task-name">{task.task_name}</span>
-                <span slot="task-owner">{task.task_owner}</span>
-                <span slot="task-description">{task.task_description}</span>
-                <Row slot="task-actions">
-                  {#if IsPermitToDo}
-                    <Col>
-                      <Button on:click={() => editTask(task.task_name)}
-                        >Update Task</Button
-                      >
-                    </Col>
-                    <Col>
-                      <Button
-                        color="primary"
-                        on:click={() => promoteTask(task.task_name, "Doing")}
-                      >
-                        &#8594;
-                      </Button>
-                    </Col>
-                  {/if}
-                </Row>
-              </Task>
-            {/if}
-          {/each}
-        </CardText>
-      </CardBody>
-    </Card>
+    <TaskState title="To Do">
+      <br />
+      {#each tasksData as task}
+        {#if task.task_state === "ToDo"}
+          <Task color={task.task_color}>
+            <span slot="task-name">{task.task_name}</span>
+            <span slot="task-owner">{task.task_owner}</span>
+            <span slot="task-description">{task.task_description}</span>
+            <Row slot="task-actions">
+              {#if IsPermitToDo}
+                <Col>
+                  <Button on:click={() => editTask(task.task_name)}
+                    >Update Task</Button
+                  >
+                </Col>
+                <Col>
+                  <Button
+                    color="primary"
+                    on:click={() => promoteTask(task.task_name, "Doing")}
+                  >
+                    &#8594;
+                  </Button>
+                </Col>
+              {/if}
+            </Row>
+          </Task>
+        {/if}
+      {/each}
+    </TaskState>
   </Col>
 
   <Col>
-    <Card class="mb-3">
-      <CardHeader>
-        <CardTitle>Doing</CardTitle>
-      </CardHeader>
-      <CardBody>
-        <CardText>
-          <!-- All Doing task will be displayed here -->
-          <br />
-          {#each tasksData as task}
-            {#if task.task_state === "Doing"}
-              <Task color={task.task_color}>
-                <span slot="task-name">{task.task_name}</span>
-                <span slot="task-owner">{task.task_owner}</span>
-                <span slot="task-description">{task.task_description}</span>
-                <Row slot="task-actions">
-                  {#if IsPermitDoing}
-                    <Col>
-                      <Button
-                        color="primary"
-                        on:click={() => demoteTask(task.task_name, "ToDo")}
-                      >
-                        &#8592;
-                      </Button>
-                    </Col>
-                    <Col>
-                      <Button on:click={() => editTask(task.task_name)}
-                        >Update Task</Button
-                      >
-                    </Col>
-                    <Col>
-                      <Button
-                        color="primary"
-                        on:click={() => promoteTask(task.task_name, "Done")}
-                      >
-                        &#8594;
-                      </Button>
-                    </Col>
-                  {/if}
-                </Row>
-              </Task>
-            {/if}
-          {/each}
-        </CardText>
-      </CardBody>
-    </Card>
+    <TaskState title="Doing">
+      <br />
+      {#each tasksData as task}
+        {#if task.task_state === "Doing"}
+          <Task color={task.task_color}>
+            <span slot="task-name">{task.task_name}</span>
+            <span slot="task-owner">{task.task_owner}</span>
+            <span slot="task-description">{task.task_description}</span>
+            <Row slot="task-actions">
+              {#if IsPermitDoing}
+                <Col>
+                  <Button
+                    color="primary"
+                    on:click={() => demoteTask(task.task_name, "ToDo")}
+                  >
+                    &#8592;
+                  </Button>
+                </Col>
+                <Col>
+                  <Button on:click={() => editTask(task.task_name)}
+                    >Update Task</Button
+                  >
+                </Col>
+                <Col>
+                  <Button
+                    color="primary"
+                    on:click={() => promoteTask(task.task_name, "Done")}
+                  >
+                    &#8594;
+                  </Button>
+                </Col>
+              {/if}
+            </Row>
+          </Task>
+        {/if}
+      {/each}
+    </TaskState>
   </Col>
 
   <Col>
-    <Card class="mb-3">
-      <CardHeader>
-        <CardTitle>Done</CardTitle>
-      </CardHeader>
-      <CardBody>
-        <CardText>
-          <!-- All Done task will be displayed here -->
-          <br />
-          {#each tasksData as task}
-            {#if task.task_state === "Done"}
-              <Task color={task.task_color}>
-                <span slot="task-name">{task.task_name}</span>
-                <span slot="task-owner">{task.task_owner}</span>
-                <span slot="task-description">{task.task_description}</span>
-                <Row slot="task-actions">
-                  {#if IsPermitDone}
-                    <Col>
-                      <Button
-                        color="primary"
-                        on:click={() => demoteTask(task.task_name, "Doing")}
-                      >
-                        &#8592;
-                      </Button>
-                    </Col>
-                    <Col>
-                      <Button on:click={() => editTask(task.task_name)}
-                        >Update Task</Button
-                      >
-                    </Col>
-                    <Col>
-                      <Button
-                        color="primary"
-                        on:click={() => promoteTask(task.task_name, "Closed")}
-                      >
-                        &#8594;
-                      </Button>
-                    </Col>
-                  {/if}
-                </Row>
-              </Task>
-            {/if}
-          {/each}
-        </CardText>
-      </CardBody>
-    </Card>
+    <TaskState title="Done">
+      <br />
+      {#each tasksData as task}
+        {#if task.task_state === "Done"}
+          <Task color={task.task_color}>
+            <span slot="task-name">{task.task_name}</span>
+            <span slot="task-owner">{task.task_owner}</span>
+            <span slot="task-description">{task.task_description}</span>
+            <Row slot="task-actions">
+              {#if IsPermitDone}
+                <Col>
+                  <Button
+                    color="primary"
+                    on:click={() => demoteTask(task.task_name, "Doing")}
+                  >
+                    &#8592;
+                  </Button>
+                </Col>
+                <Col>
+                  <Button on:click={() => editTask(task.task_name)}
+                    >Update Task</Button
+                  >
+                </Col>
+                <Col>
+                  <Button
+                    color="primary"
+                    on:click={() => promoteTask(task.task_name, "Closed")}
+                  >
+                    &#8594;
+                  </Button>
+                </Col>
+              {/if}
+            </Row>
+          </Task>
+        {/if}
+      {/each}
+    </TaskState>
   </Col>
 
   <Col>
-    <Card class="mb-3">
-      <CardHeader>
-        <CardTitle>Close</CardTitle>
-      </CardHeader>
-      <CardBody>
-        <CardText>
-          <!-- All Close task will be displayed here -->
-          <br />
-          {#each tasksData as task}
-            {#if task.task_state === "Closed"}
-              <Task color={task.task_color}>
-                <span slot="task-name">{task.task_name}</span>
-                <span slot="task-owner">{task.task_owner}</span>
-                <span slot="task-description">{task.task_description}</span>
-              </Task>
-            {/if}
-          {/each}
-        </CardText>
-      </CardBody>
-    </Card>
+    <TaskState title="Close">
+      <br />
+      {#each tasksData as task}
+        {#if task.task_state === "Closed"}
+          <Task color={task.task_color}>
+            <span slot="task-name">{task.task_name}</span>
+            <span slot="task-owner">{task.task_owner}</span>
+            <span slot="task-description">{task.task_description}</span>
+          </Task>
+        {/if}
+      {/each}
+    </TaskState>
   </Col>
 </Row>
 
