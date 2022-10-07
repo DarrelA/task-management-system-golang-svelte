@@ -4,10 +4,11 @@
     import AdminNavbar from "../../Admin/NavBar/IsLoggedInAdmin.svelte";
     import UserNavbar from "../../User/NavBar/IsLoggedInUser.svelte";
     import CreateTask from "../Form/CreateTask.svelte";
+    import MgtApp from "../Pages/MgtApp.svelte";
     import MgtPlan from "../Pages/MgtPlan.svelte";
     import MgtTask from "../Pages/MgtTask.svelte";
     import Icon from '@iconify/svelte';
-     import MgtApp from "./MgtApp.svelte";
+
 
     const isAdmin = localStorage.getItem("isAdmin");
     export let appacronym;

@@ -6,16 +6,17 @@
     import UpdateApplication from "../Form/UpdateApplication.svelte";
     import Icon from '@iconify/svelte';
 
+    let updateAppButton;
+
     export let app_startDate = ""
     export let app_endDate = ""
-    export let permitCreate = ""
-    export let permitOpen = ""
-    export let permitToDo = ""
-    export let permitDoing = ""
-    export let permitDone = ""
+    export let app_permitCreate = ""
+    export let app_permitOpen = ""
+    export let app_permitTodo = ""
+    export let app_permitDoing = ""
+    export let app_permitDone = ""
     export let appacronym;
     let appData = "";
-    let updateAppButton;
 
     let size = "lg";
     let open = false;
@@ -25,11 +26,11 @@
           open = !open;
           app_startDate = ""
           app_endDate = ""
-          permitCreate = ""
-          permitOpen = ""
-          permitToDo = ""
-          permitDoing = ""
-          permitDone = ""
+          app_permitCreate = ""
+          app_permitOpen = ""
+          app_permitTodo = ""
+          app_permitDoing = ""
+          app_permitDone = ""
           GetApplicationData()
     }
 
@@ -52,9 +53,6 @@
   
   $: GetApplicationData()
 </script>   
-
-<style>
-</style>
 
 <!-- TO BE DONE BY AMOS -->
 <div class="container-fluid">
@@ -124,10 +122,20 @@
 <Modal isOpen={open} {toggleUpdateApp} {size}>
   <ModalHeader {toggleUpdateApp}>Update Application</ModalHeader>
   <ModalBody>
-      <UpdateApplication bind:this={updateAppButton} {app_startDate} {app_endDate} {permitCreate} {permitOpen} {permitToDo} {permitDoing} {permitDone} {appacronym} />
+      <UpdateApplication bind:this={updateAppButton} {app_startDate} {app_endDate} {app_permitCreate} {app_permitOpen} {app_permitTodo} {app_permitDoing} {app_permitDone} {appacronym} />
   </ModalBody>
   <ModalFooter>
     <Button style="color: #fffbf0;" color="warning" on:click={(e) => updateAppButton.handleSubmit(e)}>Update Application</Button>
     <Button class="back-button" color="danger" on:click={toggleUpdateApp}>Back</Button>
   </ModalFooter>
 </Modal>
+
+<style>
+    .text-container {
+    height: 30px;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>
