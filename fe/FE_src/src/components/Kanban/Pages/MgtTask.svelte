@@ -1,6 +1,6 @@
 <script>
-  import axios from "axios";
-  import { errorToast, successToast } from "../../toast";
+  import axios from 'axios';
+  import { errorToast, successToast } from '../../toast';
   import {
     Table,
     Row,
@@ -10,32 +10,28 @@
     ModalBody,
     ModalHeader,
     ModalFooter,
-    Container,
-  } from "sveltestrap";
-  import CreateTask from "../Form/CreateTask.svelte";
-  import Card from "./Card.svelte";
-  import UpdateTask from "../Form/UpdateTask.svelte";
+  } from 'sveltestrap';
+  import CreateTask from '../Form/CreateTask.svelte';
+  import Card from './Card.svelte';
+  import UpdateTask from '../Form/UpdateTask.svelte';
 
   export let appacronym = null;
   export let tasksData = [];
 
-  let size = "lg";
+  let size = 'lg';
   let open = false;
   export let createTaskButton;
 
-  let task_name = "";
-  let task_description = "";
-  let task_notes = "";
-  let task_plan = "";
+  let task_name = '';
+  let task_description = '';
+  let task_notes = '';
+  let task_plan = '';
 
-  let userAppPermits = JSON.parse(localStorage.getItem("userAppPermits"));
-  let {
-    IsPermitCreate,
-    IsPermitOpen,
-    IsPermitToDo,
-    IsPermitDoing,
-    IsPermitDone,
-  } = userAppPermits;
+  let IsPermitCreate = '';
+  let IsPermitOpen = '';
+  let IsPermitToDo = '';
+  let IsPermitDoing = '';
+  let IsPermitDone = '';
 
   export async function GetAllTasks() {
     try {
@@ -48,7 +44,7 @@
         tasksData = response.data;
       }
     } catch (error) {
-      console.log("error");
+      console.log('error');
     }
   }
 
@@ -61,7 +57,11 @@
         }
       );
       if (response) {
-        localStorage.setItem("userAppPermits", JSON.stringify(response.data));
+        IsPermitCreate = response.data.IsPermitCreate;
+        IsPermitOpen = response.data.IsPermitOpen;
+        IsPermitToDo = response.data.IsPermitToDo;
+        IsPermitDoing = response.data.IsPermitDoing;
+        IsPermitDone = response.data.IsPermitDone;
       }
     } catch (e) {
       e.response && e.response.data.message
@@ -75,7 +75,7 @@
 
     try {
       const response = await axios.put(
-        "http://localhost:4000/task-state-transition",
+        'http://localhost:4000/task-state-transition',
         json,
         {
           withCredentials: true,
@@ -96,7 +96,7 @@
 
     try {
       const response = await axios.put(
-        "http://localhost:4000/task-state-transition",
+        'http://localhost:4000/task-state-transition',
         json,
         {
           withCredentials: true,
@@ -115,10 +115,10 @@
   function toggle(e) {
     e.preventDefault();
     open = !open;
-    task_name = "";
-    task_description = "";
-    task_notes = "";
-    task_plan = "";
+    task_name = '';
+    task_description = '';
+    task_notes = '';
+    task_plan = '';
     GetAllTasks();
   }
 
@@ -134,7 +134,7 @@
   <Col>
     Open
     {#each tasksData as task}
-      {#if task.task_state === "Open"}
+      {#if task.task_state === 'Open'}
         <Card color={task.task_color}>
           <span slot="task-name">{task.task_name}</span>
           <span slot="task-owner">{task.task_owner}</span>
@@ -145,8 +145,7 @@
               <Col
                 ><Button
                   color="primary"
-                  on:click={() => promoteTask(task.task_name, "ToDo")}
-                  >&#8594;</Button
+                  on:click={() => promoteTask(task.task_name, 'ToDo')}>&#8594;</Button
                 ></Col
               >
             {/if}
@@ -159,7 +158,7 @@
   <Col>
     To Do
     {#each tasksData as task}
-      {#if task.task_state === "ToDo"}
+      {#if task.task_state === 'ToDo'}
         <Card color={task.task_color}>
           <span slot="task-name">{task.task_name}</span>
           <span slot="task-owner">{task.task_owner}</span>
@@ -170,8 +169,7 @@
               <Col
                 ><Button
                   color="primary"
-                  on:click={() => promoteTask(task.task_name, "Doing")}
-                  >&#8594;</Button
+                  on:click={() => promoteTask(task.task_name, 'Doing')}>&#8594;</Button
                 ></Col
               >
             {/if}
@@ -185,7 +183,7 @@
   <Col>
     Doing
     {#each tasksData as task}
-      {#if task.task_state === "Doing"}
+      {#if task.task_state === 'Doing'}
         <Card color={task.task_color}>
           <span slot="task-name">{task.task_name}</span>
           <span slot="task-owner">{task.task_owner}</span>
@@ -195,16 +193,14 @@
               <Col
                 ><Button
                   color="primary"
-                  on:click={() => demoteTask(task.task_name, "ToDo")}
-                  >&#8592;</Button
+                  on:click={() => demoteTask(task.task_name, 'ToDo')}>&#8592;</Button
                 ></Col
               >
               <Col><Button on:update-task><UpdateTask /></Button></Col>
               <Col
                 ><Button
                   color="primary"
-                  on:click={() => promoteTask(task.task_name, "Done")}
-                  >&#8594;</Button
+                  on:click={() => promoteTask(task.task_name, 'Done')}>&#8594;</Button
                 ></Col
               >
             {/if}
@@ -217,7 +213,7 @@
   <Col>
     Done
     {#each tasksData as task}
-      {#if task.task_state === "Done"}
+      {#if task.task_state === 'Done'}
         <Card color={task.task_color}>
           <span slot="task-name">{task.task_name}</span>
           <span slot="task-owner">{task.task_owner}</span>
@@ -227,16 +223,14 @@
               <Col
                 ><Button
                   color="primary"
-                  on:click={() => demoteTask(task.task_name, "Doing")}
-                  >&#8592;</Button
+                  on:click={() => demoteTask(task.task_name, 'Doing')}>&#8592;</Button
                 ></Col
               >
               <Col><Button on:update-task><UpdateTask /></Button></Col>
               <Col
                 ><Button
                   color="primary"
-                  on:click={() => promoteTask(task.task_name, "Closed")}
-                  >&#8594;</Button
+                  on:click={() => promoteTask(task.task_name, 'Closed')}>&#8594;</Button
                 ></Col
               >
             {/if}
@@ -249,7 +243,7 @@
   <Col>
     Close
     {#each tasksData as task}
-      {#if task.task_state === "Closed"}
+      {#if task.task_state === 'Closed'}
         <Card color={task.task_color}>
           <span slot="task-name">{task.task_name}</span>
           <span slot="task-owner">{task.task_owner}</span>
