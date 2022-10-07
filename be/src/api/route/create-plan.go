@@ -15,11 +15,17 @@ func CreatePlan(c *gin.Context) {
 		return
 	}
 	// static groupname or use permit open?
-	//checkPermit := middleware.CheckGroup(c.GetString("username"), "Project manager")
-	//if checkPermit {
+	checkPermit := middleware.CheckGroup(c.GetString("username"), "Project manager")
+	if checkPermit {
 		//proceed with create plan
 		if plan.PlanAcronym == "" || plan.PlanName == "" {
 			middleware.ErrorHandler(c, 400, "Empty fields!")
+			return
+		}
+
+		if plan.StartDate == "" || plan.EndDate == "" {
+			middleware.ErrorHandler(c, 400, "Start and/or end date is empty!")
+			return
 		}
 
 		//check plan
@@ -28,10 +34,12 @@ func CreatePlan(c *gin.Context) {
 			createPlan(plan, c)
 		} else {
 			middleware.ErrorHandler(c, 400, "Plan name contains whitespace!")
+			return
 		} 
-	// } else {
-	// 	middleware.ErrorHandler(c, 400, "Unauthorized access")
-	// }
+	} else {
+		middleware.ErrorHandler(c, 400, "Unauthorized to create plan")
+		return
+	}
 }
 
 func createPlan(plan models.Plan, c *gin.Context) {
