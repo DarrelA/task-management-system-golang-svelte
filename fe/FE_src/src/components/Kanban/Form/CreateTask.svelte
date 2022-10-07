@@ -1,6 +1,17 @@
 <script>
   import { errorToast, successToast } from "../../toast";
-  import { Form, FormGroup, Input, Label, Col, Row, Dropdown, DropdownToggle, DropdownItem, DropdownMenu } from "sveltestrap";
+  import {
+    Form,
+    FormGroup,
+    Input,
+    Label,
+    Col,
+    Row,
+    Dropdown,
+    DropdownToggle,
+    DropdownItem,
+    DropdownMenu,
+  } from "sveltestrap";
   import axios from "axios";
 
   export let appacronym; // url params
@@ -15,7 +26,7 @@
   let username = localStorage.getItem("username");
   let message = "";
 
-  let planData = "";
+  let getPlansData = "";
 
   export async function handleSubmit(event) {
     event.preventDefault();
@@ -53,7 +64,7 @@
       );
 
       if (response.data) {
-        planData = response.data;
+        getPlansData = response.data;
       }
     } catch (error) {
       console.log(error);
@@ -78,22 +89,12 @@
     </Col>
     <Col>
       <FormGroup>
-        <Dropdown>
-          <DropdownToggle style="width:100%" caret>Plan Name</DropdownToggle>
-          <DropdownMenu>
-            {#each planData as plan}
-              <DropdownItem
-                on:click={() => (task_plan = plan.plan_name)}
-                placeholder={plan}
-              >
-                {plan.plan_name}
-              </DropdownItem>
-            {/each}
-          </DropdownMenu>
-        </Dropdown>
-        <FormGroup>
-          <Input value={task_plan} type="text" readonly />
-        </FormGroup>
+        <Label>Plan Name:</Label>
+        <Input type="select" bind:value={task_plan}>
+          {#each getPlansData as getPlanData}
+            <option>{getPlanData.plan_name}</option>
+          {/each}
+        </Input>
       </FormGroup>
     </Col>
   </Row>
