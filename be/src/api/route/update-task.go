@@ -167,7 +167,7 @@ func checkPermit(task models.Task, c *gin.Context) string {
 func checkTaskPlanColor(task models.Task, c *gin.Context) string {
 	var PlanColor sql.NullString
 
-	result := middleware.SelectPlanColor(task.TaskPlan)
+	result := middleware.SelectPlanColor(task.TaskPlan, task.TaskAppAcronym)
 
 	switch err := result.Scan(&PlanColor); err {
 	case sql.ErrNoRows:

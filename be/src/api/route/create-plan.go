@@ -36,14 +36,14 @@ func CreatePlan(c *gin.Context) {
 		}
 
 		plan.PlanName = strings.TrimSpace(plan.PlanName)
-		createPlan(plan, c)
+		validatePlanName(plan, c)
 	} else {
 		middleware.ErrorHandler(c, 400, "Unauthorized to create plan")
 		return
 	}
 }
 
-func createPlan(plan models.Plan, c *gin.Context) {
+func validatePlanName(plan models.Plan, c *gin.Context) {
 	var PlanName sql.NullString
 	result := middleware.SelectPlan(plan.PlanName, plan.PlanAcronym)
 	err := result.Scan(&PlanName)
@@ -52,15 +52,32 @@ func createPlan(plan models.Plan, c *gin.Context) {
 		error_message := fmt.Sprintf(`Plan Name "%s" already exists for Application "%s"`, plan.PlanName, plan.PlanAcronym)
 		middleware.ErrorHandler(c, 400, error_message)
 	} else if err == sql.ErrNoRows {
+		validatePlanColor(plan, c)
+	} else {
+		log.Fatalln(err)
+		return
+	}
+}
+
+func validatePlanColor(plan models.Plan, c * gin.Context) {
+	var PlanColor sql.NullString
+	result := middleware.SelectPlanColorByApp(plan.PlanColor, plan.PlanAcronym)
+	err := result.Scan(&PlanColor)
+
+	if err == sql.ErrNoRows {
+		insertPlanTable(plan, c)
+	} else if err != sql.ErrNoRows {
+		middleware.ErrorHandler(c, 400, "Plan Color already exists. Please try again!")
+		return
+	}
+}
+
+func insertPlanTable(plan models.Plan, c *gin.Context) {
 		_, err := middleware.InsertPlan(plan.PlanName, plan.PlanAcronym, plan.PlanColor, plan.StartDate, plan.EndDate)
 		if err != nil {
 			log.Fatalln(err)
 			return
 		}
 		c.JSON(200, gin.H{"code": 200, "message": "Plan " + plan.PlanName + " was successfully created!"})
-	} else {
-		log.Fatalln(err)
-		return
-	}
-	
 }
+
