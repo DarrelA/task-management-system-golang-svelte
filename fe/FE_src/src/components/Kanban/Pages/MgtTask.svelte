@@ -151,18 +151,15 @@
   $: GetUserAppPermits();
 </script>
 
-{#if IsPermitCreate}
-  <Button color="primary" on:click={toggleAddTask}>Create Task</Button>
-{/if}
-
 <div class="text-center" />
 <Row>
   <Col>
     <TaskState title="Open">
-      <span slot="button">
-        <Button>
-          <Icon icon="bi:plus-lg" width="25" height="25" />
-        </Button></span
+      <span slot="button"
+        >{#if IsPermitCreate}
+          <Button on:click={toggleAddTask}>
+            <Icon icon="bi:plus-lg" width="25" height="25" />
+          </Button>{/if}</span
       >
       <br />
       {#each tasksData as task}
@@ -170,7 +167,9 @@
           <Task color={task.task_color}>
             <span slot="task-name">{task.task_name}</span>
             <span slot="task-owner">{task.task_owner}</span>
-            <span slot="task-description">{task.task_description}</span>
+            <span slot="task-description" class="line-ellipsis"
+              >{task.task_description}</span
+            >
             <Row slot="task-actions">
               {#if IsPermitOpen}
                 <Col>
@@ -202,7 +201,9 @@
           <Task color={task.task_color}>
             <span slot="task-name">{task.task_name}</span>
             <span slot="task-owner">{task.task_owner}</span>
-            <span slot="task-description">{task.task_description}</span>
+            <span slot="task-description" class="line-ellipsis"
+              >{task.task_description}</span
+            >
             <Row slot="task-actions">
               {#if IsPermitToDo}
                 <Col>
@@ -234,7 +235,9 @@
           <Task color={task.task_color}>
             <span slot="task-name">{task.task_name}</span>
             <span slot="task-owner">{task.task_owner}</span>
-            <span slot="task-description">{task.task_description}</span>
+            <span slot="task-description" class="line-ellipsis"
+              >{task.task_description}</span
+            >
             <Row slot="task-actions">
               {#if IsPermitDoing}
                 <Col>
@@ -274,7 +277,9 @@
           <Task color={task.task_color}>
             <span slot="task-name">{task.task_name}</span>
             <span slot="task-owner">{task.task_owner}</span>
-            <span slot="task-description">{task.task_description}</span>
+            <span slot="task-description" class="line-ellipsis"
+              >{task.task_description}</span
+            >
             <Row slot="task-actions">
               {#if IsPermitDone}
                 <Col>
@@ -314,7 +319,9 @@
           <Task color={task.task_color}>
             <span slot="task-name">{task.task_name}</span>
             <span slot="task-owner">{task.task_owner}</span>
-            <span slot="task-description">{task.task_description}</span>
+            <span slot="task-description" class="line-ellipsis"
+              >{task.task_description}</span
+            >
           </Task>
         {/if}
       {/each}
@@ -376,4 +383,11 @@
 </Modal>
 
 <style>
+  .line-ellipsis {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 </style>
