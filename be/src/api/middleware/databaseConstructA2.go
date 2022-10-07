@@ -139,9 +139,9 @@ func SelectAllPlans(PlanAppAcronym string) (*sql.Rows, error) {
 	return result, err
 }
 
-func SelectPlan(PlanMVPName string, PlanAppAcronym string) (*sql.Rows, error) {
-	result, err := db.Query(querySelectPlan, PlanMVPName, PlanAppAcronym)
-	return result, err
+func SelectPlan(PlanMVPName string, PlanAppAcronym string) *sql.Row {
+	result := db.QueryRow(querySelectPlan, PlanMVPName, PlanAppAcronym)
+	return result
 }
 
 func SelectOneTask(TaskName string, TaskAppAcronym string) (*sql.Rows, error) {

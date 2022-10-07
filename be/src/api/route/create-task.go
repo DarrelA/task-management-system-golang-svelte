@@ -56,7 +56,6 @@ func validateTaskName(task models.Task, c *gin.Context) {
 			task.TaskID = generateTaskId(task, c)
 			validateTaskPlan(task, c)
 		} else {
-			fmt.Println("line 59")
 			checkError(err)
 		}
 	} else {
@@ -76,7 +75,6 @@ func validateTaskPlan(task models.Task, c *gin.Context) {
 			task.TaskColor = PlanColor.String
 			validateTaskNotes(task, c)
 		default:
-			fmt.Println("line 79")
 			checkError(err)
 		}
 	} else {
@@ -93,10 +91,8 @@ func validateTaskNotes(task models.Task, c *gin.Context) {
 		result.Scan(&TaskNotesDate, &TaskNotesTime)
 		taskNotesAuditString := TaskNotesDate.String + " " + TaskNotesTime.String + "\n" + "Task Owner: " + task.TaskOwner + ", Task State: " + task.TaskState + "\n" + task.TaskNotes + " \n"
 		_, err := middleware.UpdateTaskAuditNotes(taskNotesAuditString, task.TaskName, task.TaskAppAcronym)
-		fmt.Println("line 96")
 		checkError(err)
 		_, err = middleware.InsertCreateTaskNotes(task.TaskName, task.TaskNotes, task.TaskOwner, task.TaskState, task.TaskAppAcronym)
-		fmt.Println("line 99")
 		checkError(err)
 		c.JSON(http.StatusCreated, gin.H{"code": 200, "message": "Task was successfully created!"})
 	} else {

@@ -47,11 +47,11 @@ CREATE TABLE IF NOT EXISTS application (
 
 CREATE TABLE IF NOT EXISTS plan (
   plan_mvp_name varchar(255) NOT NULL,
-  plan_app_acronym varchar(255) DEFAULT NULL,
+  plan_app_acronym varchar(255) NOT NULL,
   plan_color varchar(7) DEFAULT NULL,
   plan_startDate datetime NOT NULL,  -- "sort"
   plan_endDate datetime NOT NULL,
-  PRIMARY KEY (plan_mvp_name),
+  PRIMARY KEY (plan_mvp_name, plan_app_acronym),
   KEY plan_app_acronym (plan_app_acronym),   -- index (find rows with specific column value quickly)
   KEY plan_color (plan_color),
   CONSTRAINT plan_app_acronym FOREIGN KEY (plan_app_acronym) REFERENCES application (app_acronym)

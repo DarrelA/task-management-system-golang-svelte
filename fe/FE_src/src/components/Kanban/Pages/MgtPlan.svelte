@@ -1,9 +1,19 @@
 <script>
   import axios from "axios";
   import { errorToast, successToast } from "../../toast";
-  import { Button, Card, CardBody, CardHeader, CardSubtitle, CardText, CardTitle, Row, Col } from "sveltestrap";
+  import {
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardSubtitle,
+    CardText,
+    CardTitle,
+    Row,
+    Col,
+  } from "sveltestrap";
   import { Modal, ModalHeader, ModalBody, ModalFooter } from "sveltestrap";
-  import Icon from '@iconify/svelte';
+  import Icon from "@iconify/svelte";
   import Plan from "../Card/Plan.svelte";
   import AddPlan from "../Form/AddPlan.svelte";
 
@@ -29,7 +39,7 @@
       );
 
       if (response.data) {
-        console.log(response.data)
+        console.log(response.data);
         plansData = response.data;
       }
     } catch (error) {
@@ -40,15 +50,15 @@
   function toggleCreatePlan(e) {
     e.preventDefault();
     openPlanModal = !openPlanModal;
-    // plan_name = "";
-    // plan_color = "";
-    // plan_start = "";
-    // plan_end = "";
+    plan_name = "";
+    plan_color = "";
+    plan_start = "";
+    plan_end = "";
     GetAllPlans();
   }
 
   $: GetAllPlans();
-</script>   
+</script>
 
 <div class="text-center">
   <Card class="mb-3">
@@ -57,18 +67,18 @@
     </CardHeader>
     <CardBody>
       <!-- create plan test button -->
-      <Button size=small on:click={toggleCreatePlan}>Create plan</Button><br/><br/>
-      <CardSubtitle>
-      </CardSubtitle>
+      <Button size="small" on:click={toggleCreatePlan}>Create plan</Button><br
+      /><br />
+      <CardSubtitle />
       <CardText>
-          <!-- All plans will be displayed here -->
-          {#each plansData as plan}
+        <!-- All plans will be displayed here -->
+        {#each plansData as plan}
           <Plan color={plan.plan_color}>
             <span slot="plan-name">{plan.plan_name}</span>
             <span slot="plan-startdate">{plan.plan_start}</span>
             <span slot="plan-enddate">{plan.plan_end}</span>
           </Plan>
-          {/each}
+        {/each}
       </CardText>
     </CardBody>
   </Card>
@@ -78,15 +88,14 @@
 <Modal isOpen={openPlanModal} {toggleCreatePlan} {size}>
   <ModalHeader {toggleCreatePlan}>Create Plan</ModalHeader>
   <ModalBody>
-    <AddPlan bind:this=
-    {createPlanButton}
-    {appacronym}/>
+    <AddPlan bind:this={createPlanButton} {appacronym} />
   </ModalBody>
   <ModalFooter>
     <Button
       style="color: #fffbf0;"
       color="warning"
-      on:click={(e) => createPlanButton.handleSubmit(e)}>
+      on:click={(e) => createPlanButton.handleSubmit(e)}
+    >
       Create Plan
     </Button>
     <Button class="back-button" color="danger" on:click={toggleCreatePlan}>
