@@ -31,6 +31,8 @@
   let plan_start = "";
   let plan_end = "";
 
+  $: console.log(plan_color);
+
   async function GetAllPlans() {
     try {
       const response = await axios.get(
@@ -49,15 +51,24 @@
 
   function toggleCreatePlan(e) {
     e.preventDefault();
+    randomHexGenerator();
     openPlanModal = !openPlanModal;
     plan_name = "";
-    plan_color = "";
     plan_start = "";
     plan_end = "";
     GetAllPlans();
   }
 
   $: GetAllPlans();
+
+  // Random Hex Color Generator (for tagging plan to task)
+  function randomHexGenerator() {
+    let useRandomMathGenerator = (Math.random() * 0xffff * 1000000).toString(
+      16
+    );
+    let randomHex = "#" + useRandomMathGenerator.slice(0, 6);
+    plan_color = randomHex;
+  }
 </script>
 
 <div class="text-center">
@@ -88,7 +99,7 @@
 <Modal isOpen={openPlanModal} {toggleCreatePlan} {size}>
   <ModalHeader {toggleCreatePlan}>Create Plan</ModalHeader>
   <ModalBody>
-    <AddPlan bind:this={createPlanButton} {appacronym} />
+    <AddPlan bind:this={createPlanButton} {appacronym} {plan_color} />
   </ModalBody>
   <ModalFooter>
     <Button

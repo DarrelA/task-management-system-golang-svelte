@@ -20,7 +20,7 @@
   export let appacronym; // from app params
   let plan_name = "";
   let plan_acronym = appacronym;
-  let plan_color = "#ededff";
+  export let plan_color;
   let plan_start = "";
   let plan_end = "";
 
