@@ -44,8 +44,8 @@ func main() {
 	router.GET("/get-users-in-group", middleware.CheckCookie, route.GetUsersInGroup)
 
 	// ASSIGNMENT 2 ROUTING
-	router.POST("/create-new-application", route.CreateApplication)
-	router.GET("/get-all-applications", route.GetAllApplications)
+	router.POST("/create-new-application", middleware.CheckCookie, route.CreateApplication)
+	router.GET("/get-all-applications", middleware.CheckCookie, route.GetAllApplications)
 	router.GET("/get-application", route.GetApplication)
 
 	router.GET("/get-all-plans", route.GetAllPlans)
