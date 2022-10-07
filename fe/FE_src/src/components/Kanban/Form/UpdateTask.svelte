@@ -13,6 +13,7 @@
     export let task_plan;
     export let task_owner;
     export let task_creator;
+    export let canUpdateTask;
     
     let task_notes = "";
     let task_app_acronym = appacronym;
@@ -74,6 +75,8 @@
     }
   }
 
+  console.log(canUpdateTask)
+
   $: GetPlans();
   $: GetTask();
 </script>
@@ -92,7 +95,7 @@
           <Col>
             <FormGroup>
               <Dropdown>
-                <DropdownToggle style="width:100%" caret>Plan Name</DropdownToggle>
+                <DropdownToggle style="width:100%" caret disabled={!canUpdateTask}>Plan Name</DropdownToggle>
                 <DropdownMenu>
                   {#each planData as plan}
                     <DropdownItem
@@ -141,7 +144,7 @@
             <Row>
               <FormGroup>
                 <Label>Task Notes</Label>
-                <Input type="textarea" bind:value={task_notes} placeholder="Enter task notes" rows={6} />
+                <Input type="textarea" bind:value={task_notes} placeholder="Enter task notes" rows={6} readonly={!canUpdateTask}/>
               </FormGroup>
             </Row>
           </Col>
