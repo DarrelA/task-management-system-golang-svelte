@@ -179,7 +179,6 @@
     {/each}
   </Col>
 
-  <!-- @TODO: Fix delay in ui because of sending email -->
   <Col>
     Doing
     {#each tasksData as task}
