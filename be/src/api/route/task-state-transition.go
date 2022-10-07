@@ -170,11 +170,10 @@ func TaskStateTransition(c *gin.Context) {
 		// return null if no one is in `PermitDone.String` user_group
 		oneEmail[0] = response.RecipientEmail
 
-		// @TODO: Fix delay in ui because of sending email
 		// send email to ALL project leads if any from team member once task state is updated from `Doing` to `Done`
 		if RecipientEmail.String != "" && TaskState.String == "Doing" && task.TaskState == "Done" {
 			fmt.Println("middleware.SendMail called from task-state-transition.go")
-			middleware.SendMail(c, oneEmail, SenderEmail.String, Username, task.TaskName, response.RecipientUsername)
+			go middleware.SendMail(c, oneEmail, SenderEmail.String, Username, task.TaskName, response.RecipientUsername)
 		}
 
 	}

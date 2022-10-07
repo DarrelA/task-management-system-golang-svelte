@@ -13,6 +13,7 @@
     e.preventDefault()
     localStorage.removeItem("username")
     localStorage.removeItem("isAdmin")
+    localStorage.removeItem("userAppPermits")
     await axios.get("http://localhost:4000/logout", {
         withCredentials: true,
       });

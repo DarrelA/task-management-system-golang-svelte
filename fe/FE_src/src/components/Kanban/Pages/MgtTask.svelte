@@ -31,15 +31,6 @@
   // let IsPermitDoing = "Team Member"
   // let IsPermitDone = "Project Lead"
 
-  let userAppPermits = JSON.parse(localStorage.getItem("userAppPermits"));
-  let {
-    IsPermitCreate,
-    IsPermitOpen,
-    IsPermitToDo,
-    IsPermitDoing,
-    IsPermitDone,
-  } = userAppPermits;
-
   export async function GetAllTasks() {
     try {
       const response = await axios.get(
@@ -51,7 +42,7 @@
         tasksData = response.data;
       }
     } catch (error) {
-      console.log("error");
+      console.log('error');
     }
   }
 
@@ -64,7 +55,11 @@
         }
       );
       if (response) {
-        localStorage.setItem("userAppPermits", JSON.stringify(response.data));
+        IsPermitCreate = response.data.IsPermitCreate;
+        IsPermitOpen = response.data.IsPermitOpen;
+        IsPermitToDo = response.data.IsPermitToDo;
+        IsPermitDoing = response.data.IsPermitDoing;
+        IsPermitDone = response.data.IsPermitDone;
       }
     } catch (e) {
       e.response && e.response.data.message
@@ -78,7 +73,7 @@
 
     try {
       const response = await axios.put(
-        "http://localhost:4000/task-state-transition",
+        'http://localhost:4000/task-state-transition',
         json,
         {
           withCredentials: true,
@@ -99,7 +94,7 @@
 
     try {
       const response = await axios.put(
-        "http://localhost:4000/task-state-transition",
+        'http://localhost:4000/task-state-transition',
         json,
         {
           withCredentials: true,
@@ -118,6 +113,10 @@
   function toggleAddTask(e) {
     e.preventDefault();
     openAddTask = !openAddTask;
+    task_name = '';
+    task_description = '';
+    task_notes = '';
+    task_plan = '';
     GetAllTasks();
   }
 
@@ -218,7 +217,6 @@
     </Card>
   </Col>
 
-  <!-- @TODO: Fix delay in ui because of sending email -->
   <Col>
     <Card class="mb-3">
       <CardHeader>
