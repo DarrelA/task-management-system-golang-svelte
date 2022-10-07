@@ -89,6 +89,10 @@ CREATE TABLE IF NOT EXISTS task_notes (
   CONSTRAINT task_name FOREIGN KEY (task_name) REFERENCES task (task_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+INSERT INTO accounts (username, password, email, admin_privilege, user_group, status, timestamp) VALUES ("admin","$2a$10$x1MmxwzZYNQ6ITieJJ/9T.ChNPEXHdwLhKnfzdO9QmllXo9nDSB2W", "admin@tms.com", "1", "Admin,Project Lead", "Active", NOW());
+INSERT INTO groupnames (user_group) VALUES ("Admin");
+INSERT INTO usergroup (username, user_group) VALUES ("admin", "Admin");
+
 INSERT INTO application (app_acronym, app_description, app_Rnum, app_startDate, app_endDate, app_permitCreate, app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone, app_createdDate)
 VALUES ("apple","","2", NOW(), NOW(), null, null, null, null, null, NOW());
 

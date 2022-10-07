@@ -26,10 +26,15 @@ func CreateApplication(c *gin.Context) {
 
 	// Check group : Project Lead
 	// replace GetString with "admin" for POSTMAN testing
-	// checkGroup := middleware.CheckGroup(c.GetString("username"), "Project Lead")
-	checkGroup := middleware.CheckGroup("admin", "Project Lead")
+	checkGroup := middleware.CheckGroup(c.GetString("username"), "Project Lead")
+	// checkGroup := middleware.CheckGroup("admin", "Project Lead")
 	if !checkGroup {
 		middleware.ErrorHandler(c, 400, "Unauthorized actions")
+		return
+	}
+
+	if len(application.AppAcronym) == 0 && len(application.Description) == 0 && application.Rnumber <= 0 {
+		middleware.ErrorHandler(c, 400, "Name, description and running number should not be empty")
 		return
 	}
 
@@ -44,7 +49,7 @@ func CreateApplication(c *gin.Context) {
 	}
 
 	if application.Rnumber <= 0 {
-		middleware.ErrorHandler(c, 400, "Invalid app running number")
+		middleware.ErrorHandler(c, 400, "Invalid app running number. Must be >= 1")
 		return
 	}
 
