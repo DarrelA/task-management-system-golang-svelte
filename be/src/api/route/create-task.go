@@ -66,7 +66,7 @@ func validateTaskName(task models.Task, c *gin.Context) {
 func validateTaskPlan(task models.Task, c *gin.Context) {
 	var PlanColor sql.NullString
 	if !middleware.CheckLength(task.TaskPlan) {
-		result := middleware.SelectPlanColor(task.TaskPlan)
+		result := middleware.SelectPlanColor(task.TaskPlan, task.TaskAppAcronym)
 		switch err := result.Scan(&PlanColor); {
 		case err == sql.ErrNoRows:
 			task.TaskColor = ""

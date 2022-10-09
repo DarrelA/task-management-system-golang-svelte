@@ -13,8 +13,8 @@ func GetOneTask(c *gin.Context) {
 	// sql.NullString is a way to represent null string coming from SQL
 	var TaskID, TaskDescription, TaskNotes, TaskPlan, TaskColor, TaskState, TaskCreator, TaskOwner, FormattedDate, FormattedTime sql.NullString
 
-	TaskAppAcronym := c.Query("taskappacronym")
-	TaskName := c.Query("taskname")
+	TaskAppAcronym := c.Query("AppAcronym")
+	TaskName := c.Query("TaskName")
 	rows, err := middleware.SelectOneTask(TaskName, TaskAppAcronym)
 	if err != nil {
 		middleware.ErrorHandler(c, http.StatusBadRequest, "Failed to /get-one-task")
