@@ -24,6 +24,7 @@
     function toggleUpdateApp(e) {
           e.preventDefault()
           open = !open;
+          size = "xl";
           app_startDate = ""
           app_endDate = ""
           app_permitCreate = ""
@@ -131,11 +132,4 @@
 </Modal>
 
 <style>
-    .text-container {
-    height: 30px;
-    width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 </style>

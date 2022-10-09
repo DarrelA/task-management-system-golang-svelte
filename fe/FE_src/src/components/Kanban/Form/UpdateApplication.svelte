@@ -6,31 +6,27 @@
 
   const dispatch = createEventDispatcher();
 
-  let app_startDate = "" ;
-  let app_endDate = "";
-  let app_permitCreate = "";
-  let app_permitOpen = "";
-  let app_permitTodo = "";
-  let app_permitDoing = "";
-  let app_permitDone = "";
-  let app_acronym = "";
+  export let app_startDate = "" ;
+  export let app_endDate = "";
+  export let app_permitCreate = "";
+  export let app_permitOpen = "";
+  export let app_permitTodo = "";
+  export let app_permitDoing = "";
+  export let app_permitDone = "";
+  export let app_acronym = "";
   export let appacronym;
 
-  let loading = false;
-
   let appData = "";
+
+  $: console.log(appacronym);
 
   export async function handleSubmit(e) {
     e.preventDefault()
     const json = {app_acronym, app_startDate, app_endDate, app_permitCreate, app_permitOpen, app_permitTodo, app_permitDoing, app_permitDone};
     try {
       const response = await axios.post("http://localhost:4000/update-application", json, { withCredentials: true });  
-      loading = true;
-
-      setTimeout(() => {
-        if (!response.data.error) {
+        if (response) {
          successToast(response.data.message);
-         loading = false;
          app_startDate = "";
          app_endDate = "";
          app_permitCreate = "";
@@ -38,8 +34,8 @@
          app_permitTodo = "";
          app_permitDoing = "";
          app_permitDone = "";
+         GetApplicationData();
         }
-      }, 500);
     } catch(error) {
       errorToast(error.response.data.message)
     }
@@ -164,14 +160,14 @@
     </Row>
 
     <Row class="justify-content-md-center">
-      <Col xs lg="3">
+      <Col xs lg="2">
         <FormGroup>
           <Label>Start:</Label>
           <Input type="date" bind:value={app_startDate} />
         </FormGroup>
       </Col>
 
-      <Col xs lg="3">
+      <Col xs lg="2">
         <FormGroup>
           <Label>End:</Label>
           <Input type="date" bind:value={app_endDate} />
