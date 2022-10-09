@@ -1,113 +1,161 @@
 <script>
     import axios from "axios";
     import { errorToast, successToast } from "../../toast";
-    import { Form, FormGroup, Input, Label, Row, Col, Button, Modal, ModalHeader, ModalBody, ModalFooter } from "sveltestrap";
+    import { Form, FormGroup, Input, Label, Row, Col, Dropdown, DropdownToggle, DropdownItem, DropdownMenu } from "sveltestrap";
+
+    // url params
+    export let appacronym;
+
+    export let task_name;
+    export let task_description;
+    export let task_notes_existing;
+    export let task_state;
+    export let task_plan;
+    export let task_owner;
+    export let task_creator;
+    export let canUpdateTask;
     
-    let task_name = ""
-    let task_description = ""
-    let task_notes = ""
-    let task_state = ""
-    let task_plan = ""
-    let task_app_acronym = ""
-    let task_owner = ""
-    let task_creator = ""
+    let task_notes = "";
+    let task_app_acronym = appacronym;
 
     
 
     let username = localStorage.getItem("username")
+    let planData = []
 
-    let size = "xl";
-    let open = false;
+  export async function handleSubmit(event) {
+      event.preventDefault()
+      task_owner = username
+      const json = {task_notes, task_plan, task_owner}
+      try {
+        const response = await axios.post(`http://localhost:4000/update-task?AppAcronym=${task_app_acronym}&TaskName=${task_name}`, 
+          json, 
+          {withCredentials: true});
 
-    async function handleSubmit(event) {
-        event.preventDefault()
-        const json = {task_app_acronym, task_name, task_description, task_notes, task_plan}
-        try {
-            const response = await axios.post("http://localhost:4000/update-task", json, {withCredentials: true});
-            if (response) {
-                successToast(response.data.message);
-                task_name = ""
-                task_description = ""
-                task_notes = ""
-                task_plan = ""
-            }
-        } catch(error) {
-            errorToast(error.response.data.message);
+        if (response) {
+          successToast(response.data.message);
+          task_notes = ""
+          GetTask();
         }
+      } catch(error) {
+        errorToast(error.response.data.message);
+      }
     }
+  
+  async function GetTask() {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/get-one-task?AppAcronym=${appacronym}&TaskName=${task_name}`,
+        { withCredentials: true }
+      );
 
-    function handleClick() {
-        open = !open
+      if (response.data) {
+        task_plan = response.data.task_plan;
+        task_description = response.data.task_description;
+        task_notes_existing = response.data.task_notes;
+        task_creator = response.data.task_creator;
+        task_owner = response.data.task_owner;
+        task_state = response.data.task_state;
+      }
+    } catch (error) {
+      console.log(error);
     }
+  }
 
-    function toggle(e) {
-        e.preventDefault()
-        open = !open;
+  async function GetPlans() {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/get-all-plans?AppAcronym=${task_app_acronym}`,
+        { withCredentials: true }
+      );
+
+      if (response.data) {
+        planData = response.data;
+      }
+    } catch (error) {
+      console.log(error);
     }
+  }
+
+  console.log(canUpdateTask)
+
+  $: GetPlans();
+  $: GetTask();
 </script>
   
 <style>
 </style>
 
-<!-- TO BE DONE BY BEATRICE -->
-<Button style="font-weight: bold; color: black;" color="warning" on:click={handleClick} >Update Task</Button>
-
-<Modal isOpen={open} {toggle} {size}>
-  <ModalHeader {toggle}>Update Task</ModalHeader>
-  <ModalBody>
-    <Form>
-      <Row>
-        <Col>
-          <FormGroup>
-            <Label>Task Name</Label>
-            <Input type="text" bind:value={task_name} placeholder="Task Name" />
-          </FormGroup>
-        </Col>
-        <Col>
-          <FormGroup>
-              <Label>Plan Name</Label>
-              <Input type="select" bind:value={task_plan} placeholder="Select a Plan">
-                  <option value="Sprint 1">Sprint 1</option>
-                  <option value="Sprint 2">Sprint 2</option>
-              </Input>
-          </FormGroup>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <FormGroup>
-            <Label>Task Description</Label>
-            <Input type="textarea" bind:value={task_description} placeholder="Task Description" rows={4} />
-          </FormGroup>
-
-          <FormGroup>
-            <Label>Task Creator</Label>
-            <Input type="text" bind:value={task_creator} placeholder="Task Creator" />
-          </FormGroup>
-
-          <FormGroup>
-            <Label>Task Owner</Label>
-            <Input type="text" bind:value={task_owner} placeholder="Task Owner" />
-          </FormGroup>
-        </Col>
-        
-        <Col>
-          <FormGroup>
-            <Label>Task Notes</Label>
-            <Input type="textarea" bind:value={task_description} placeholder="Task Description" rows={11} disabled />
-          </FormGroup>
-        </Col>
-
-        <FormGroup>
-          <Label>Task Notes</Label>
-          <Input type="textarea" bind:value={task_description} placeholder="Task Notes" rows={5} />
-        </FormGroup>
-      </Row>
-    </Form>
-  </ModalBody>
-
-  <ModalFooter>
-    <Button style="color: #fffbf0;" color="warning" on:click={(e) => handleSubmit(e)}>Update Task</Button>
-    <Button class="back-button" color="danger" on:click={toggle}>Back</Button>
-  </ModalFooter>
-</Modal>
+<Form>
+  <Row>
+    <Col>
+      <FormGroup>
+              <Label>Task Name</Label>
+              <Input type="text" value={task_name} placeholder="Task Name" readonly />
+            </FormGroup>
+          </Col>
+          <Col>
+            <FormGroup>
+              <Dropdown>
+                <DropdownToggle style="width:100%" caret disabled={!canUpdateTask}>Plan Name</DropdownToggle>
+                <DropdownMenu>
+                  {#each planData as plan}
+                    <DropdownItem
+                      on:click={() => (task_plan = plan.plan_name)}
+                      placeholder={plan}
+                    >
+                      {plan.plan_name}
+                    </DropdownItem>
+                  {/each}
+                </DropdownMenu>
+              </Dropdown>
+              <FormGroup>
+                <Input value={task_plan} type="text" readonly />
+              </FormGroup>
+            </FormGroup>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormGroup>
+              <Label>Task Description</Label>
+              <Input type="textarea" bind:value={task_description} placeholder="No task description" rows={3} readonly />
+            </FormGroup>
+            
+            <Row>
+              <Col>
+                <FormGroup>
+                  <Label>Task Creator</Label>
+                  <Input type="text" bind:value={task_creator} placeholder="Task Creator" readonly />
+                </FormGroup>
+              </Col>
+              <Col>
+                <FormGroup>
+                  <Label>Task Owner</Label>
+                  <Input type="text" bind:value={task_owner} placeholder="Task Owner" readonly />
+                </FormGroup>
+              </Col>
+              <Col>
+                <FormGroup>
+                  <Label>Task State</Label>
+                  <Input type="text" bind:value={task_state} placeholder="Task State" readonly />
+                </FormGroup>
+              </Col>
+            </Row>
+            
+            <Row>
+              <FormGroup>
+                <Label>Task Notes</Label>
+                <Input type="textarea" bind:value={task_notes} placeholder="Enter task notes" rows={6} readonly={!canUpdateTask}/>
+              </FormGroup>
+            </Row>
+          </Col>
+  
+          <Col>
+            <FormGroup>
+              <Label>Task Notes Log</Label>
+              <Input type="textarea" bind:value={task_notes_existing} placeholder="No task notes" rows={15} readonly />
+            </FormGroup>
+          </Col>
+        </Row>
+      </Form>

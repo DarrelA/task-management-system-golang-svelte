@@ -88,16 +88,17 @@ func checkTaskState(task models.Task, c *gin.Context) string {
 
 
 func checkPermit(task models.Task, c *gin.Context) string {
+	var PermitCreate sql.NullString
 	var PermitOpen sql.NullString
 	var PermitToDo sql.NullString
 	var PermitDoing sql.NullString
 	var PermitDone sql.NullString
 	var TaskOwner string
 
-	// select query from application (4 permits)
+	// select query from application (5 permits)
 	result := middleware.SelectAppPermits(task.TaskAppAcronym)
 
-	switch err := result.Scan(&PermitOpen, &PermitToDo, &PermitDoing, &PermitDone); err {
+	switch err := result.Scan(&PermitCreate, &PermitOpen, &PermitToDo, &PermitDoing, &PermitDone); err {
 	
 	// no app permits
 	case sql.ErrNoRows:
@@ -166,7 +167,7 @@ func checkPermit(task models.Task, c *gin.Context) string {
 func checkTaskPlanColor(task models.Task, c *gin.Context) string {
 	var PlanColor sql.NullString
 
-	result := middleware.SelectPlanColor(task.TaskPlan)
+	result := middleware.SelectPlanColor(task.TaskPlan, task.TaskAppAcronym)
 
 	switch err := result.Scan(&PlanColor); err {
 	case sql.ErrNoRows:
