@@ -6,12 +6,13 @@ import (
 
 var (
 	querySelectPermitCreate              = `SELECT app_permitCreate FROM application WHERE app_acronym = ?`
-	querySelectAppPermits                = `SELECT app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone FROM application WHERE app_acronym = ?`
+	querySelectAppPermits                = `SELECT app_permitCreate, app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone FROM application WHERE app_acronym = ?`
 	querySelectRNumber                   = `SELECT app_Rnum FROM application WHERE app_acronym = ?;`
 	querySelectTaskName                  = `SELECT task_name FROM task WHERE task_name = ? AND task_app_acronym = ?;`
 	querySelectTaskState                 = `SELECT task_state FROM task WHERE task_name = ? AND task_app_acronym = ?;`
 	querySelectTaskID                    = `SELECT task_id FROM task WHERE task_app_acronym = ?;`
-	querySelectPlanColor                 = `SELECT plan_color FROM plan WHERE plan_mvp_name = ?;`
+	querySelectPlanColor                 = `SELECT plan_color FROM plan WHERE plan_mvp_name = ? AND plan_app_acronym = ?;`
+	querySelectPlanColorByApp 			 = `SELECT plan_color FROM plan WHERE plan_color = ? AND plan_app_acronym = ?;`
 	querySelectTaskNotes                 = `SELECT task_notes FROM task WHERE task_name = ? AND task_app_acronym = ?`
 	querySelectAllApplications           = `SELECT app_acronym, app_description, app_Rnum, app_startDate, app_endDate FROM application`
 	querySelectApplicationByAcronym      = `SELECT app_acronym FROM application WHERE app_acronym = ?`
@@ -22,7 +23,7 @@ var (
 	querySelectOneTask = `SELECT task_id, task_name, task_description, task_notes, task_plan,task_color, task_state, task_creator, task_owner,DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate,TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime FROM task WHERE task_name = ? AND task_app_acronym = ?;`
 
 	querySelectAllPlans = `SELECT plan_mvp_name, plan_color, DATE_FORMAT(plan_startDate, "%d/%m/%Y") as formattedStartDate, DATE_FORMAT(plan_endDate, "%d/%m/%Y") as formattedEndDate FROM plan WHERE plan_app_acronym = ?`
-	querySelectPlan = `SELECT plan_mvp_name FROM plan WHERE plan_mvp_name = ? and plan_app_acronym = ?;`
+	querySelectPlan     = `SELECT plan_mvp_name FROM plan WHERE plan_mvp_name = ? and plan_app_acronym = ?;`
 
 	querySelectAllTasks         = `SELECT task_id, task_name, task_description, task_notes, task_plan, task_color, task_state, task_creator, task_owner, DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, TIME_FORMAT(Task_createDate, "%H:%i:%s") as formattedTime FROM task WHERE task_app_acronym = ?;`
 	querySelectEmailByUsername  = `SELECT email FROM accounts WHERE username = ?;`
@@ -40,7 +41,7 @@ var (
 var (
 	queryInsertApplication = `INSERT INTO application (app_acronym, app_description, app_Rnum, app_startDate, app_endDate, app_permitCreate, app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone, app_createdDate)
 	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()); `
-	
+
 	queryInsertPlan = `INSERT INTO plan (plan_mvp_name, plan_app_acronym, plan_color, plan_startDate, plan_endDate) VALUES (?,?,?,?,?);`
 
 	queryInsertTask            = `INSERT INTO task (task_app_acronym, task_id, task_name, task_description, task_notes, task_plan, task_color, task_state, task_creator, task_owner, task_createDate) VALUES (?,?,?,?,?,?,?,?,?,?,now());`
@@ -104,8 +105,13 @@ func SelectTaskID(TaskAppAcronym string) *sql.Row {
 	return result
 }
 
-func SelectPlanColor(TaskPlan string) *sql.Row {
-	result := db.QueryRow(querySelectPlanColor, TaskPlan)
+func SelectPlanColor(PlanName string, PlanAppAcronym string) *sql.Row {
+	result := db.QueryRow(querySelectPlanColor, PlanName, PlanAppAcronym)
+	return result
+}
+
+func SelectPlanColorByApp(PlanColor string, PlanAppAcronym string) *sql.Row {
+	result := db.QueryRow(querySelectPlanColorByApp, PlanColor, PlanAppAcronym)
 	return result
 }
 
@@ -139,9 +145,9 @@ func SelectAllPlans(PlanAppAcronym string) (*sql.Rows, error) {
 	return result, err
 }
 
-func SelectPlan(PlanMVPName string, PlanAppAcronym string) (*sql.Rows, error) {
-	result, err := db.Query(querySelectPlan, PlanMVPName, PlanAppAcronym)
-	return result, err
+func SelectPlan(PlanMVPName string, PlanAppAcronym string) *sql.Row {
+	result := db.QueryRow(querySelectPlan, PlanMVPName, PlanAppAcronym)
+	return result
 }
 
 func SelectOneTask(TaskName string, TaskAppAcronym string) (*sql.Rows, error) {
@@ -208,4 +214,3 @@ func UpdateTaskAuditNotes(TaskNotes string, TaskName string, TaskAppAcronym stri
 
 	return result, err
 }
-

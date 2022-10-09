@@ -12,6 +12,9 @@ import (
 
 // route: /get-all-applications
 func GetAllApplications(c *gin.Context) {
+
+	checkGroup := middleware.CheckGroup(c.GetString("username"), "Project Lead")
+
 	var (
 		acronym     sql.NullString
 		description sql.NullString
@@ -25,7 +28,7 @@ func GetAllApplications(c *gin.Context) {
 		fmt.Println(err)
 		panic(err)
 	}
-	var data []models.Application
+	var applications []models.Application
 
 	for rows.Next() {
 
@@ -40,10 +43,13 @@ func GetAllApplications(c *gin.Context) {
 			StartDate:   start.String,
 			EndDate:     end.String,
 		}
-		data = append(data, response)
+		applications = append(applications, response)
 
 	}
-	c.JSON(200, data)
+	c.JSON(200, gin.H{
+		"applications": applications,
+		"isLead":       checkGroup,
+	})
 }
 
 // route: /get-application

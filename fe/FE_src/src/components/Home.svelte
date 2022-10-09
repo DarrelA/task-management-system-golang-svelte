@@ -6,7 +6,6 @@
   import AdminNavbar from "./Admin/NavBar/IsLoggedInAdmin.svelte";
   import UserNavbar from "./User/Navbar/IsLoggedInUser.svelte";
 
-  import { navigate } from "svelte-routing";
   import AddApplication from "./Kanban/Form/AddApplication.svelte";
 
   const isAdmin = localStorage.getItem("isAdmin");
@@ -24,10 +23,12 @@
   };
 
   let applications = [];
+  let isLead = false;
   async function fetchApplications() {
     try {
       const response = await axios.get("http://localhost:4000/get-all-applications", { withCredentials: true });
-      applications = response.data;
+      applications = response.data.applications;
+      isLead = response.data.isLead;
     } catch (e) {}
   }
 
@@ -44,11 +45,6 @@
   <AdminNavbar />
 {:else if isAdmin === "false"}
   <UserNavbar />
-  <!-- TO BE DONE BY ALFRED & AMOS -->
-  <!-- This is where application(s) will be displayed -->
-  <!-- 1. Add App -->
-  <!-- 2. Update App -->
-  <!-- 3. Display App -->
 {/if}
 
 <br />
@@ -80,16 +76,18 @@
     </div>
   {/each}
 
-  <div class="add-button">
-    <Button style="background-color: #e9c46a; border: none;" size="lg" on:click={toggle}>
-      <Icon icon="bi:plus-lg" color="#000" />
-    </Button>
-  </div>
+  {#if isLead}
+    <div class="add-button">
+      <Button style="background-color: #e9c46a; border: none;" size="lg" on:click={toggle}>
+        <Icon icon="bi:plus-lg" color="#000" />
+      </Button>
+    </div>
+  {/if}
 
   <Modal isOpen={openModal} {toggle} {size}>
     <ModalHeader {toggle}>Add Application</ModalHeader>
     <ModalBody>
-      <AddApplication bind:this={addButton} on:fetch={callbackFetchGroups} on:fetch={callbackFetchGroups} />
+      <AddApplication bind:this={addButton} on:fetch={callbackFetchGroups} />
     </ModalBody>
 
     <ModalFooter>
