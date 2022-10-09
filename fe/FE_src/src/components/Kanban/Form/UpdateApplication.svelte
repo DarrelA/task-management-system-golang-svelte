@@ -1,48 +1,68 @@
 <script>
   import axios from "axios";
-  import { onMount } from "svelte";
-  import { Form, FormGroup, Input, Label, Col, Row, Styles, Icon, Accordion, AccordionItem, Button, Modal, ModalHeader, ModalBody } from "sveltestrap";
+  import { onMount, createEventDispatcher } from "svelte";
+  import { Form, FormGroup, Input, Label, Col, Row, Styles, Icon, Accordion, AccordionItem, Button, Modal, ModalHeader, ModalBody, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "sveltestrap";
   import { errorToast, successToast } from "../../toast";
 
-  let app_startDate = ""
-  let app_endDate = ""
-  let app_permitCreate = ""
-  let app_permitOpen = ""
-  let app_permitToDo = ""
-  let app_permitDoing = ""
-  let app_permitDone = ""
-  let app_acronym = ""
+  const dispatch = createEventDispatcher();
+
+  export let app_startDate = "" ;
+  export let app_endDate = "";
+  export let app_permitCreate = "";
+  export let app_permitOpen = "";
+  export let app_permitTodo = "";
+  export let app_permitDoing = "";
+  export let app_permitDone = "";
+  export let app_acronym = "";
+  export let appacronym;
 
   let appData = "";
 
-  let size = "xl";
-  let open = false; 
+  $: console.log(appacronym);
 
-  export async function handleSubmit(event) {
-    event.preventDefault()
-    const json = {app_acronym, app_startDate, app_endDate, app_permitCreate, app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone}
+  export async function handleSubmit(e) {
+    e.preventDefault()
+    const json = {app_acronym, app_startDate, app_endDate, app_permitCreate, app_permitOpen, app_permitTodo, app_permitDoing, app_permitDone};
     try {
-      const response = await axios.post("http://localhost:4000/update-application", json, {withCredentials: true});
-      setTimeout(() => {
+      const response = await axios.post("http://localhost:4000/update-application", json, { withCredentials: true });  
         if (response) {
          successToast(response.data.message);
-         app_startDate = ""
-         app_endDate = ""
-         app_permitCreate = ""
-         app_permitOpen = ""
-         app_permitToDo = ""
-         app_permitDoing = "" 
-         app_permitDone = ""
+         app_startDate = "";
+         app_endDate = "";
+         app_permitCreate = "";
+         app_permitOpen = "";
+         app_permitTodo = "";
+         app_permitDoing = "";
+         app_permitDone = "";
+         GetApplicationData();
         }
-      }, 500) 
     } catch(error) {
       errorToast(error.response.data.message)
     }
   }
 
+  let groups = [];
+  async function FetchGroups() {
+    try {
+      const response = await axios.get("http://localhost:4000/get-user-groups", { withCredentials: true });
+      console.log(response);
+      response.data.forEach((group) => {
+        groups.push(group);
+      });
+      groups = groups;
+      dispatch("fetch", {
+        response,
+      });
+    } catch (error) {}
+  }
+
+  onMount(() => {
+    FetchGroups();
+  });
+
   async function GetApplicationData() {
     try {
-      const response = await axios.get("http://localhost:4000/get-application", { withCredentials: true });
+      const response = await axios.get(`http://localhost:4000/get-application?AppAcronym=${appacronym}`, { withCredentials: true });
       if (response.data.error) {
         console.log(response.data.error);
       } else if (!response.data.error) {
@@ -54,44 +74,105 @@
   }
   
   $: GetApplicationData()
-
-  function handleClick() {
-    open = !open
-  }
-
-  function toggle(e) {
-    e.preventDefault()
-    open = !open;
-  }
 </script>
 
-<style>
-</style>
+<Form>
+  <Row>
+    <Col>
+      <FormGroup>
+        <Label>App Acronym:</Label>
+        <Input type="text" value={appData.app_acronym} readonly/>
+      </FormGroup>
+    </Col>
 
-<Button style="font-weight: bold; color: black"; color="warning" on:click={handleClick} >Update Application</Button>
+    <Col>
+      <FormGroup>
+        <Label>Running Number:</Label>
+        <Input type="number" value={appData.app_Rnum} readonly/>
+      </FormGroup>
+    </Col>
+  </Row>
 
-<Modal isOpen={open} {toggle} {size}>
-  <ModalHeader {toggle}>Update Application</ModalHeader>
-  <ModalBody>
-    <Form>
-      <Row>
-        <Col>
-          <FormGroup>
-            <Label>Application Name</Label>
-            <Input type="text" bind:value={app_acronym} placeholder="Application Name" />
-          </FormGroup>
-        </Col>
-        <Col>
-          <FormGroup>
-            <Label>Application Description</Label>
-            {appData.app_description}
-          </FormGroup>
-        </Col>
-      </Row>
-    </Form>
-  </ModalBody>
-</Modal>
+    <Row>
+      <Col>
+        <FormGroup>
+          <Label>Description:</Label>
+          <Input type="textarea" placeholder="App Description" rows={5} value={appData.app_description} readonly/>
+        </FormGroup>
+      </Col>
+    </Row>
 
+    <Row>
+      <Col>
+        <FormGroup>
+          <Label>Create:</Label>
+          <Input type="select" bind:value={app_permitCreate}>
+            {#each groups as group}
+              <option>{group}</option>
+            {/each}
+          </Input>
+        </FormGroup>
+      </Col>
 
+      <Col>
+        <FormGroup>
+          <Label>Open:</Label>
+          <Input type="select" bind:value={app_permitOpen}>
+            {#each groups as group}
+              <option>{group}</option>
+            {/each}
+          </Input>
+        </FormGroup>
+      </Col>
 
+      <Col>
+        <FormGroup>
+          <Label>To Do:</Label>
+          <Input type="select" bind:value={app_permitTodo}>
+            {#each groups as group}
+              <option>{group}</option>
+            {/each}
+          </Input>
+        </FormGroup>
+      </Col>
+
+      <Col>
+        <FormGroup>
+          <Label>Doing:</Label>
+          <Input type="select" bind:value={app_permitDoing}>
+            {#each groups as group}
+              <option>{group}</option>
+            {/each}
+          </Input>
+        </FormGroup>
+      </Col>
+      
+      <Col>
+        <FormGroup>
+          <Label>Done:</Label>
+          <Input type="select" bind:value={app_permitDone}>
+            {#each groups as group}
+              <option>{group}</option>
+            {/each}
+          </Input>
+        </FormGroup>
+      </Col>
+    </Row>
+
+    <Row class="justify-content-md-center">
+      <Col xs lg="2">
+        <FormGroup>
+          <Label>Start:</Label>
+          <Input type="date" bind:value={app_startDate} />
+        </FormGroup>
+      </Col>
+
+      <Col xs lg="2">
+        <FormGroup>
+          <Label>End:</Label>
+          <Input type="date" bind:value={app_endDate} />
+        </FormGroup>
+      </Col>
+    </Row>
+</Form>
 
