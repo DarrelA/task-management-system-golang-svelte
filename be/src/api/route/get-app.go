@@ -89,7 +89,7 @@ func GetApplication(c *gin.Context) {
 		middleware.ErrorHandler(c, 400, "Bad Request")
 		return
 	}
-	application.AppAcronym = c.Query("app_acronym")
+	application.AppAcronym = c.Query("AppAcronym")
 	result := middleware.SelectSingleApplication(application.AppAcronym)
 
 	switch err := result.Scan(&description, &rNumber, &permitCreate, &permitOpen, &permitToDo, &permitDoing, &permitDone, &created, &start, &end); err {

@@ -1,14 +1,137 @@
 <script>
-  import axios from "axios";
-  import { errorToast, successToast } from "../../toast";
-  import { Button } from "sveltestrap";
-</script>   
+    import axios from "axios";
+    import { errorToast, successToast } from "../../toast";
+    import { Table, Row, Col, Button, Modal, ModalBody, ModalHeader, ModalFooter, Card, CardBody, CardSubtitle, CardText } from "sveltestrap";
+    import { navigate } from "svelte-routing";
+    import UpdateApplication from "../Form/UpdateApplication.svelte";
+    import Icon from '@iconify/svelte';
 
-<style>
-</style>
+    let updateAppButton;
+
+    export let app_description = "";
+    export let app_startDate = "";
+    export let app_endDate = "";
+    export let app_permitCreate = "";
+    export let app_permitOpen = "";
+    export let app_permitTodo = "";
+    export let app_permitDoing = "";
+    export let app_permitDone = "";
+    export let appacronym;
+    let appData = "";
+
+    let size = "lg";
+    let open = false;
+
+    function toggleUpdateApp(e) {
+          e.preventDefault()
+          open = !open;
+          size = "xl";
+          app_description = ""
+          app_startDate = ""
+          app_endDate = ""
+          app_permitCreate = ""
+          app_permitOpen = ""
+          app_permitTodo = ""
+          app_permitDoing = ""
+          app_permitDone = ""
+          GetApplicationData()
+    }
+
+    function handleBack() {
+        navigate("/home")
+    }
+
+    async function GetApplicationData() {
+    try {
+      const response = await axios.get(`http://localhost:4000/get-application?AppAcronym=${appacronym}`, { withCredentials: true });
+      if (response.data.error) {
+        console.log(response.data.error);
+      } else if (!response.data.error) {
+        appData = response.data
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  
+  $: GetApplicationData()
+</script>   
 
 <!-- TO BE DONE BY AMOS -->
 <div class="container-fluid">
   <br/>
-  App
+
+  <Card>
+    <CardBody style="text-align: center;">
+        <Row>
+            <Col>
+                <CardSubtitle>Application</CardSubtitle>
+                <CardText>
+                    {appData.app_acronym}
+                </CardText>
+            </Col>
+            <Col>
+                <CardSubtitle>Permit Create</CardSubtitle>
+                <CardText>
+                    {appData.app_permitCreate}
+                </CardText>
+            </Col>
+            <Col>
+                <CardSubtitle>Permit Open</CardSubtitle>
+                <CardText>
+                    {appData.app_permitOpen}
+                </CardText>
+            </Col>
+            <Col>
+                <CardSubtitle>Permit To Do</CardSubtitle>
+                <CardText>
+                    {appData.app_permitTodo}
+                </CardText>
+            </Col>
+            <Col>
+                <CardSubtitle>Permit Doing</CardSubtitle>
+                <CardText>
+                    {appData.app_permitDoing}
+                </CardText>
+            </Col>
+            <Col>
+                <CardSubtitle>Permit Done</CardSubtitle>
+                <CardText>
+                    {appData.app_permitDone}
+                </CardText>
+            </Col>
+            <Col>
+                <CardText>
+                    <Row>
+                        <Col>
+                          <Button style="font-weight: bold; color: black;" color="warning" on:click={toggleUpdateApp}>
+                            <Icon icon="bi:pencil-square" width="25" height="25" />
+                          </Button>
+                        </Col>
+                        <Col>
+                            <Button style="font-weight: bold; color: black;" color="warning" on:click={handleBack}>
+                                <Icon icon="bi:arrow-left-square" width="25" height="25" />
+                            </Button>
+                        </Col>
+                    </Row>
+                </CardText>
+            </Col>
+        </Row>
+    </CardBody>
+</Card>
 </div>
+<br />
+
+<Modal isOpen={open} {toggleUpdateApp} {size}>
+  <ModalHeader {toggleUpdateApp}>Update Application</ModalHeader>
+  <ModalBody>
+      <UpdateApplication bind:this={updateAppButton} {app_startDate} {app_endDate} {app_permitCreate} {app_permitOpen} {app_permitTodo} {app_permitDoing} {app_permitDone} {appacronym} />
+  </ModalBody>
+  <ModalFooter>
+    <Button style="color: #fffbf0;" color="warning" on:click={(e) => updateAppButton.handleSubmit(e)}>Update Application</Button>
+    <Button class="back-button" color="danger" on:click={toggleUpdateApp}>Back</Button>
+  </ModalFooter>
+</Modal>
+
+<style>
+</style>
