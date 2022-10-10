@@ -8,13 +8,14 @@
 
     let updateAppButton;
 
-    export let app_startDate = ""
-    export let app_endDate = ""
-    export let app_permitCreate = ""
-    export let app_permitOpen = ""
-    export let app_permitTodo = ""
-    export let app_permitDoing = ""
-    export let app_permitDone = ""
+    export let app_description = "";
+    export let app_startDate = "";
+    export let app_endDate = "";
+    export let app_permitCreate = "";
+    export let app_permitOpen = "";
+    export let app_permitTodo = "";
+    export let app_permitDoing = "";
+    export let app_permitDone = "";
     export let appacronym;
     let appData = "";
 
@@ -25,6 +26,7 @@
           e.preventDefault()
           open = !open;
           size = "xl";
+          app_description = ""
           app_startDate = ""
           app_endDate = ""
           app_permitCreate = ""
