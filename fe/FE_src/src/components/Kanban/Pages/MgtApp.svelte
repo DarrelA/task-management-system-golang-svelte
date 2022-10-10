@@ -18,6 +18,7 @@
     export let app_permitDone = "";
     export let appacronym;
     let appData = "";
+    let isProjectLead = false;
 
     let size = "lg";
     let open = false;
@@ -47,7 +48,8 @@
       if (response.data.error) {
         console.log(response.data.error);
       } else if (!response.data.error) {
-        appData = response.data
+        appData = response.data.applications
+        isProjectLead = response.data.isLead
       }
     } catch (error) {
       console.log(error)
@@ -104,9 +106,11 @@
                 <CardText>
                     <Row>
                         <Col>
+                        {#if isProjectLead}
                           <Button style="font-weight: bold; color: black;" color="warning" on:click={toggleUpdateApp}>
                             <Icon icon="bi:pencil-square" width="25" height="25" />
                           </Button>
+                          {/if}
                         </Col>
                         <Col>
                             <Button style="font-weight: bold; color: black;" color="warning" on:click={handleBack}>
