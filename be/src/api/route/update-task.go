@@ -219,7 +219,7 @@ func checkTaskNotes(task models.Task, c *gin.Context) string {
 		result := middleware.SelectTaskNotes(task.TaskName, task.TaskAppAcronym)
 
 		switch err := result.Scan(&TaskNotes); err {
-
+                                                                          
 		case sql.ErrNoRows:
 			middleware.ErrorHandler(c, 400, "Task does not exist")
 
