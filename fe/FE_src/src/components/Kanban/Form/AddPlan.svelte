@@ -40,6 +40,7 @@
         { withCredentials: true }
       );
       if (response) {
+        randomHexGenerator()
         message = response.data.message;
         successToast(message);
         plan_name = "";
@@ -60,6 +61,8 @@
       );
 
       if (response.data.error) {
+        console.log(response.data.error);
+      } else if (!response.data.error) {
         planData = response.data;
       }
     } catch (error) {
@@ -67,6 +70,15 @@
     }
   }
   $: GetPlans();
+
+    // Random Hex Color Generator (for tagging plan to task)
+    function randomHexGenerator() {
+    let useRandomMathGenerator = (Math.random() * 0xffff * 1000000).toString(
+      16
+    );
+    let randomHex = "#" + useRandomMathGenerator.slice(0, 6);
+    plan_color = randomHex;
+  }
 </script>
 
 <Form>
