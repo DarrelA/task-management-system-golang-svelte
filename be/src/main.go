@@ -46,7 +46,7 @@ func main() {
 	// ASSIGNMENT 2 ROUTING
 	router.POST("/create-new-application", middleware.CheckCookie, route.CreateApplication)
 	router.GET("/get-all-applications", middleware.CheckCookie, route.GetAllApplications)
-	router.GET("/get-application", route.GetApplication)
+	router.GET("/get-application", middleware.CheckCookie, route.GetApplication)
 
 	router.POST("create-plan", middleware.CheckCookie, route.CreatePlan)
 	router.GET("/get-all-plans", route.GetAllPlans)

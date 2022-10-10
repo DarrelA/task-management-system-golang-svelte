@@ -12,7 +12,7 @@ var (
 	querySelectTaskState                 = `SELECT task_state FROM task WHERE task_name = ? AND task_app_acronym = ?;`
 	querySelectTaskID                    = `SELECT task_id FROM task WHERE task_app_acronym = ?;`
 	querySelectPlanColor                 = `SELECT plan_color FROM plan WHERE plan_mvp_name = ? AND plan_app_acronym = ?;`
-	querySelectPlanColorByApp 			 = `SELECT plan_color FROM plan WHERE plan_color = ? AND plan_app_acronym = ?;`
+	querySelectPlanColorByApp 			 		 = `SELECT plan_color FROM plan WHERE plan_color = ? AND plan_app_acronym = ?;`
 	querySelectTaskNotes                 = `SELECT task_notes FROM task WHERE task_name = ? AND task_app_acronym = ?`
 	querySelectAllApplications           = `SELECT app_acronym, app_description, app_Rnum, app_startDate, app_endDate FROM application`
 	querySelectApplicationByAcronym      = `SELECT app_acronym FROM application WHERE app_acronym = ?`
