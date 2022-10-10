@@ -19,19 +19,17 @@
 
   export let appacronym = null;
   let plansData = [];
+  let checkPM = true;
 
   let openPlanModal = false;
   let createPlanButton;
-  let buttonVisible = true;
-  let size = "xl";
+  let size = "lg";
 
   let plan_name = "";
   let plan_acronym = appacronym;
   let plan_color = "";
   let plan_start = "";
   let plan_end = "";
-
-  $: console.log(plan_color);
 
   async function GetAllPlans() {
     try {
@@ -41,11 +39,11 @@
       );
 
       if (response.data) {
-        console.log(response.data);
-        plansData = response.data;
+        plansData = response.data.plans;
+        checkPM = response.data.checkPM;
       }
     } catch (error) {
-      console.log("error");
+      console.log("error in get plans");
     }
   }
 
@@ -78,8 +76,9 @@
     </CardHeader>
     <CardBody>
       <!-- create plan test button -->
-      <Button size="small" on:click={toggleCreatePlan}>Create plan</Button><br
-      /><br />
+      {#if checkPM}
+        <Button size="small" on:click={toggleCreatePlan}>Create plan</Button><br/><br />
+      {/if}
       <CardSubtitle />
       <CardText>
         <!-- All plans will be displayed here -->
