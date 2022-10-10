@@ -69,8 +69,8 @@
       if (response.data.error) {
         console.log(response.data.error);
       } else if (response) {
-         appData = response.data
-         console.log(appData)
+        console.log(response.data)
+         appData = response.data.applications
          app_description = appData.app_description;
          start_date = appData.start_date;
          end_date = appData.end_date;

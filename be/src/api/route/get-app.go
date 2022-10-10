@@ -70,6 +70,9 @@ func GetAllApplications(c *gin.Context) {
 
 // route: /get-application
 func GetApplication(c *gin.Context) {
+
+	checkGroup := middleware.CheckGroup(c.GetString("username"), "Project Lead")
+
 	var (
 		application  models.Application
 		description  sql.NullString
@@ -99,6 +102,7 @@ func GetApplication(c *gin.Context) {
 		return
 	}
 
+
 	query := models.Application{
 		AppAcronym:   application.AppAcronym,
 		Description:  description.String,
@@ -113,5 +117,8 @@ func GetApplication(c *gin.Context) {
 		CreatedDate:  created.String,
 	}
 
-	c.JSON(200, query)
+	c.JSON(200, gin.H{
+			"applications": query,
+			"isLead":       checkGroup,
+		})
 }
