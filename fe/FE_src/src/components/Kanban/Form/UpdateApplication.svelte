@@ -3,7 +3,7 @@
   import { onMount, createEventDispatcher } from "svelte";
   import { Form, FormGroup, Input, Label, Col, Row, Styles, Icon, Accordion, AccordionItem, Button, Modal, ModalHeader, ModalBody, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "sveltestrap";
   import { errorToast, successToast } from "../../toast";
-
+  import Select from 'svelte-select'
   const dispatch = createEventDispatcher();
 
   export let rnumber = 0;
@@ -24,6 +24,11 @@
 
   export async function handleSubmit(e) {
     e.preventDefault()
+    app_permitCreate ? app_permitCreate = app_permitCreate.value : app_permitCreate = ""
+    app_permitOpen ? app_permitOpen = app_permitOpen.value : app_permitOpen = ""
+    app_permitTodo ? app_permitTodo = app_permitTodo.value : app_permitTodo = ""
+    app_permitDoing ? app_permitDoing = app_permitDoing.value : app_permitDoing = ""
+    app_permitDone ? app_permitDone = app_permitDone.value : app_permitDone = ""
     const json = {app_acronym, app_Rnum:rnumber, app_description, start_date, end_date, app_permitCreate, app_permitOpen, app_permitTodo, app_permitDoing, app_permitDone};
     try {
       console.log(json)
@@ -46,15 +51,17 @@
         groups.push(group);
       });
       groups = groups;
+      console.log(groups)
       dispatch("fetch", {
         response,
       });
     } catch (error) {}
   }
 
-  // onMount(() => {
-  //   FetchGroups();
-  // });
+  $: appItems = groups.map(app => ({
+    value: app,
+    label: app
+  }))
 
   async function GetApplicationData() {
     try {
@@ -113,55 +120,35 @@
       <Col>
         <FormGroup>
           <Label>Create:</Label>
-          <Input type="select" bind:value={app_permitCreate}>
-            {#each groups as group}
-              <option>{group}</option>
-            {/each}
-          </Input>
+          <Select items={appItems} bind:value={app_permitCreate}></Select>
         </FormGroup>
       </Col>
 
       <Col>
         <FormGroup>
           <Label>Open:</Label>
-          <Input type="select" bind:value={app_permitOpen}>
-            {#each groups as group}
-              <option>{group}</option>
-            {/each}
-          </Input>
+          <Select items={appItems} bind:value={app_permitOpen}></Select>
         </FormGroup>
       </Col>
 
       <Col>
         <FormGroup>
           <Label>To Do:</Label>
-          <Input type="select" bind:value={app_permitTodo}>
-            {#each groups as group}
-              <option>{group}</option>
-            {/each}
-          </Input>
+          <Select items={appItems} bind:value={app_permitTodo}></Select>
         </FormGroup>
       </Col>
 
       <Col>
         <FormGroup>
           <Label>Doing:</Label>
-          <Input type="select" bind:value={app_permitDoing}>
-            {#each groups as group}
-              <option>{group}</option>
-            {/each}
-          </Input>
+          <Select items={appItems} bind:value={app_permitDoing}></Select>
         </FormGroup>
       </Col>
       
       <Col>
         <FormGroup>
           <Label>Done:</Label>
-          <Input type="select" bind:value={app_permitDone}>
-            {#each groups as group}
-              <option>{group}</option>
-            {/each}
-          </Input>
+          <Select items={appItems} bind:value={app_permitDone}></Select>
         </FormGroup>
       </Col>
     </Row>
