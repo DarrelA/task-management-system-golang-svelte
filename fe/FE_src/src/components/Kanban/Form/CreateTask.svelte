@@ -12,6 +12,7 @@
     DropdownItem,
     DropdownMenu,
   } from "sveltestrap";
+  import Select from 'svelte-select'
   import axios from "axios";
 
   export let appacronym; // url params
@@ -26,17 +27,19 @@
   let username = localStorage.getItem("username");
   let message = "";
 
-  let getPlansData = "";
+  let getPlansData = [];
 
   export async function handleSubmit(event) {
     event.preventDefault();
+    // task_plan = task_plan.value
     const json = {
       task_app_acronym,
       task_name,
       task_description,
       task_notes,
-      task_plan,
+      task_plan: task_plan.value,
     };
+    console.log(json)
     try {
       const response = await axios.post(
         "http://localhost:4000/create-task",
@@ -65,13 +68,26 @@
 
       if (response.data) {
         getPlansData = response.data;
+        console.log(getPlansData)
       }
     } catch (error) {
       console.log(error);
     }
   }
 
+  // const complexItems = [
+	// 	{value: 'chocolate', label: 'Chocolate', group: 'Sweet'},
+  //   {value: 'pizza', label: 'Pizza', group: 'Savory'},
+  //   {value: 'cake', label: 'Cake', group: 'Sweet'},
+  //   {value: 'chips', label: 'Chips', group: 'Savory'},
+  //   {value: 'ice-cream', label: 'Ice Cream', group: 'Sweet'}
+	// ];
+
   $: GetPlans();
+  $: complexItems = getPlansData.map(info => ({
+    value: info.plan_name,
+    label: info.plan_name
+  }))
 </script>
 
 <Form>
@@ -90,11 +106,13 @@
     <Col>
       <FormGroup>
         <Label>Plan Name:</Label>
-        <Input type="select" bind:value={task_plan}>
+        <Select items={complexItems} bind:value={task_plan}></Select>
+        <!-- <Input type="select" bind:value={task_plan}>
           {#each getPlansData as getPlanData}
+            <option hidden></option>
             <option>{getPlanData.plan_name}</option>
           {/each}
-        </Input>
+        </Input> -->
       </FormGroup>
     </Col>
   </Row>

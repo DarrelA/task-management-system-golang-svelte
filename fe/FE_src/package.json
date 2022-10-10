@@ -24,6 +24,7 @@
     "axios": "^0.27.2",
     "sirv-cli": "^2.0.0",
     "svelte-routing": "^1.6.0",
+    "svelte-select": "^4.4.7",
     "sveltestrap": "^5.9.0"
   }
 }
