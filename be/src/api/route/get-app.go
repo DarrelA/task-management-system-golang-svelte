@@ -45,11 +45,27 @@ func GetAllApplications(c *gin.Context) {
 		}
 		applications = append(applications, response)
 
+		// else {
+		// 	c.JSON(200, gin.H{
+		// 		"applications": applications,
+		// 		"isLead":       checkGroup,
+		// 	})
+		// }
 	}
-	c.JSON(200, gin.H{
-		"applications": applications,
-		"isLead":       checkGroup,
-	})
+	if len(applications) == 0 {
+		fmt.Println("1")
+		c.JSON(200, gin.H{
+			"applications": []string{},
+			"isLead":       checkGroup,
+		})
+		return
+	} else {
+		fmt.Println("Length", len(applications))
+		c.JSON(200, gin.H{
+			"applications": applications,
+			"isLead":       checkGroup,
+		})
+	}
 }
 
 // route: /get-application

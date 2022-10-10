@@ -16,11 +16,6 @@ type usersGroup struct {
 }
 
 func GetUserGroup(c *gin.Context) {
-	checkGroup := middleware.CheckGroup(c.GetString("username"), "Admin")
-	if !checkGroup {
-		middleware.ErrorHandler(c, 400, "Unauthorized actions")
-		return
-	}
 
 	result, err := middleware.SelectUserGroup()
 	if err != nil {
@@ -82,7 +77,7 @@ func GetUsersInGroup(c *gin.Context) {
 		}
 
 		count = strings.Count(groups, groupname)
-		
+
 		response := usersGroup{
 			Groupname: groupname,
 			Usercount: count,

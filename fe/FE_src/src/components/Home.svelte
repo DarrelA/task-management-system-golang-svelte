@@ -27,9 +27,11 @@
   async function fetchApplications() {
     try {
       const response = await axios.get("http://localhost:4000/get-all-applications", { withCredentials: true });
+      console.log(response)
       applications = response.data.applications;
       isLead = response.data.isLead;
-    } catch (e) {}
+    } catch (e) {
+    }
   }
 
   function callbackFetchGroups(event) {

@@ -60,8 +60,6 @@
       );
 
       if (response.data.error) {
-        console.log(response.data.error);
-      } else if (!response.data.error) {
         planData = response.data;
       }
     } catch (error) {
