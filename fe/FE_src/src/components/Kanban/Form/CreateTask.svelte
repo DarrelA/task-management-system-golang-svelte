@@ -67,7 +67,7 @@
       );
 
       if (response.data) {
-        getPlansData = response.data;
+        getPlansData = response.data.plans;
         console.log(getPlansData)
       }
     } catch (error) {
