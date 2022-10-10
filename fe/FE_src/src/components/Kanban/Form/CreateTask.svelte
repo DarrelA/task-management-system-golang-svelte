@@ -6,13 +6,9 @@
     Input,
     Label,
     Col,
-    Row,
-    Dropdown,
-    DropdownToggle,
-    DropdownItem,
-    DropdownMenu,
+    Row
   } from "sveltestrap";
-  import Select from 'svelte-select'
+  import Select from 'svelte-select';
   import axios from "axios";
 
   export let appacronym; // url params
@@ -31,7 +27,6 @@
 
   export async function handleSubmit(event) {
     event.preventDefault();
-    // task_plan = task_plan.value
     const json = {
       task_app_acronym,
       task_name,
@@ -68,7 +63,6 @@
 
       if (response.data) {
         getPlansData = response.data.plans;
-        console.log(getPlansData)
       }
     } catch (error) {
       console.log(error);
@@ -80,13 +74,14 @@
     value: info.plan_name,
     label: info.plan_name
   }))
+
 </script>
 
 <Form>
   <Row>
     <Col>
       <FormGroup>
-        <Label>Task Name:</Label>
+        <Label>Task Name</Label>
         <Input
           type="text"
           bind:value={task_name}
@@ -97,14 +92,14 @@
     </Col>
     <Col>
       <FormGroup>
-        <Label>Plan Name:</Label>
+        <Label>Plan Name</Label>
         <Select items={planItems} bind:value={task_plan}></Select>
       </FormGroup>
     </Col>
   </Row>
   <Row>
     <FormGroup>
-      <Label>Task Description:</Label>
+      <Label>Task Description</Label>
       <Input
         type="textarea"
         bind:value={task_description}
@@ -115,7 +110,7 @@
   </Row>
   <Row>
     <FormGroup>
-      <Label>Task Notes:</Label>
+      <Label>Task Notes</Label>
       <Input
         type="textarea"
         bind:value={task_notes}
@@ -127,19 +122,19 @@
   <Row>
     <Col>
       <FormGroup>
-        <Label>Task State:</Label>
+        <Label>Task State</Label>
         <Input bind:value={task_state} readonly />
       </FormGroup>
     </Col>
     <Col>
       <FormGroup>
-        <Label>Task Creator:</Label>
+        <Label>Task Creator</Label>
         <Input bind:value={username} readonly />
       </FormGroup>
     </Col>
     <Col>
       <FormGroup>
-        <Label>Task Owner:</Label>
+        <Label>Task Owner</Label>
         <Input bind:value={username} readonly />
       </FormGroup>
     </Col>

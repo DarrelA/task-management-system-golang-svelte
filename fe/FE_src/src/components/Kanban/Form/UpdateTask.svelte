@@ -1,7 +1,8 @@
 <script>
     import axios from "axios";
     import { errorToast, successToast } from "../../toast";
-    import { Form, FormGroup, Input, Label, Row, Col, Dropdown, DropdownToggle, DropdownItem, DropdownMenu } from "sveltestrap";
+    import { Form, FormGroup, Input, Label, Row, Col } from "sveltestrap";
+    import Select from 'svelte-select';
 
     // url params
     export let appacronym;
@@ -25,7 +26,8 @@
 
   export async function handleSubmit(event) {
       event.preventDefault()
-      task_owner = username
+      task_owner = username;
+      task_plan ? task_plan = task_plan.value : task_plan = "";
       const json = {task_notes, task_plan, task_owner}
       try {
         const response = await axios.post(`http://localhost:4000/update-task?AppAcronym=${task_app_acronym}&TaskName=${task_name}`, 
@@ -34,7 +36,7 @@
 
         if (response) {
           successToast(response.data.message);
-          task_notes = ""
+          task_notes = "";
           GetTask();
         }
       } catch(error) {
@@ -50,7 +52,7 @@
       );
 
       if (response.data) {
-        task_plan = response.data.task_plan;
+        response.data.task_plan ? task_plan = {label: response.data.task_plan, value: response.data.task_plan} : task_plan = null
         task_description = response.data.task_description;
         task_notes_existing = response.data.task_notes;
         task_creator = response.data.task_creator;
@@ -77,10 +79,12 @@
     }
   }
 
-  console.log(canUpdateTask)
-
   $: GetPlans();
   $: GetTask();
+  $: groupItems = planData.map(info => ({
+    value: info.plan_name,
+    label: info.plan_name
+  }))
 </script>
   
 <style>
@@ -96,22 +100,8 @@
           </Col>
           <Col>
             <FormGroup>
-              <Dropdown>
-                <DropdownToggle style="width:100%" caret disabled={!canUpdateTask}>Plan Name</DropdownToggle>
-                <DropdownMenu>
-                  {#each planData as plan}
-                    <DropdownItem
-                      on:click={() => (task_plan = plan.plan_name)}
-                      placeholder={plan}
-                    >
-                      {plan.plan_name}
-                    </DropdownItem>
-                  {/each}
-                </DropdownMenu>
-              </Dropdown>
-              <FormGroup>
-                <Input value={task_plan} type="text" readonly />
-              </FormGroup>
+              <Label>Plan</Label>
+              <Select items={groupItems} bind:value={task_plan}></Select>
             </FormGroup>
           </Col>
         </Row>
@@ -146,7 +136,7 @@
             <Row>
               <FormGroup>
                 <Label>Task Notes</Label>
-                <Input type="textarea" bind:value={task_notes} placeholder="Enter task notes" rows={6} readonly={!canUpdateTask}/>
+                <Input type="textarea" bind:value={task_notes} placeholder="Enter task notes" rows={6} readonly={!canUpdateTask} autofocus/>
               </FormGroup>
             </Row>
           </Col>

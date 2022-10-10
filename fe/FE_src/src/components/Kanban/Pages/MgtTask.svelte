@@ -17,12 +17,10 @@
   import UpdateTask from '../Form/UpdateTask.svelte';
 
   export let appacronym = null;
-  export let tasksData = [];
-
+  
+  let tasksData = [];
   let size = 'xl';
-  let openAddTask = false;
   let openUpdateTask = false;
-  let createTaskButton;
   let updateTaskButton;
 
   let task_name = '';
@@ -34,14 +32,13 @@
   let task_owner;
   let task_creator;
   let canUpdateTask = false;
+  
+  export let IsPermitOpen = '';
+  export let IsPermitToDo = '';
+  export let IsPermitDoing = '';
+  export let IsPermitDone = '';
 
-  let IsPermitCreate = '';
-  let IsPermitOpen = '';
-  let IsPermitToDo = '';
-  let IsPermitDoing = '';
-  let IsPermitDone = '';
-
-  export async function GetAllTasks() {
+  async function GetAllTasks() {
     try {
       const response = await axios.get(
         `http://localhost:4000/get-all-tasks?AppAcronym=${appacronym}`,
@@ -55,28 +52,6 @@
       console.log('error');
     }
   }
-
-  const GetUserAppPermits = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:4000/get-user-app-permits?appacronym=${appacronym}`,
-        {
-          withCredentials: true,
-        }
-      );
-      if (response) {
-        IsPermitCreate = response.data.IsPermitCreate;
-        IsPermitOpen = response.data.IsPermitOpen;
-        IsPermitToDo = response.data.IsPermitToDo;
-        IsPermitDoing = response.data.IsPermitDoing;
-        IsPermitDone = response.data.IsPermitDone;
-      }
-    } catch (e) {
-      e.response && e.response.data.message
-        ? errorToast(e.response.data.message)
-        : errorToast(e.message);
-    }
-  };
 
   const demoteTask = async (task_name, task_state) => {
     const json = { task_app_acronym: appacronym, task_name, task_state };
@@ -120,9 +95,8 @@
     }
   };
 
-  function toggleAddTask(e) {
+  export function toggleAddTask(e) {
     e.preventDefault();
-    openAddTask = !openAddTask;
     task_name = '';
     task_description = '';
     task_notes = '';
@@ -133,6 +107,7 @@
   function toggleUpdateTask(e) {
     e.preventDefault();
     openUpdateTask = !openUpdateTask;
+    GetAllTasks();
   }
 
   function editTask(taskname) {
@@ -141,20 +116,12 @@
   }
 
   $: GetAllTasks();
-  $: GetUserAppPermits();
 </script>
 
 <div class="text-center" />
 <Row>
   <Col>
     <TaskState title="Open">
-      <span slot="button"
-        >{#if IsPermitCreate}
-          <Button on:click={toggleAddTask}>
-            <Icon icon="bi:plus-lg" width="25" height="25" />
-          </Button>{/if}</span
-      >
-      <br />
       {#each tasksData as task}
         {#if task.task_state === 'Open'}
           <Task color={task.task_color}>
@@ -347,29 +314,6 @@
     </TaskState>
   </Col>
 </Row>
-
-<!-- Modal for Create Task -->
-<Modal isOpen={openAddTask} {toggleAddTask} {size}>
-  <ModalHeader {toggleAddTask}>Create Task</ModalHeader>
-  <ModalBody>
-    <CreateTask
-      bind:this={createTaskButton}
-      {task_name}
-      {task_description}
-      {task_notes}
-      {task_plan}
-      {appacronym}
-    />
-  </ModalBody>
-  <ModalFooter>
-    <Button
-      style="color: #fffbf0;"
-      color="warning"
-      on:click={(e) => createTaskButton.handleSubmit(e)}>Create Task</Button
-    >
-    <Button class="back-button" color="danger" on:click={toggleAddTask}>Back</Button>
-  </ModalFooter>
-</Modal>
 
 <!-- Modal for Update Task -->
 <Modal isOpen={openUpdateTask} {toggleUpdateTask} {size}>
