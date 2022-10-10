@@ -12,7 +12,7 @@ var (
 	querySelectTaskState                 = `SELECT task_state FROM task WHERE task_name = ? AND task_app_acronym = ?;`
 	querySelectTaskID                    = `SELECT task_id FROM task WHERE task_app_acronym = ?;`
 	querySelectPlanColor                 = `SELECT plan_color FROM plan WHERE plan_mvp_name = ? AND plan_app_acronym = ?;`
-	querySelectPlanColorByApp 			 = `SELECT plan_color FROM plan WHERE plan_color = ? AND plan_app_acronym = ?;`
+	querySelectPlanColorByApp            = `SELECT plan_color FROM plan WHERE plan_color = ? AND plan_app_acronym = ?;`
 	querySelectTaskNotes                 = `SELECT task_notes FROM task WHERE task_name = ? AND task_app_acronym = ?`
 	querySelectAllApplications           = `SELECT app_acronym, app_description, app_Rnum, app_startDate, app_endDate FROM application`
 	querySelectApplicationByAcronym      = `SELECT app_acronym FROM application WHERE app_acronym = ?`
@@ -182,6 +182,21 @@ func UpdateTaskState(Username string, TaskState string, TaskName string, TaskApp
 }
 
 func UpdateApplication(Description string, StartDate string, EndDate string, PermitCreate string, PermitOpen string, PermitToDo string, PermitDoing string, PermitDone string, AppAcronym string) (sql.Result, error) {
+	result, err := db.Exec(queryUpdateApplication, Description, StartDate, EndDate, PermitCreate, PermitOpen, PermitToDo, PermitDoing, PermitDone, AppAcronym)
+	return result, err
+}
+
+func UpdateApplicationNullStartDate(Description string, StartDate *string, EndDate string, PermitCreate string, PermitOpen string, PermitToDo string, PermitDoing string, PermitDone string, AppAcronym string) (sql.Result, error) {
+	result, err := db.Exec(queryUpdateApplication, Description, StartDate, EndDate, PermitCreate, PermitOpen, PermitToDo, PermitDoing, PermitDone, AppAcronym)
+	return result, err
+}
+
+func UpdateApplicationNullEndDate(Description string, StartDate string, EndDate *string, PermitCreate string, PermitOpen string, PermitToDo string, PermitDoing string, PermitDone string, AppAcronym string) (sql.Result, error) {
+	result, err := db.Exec(queryUpdateApplication, Description, StartDate, EndDate, PermitCreate, PermitOpen, PermitToDo, PermitDoing, PermitDone, AppAcronym)
+	return result, err
+}
+
+func UpdateApplicationNullDate(Description string, StartDate *string, EndDate *string, PermitCreate string, PermitOpen string, PermitToDo string, PermitDoing string, PermitDone string, AppAcronym string) (sql.Result, error) {
 	result, err := db.Exec(queryUpdateApplication, Description, StartDate, EndDate, PermitCreate, PermitOpen, PermitToDo, PermitDoing, PermitDone, AppAcronym)
 	return result, err
 }

@@ -121,6 +121,7 @@ func TaskStateTransition(c *gin.Context) {
 	// insert note when state is promoted or demoted
 	if task.TaskState != TaskState.String {
 		updateNotes := fmt.Sprintf("Task state has been updated from \"%s\" to \"%s\"", TaskState.String, task.TaskState)
+		fmt.Println(updateNotes)
 		_, err := middleware.InsertCreateTaskNotes(task.TaskName, updateNotes, Username, task.TaskState, task.TaskAppAcronym)
 		if err != nil {
 			fmt.Println(err)
@@ -221,6 +222,22 @@ func GetUserAppPermits(c *gin.Context) {
 	userAppPermits.IsPermitToDo = strings.Contains(UserGroups.String, PermitToDo.String)
 	userAppPermits.IsPermitDoing = strings.Contains(UserGroups.String, PermitDoing.String)
 	userAppPermits.IsPermitDone = strings.Contains(UserGroups.String, PermitDone.String)
+
+	if PermitCreate.String == "" {
+		userAppPermits.IsPermitCreate = false
+	}
+	if PermitOpen.String == "" {
+		userAppPermits.IsPermitOpen = false
+	}
+	if PermitToDo.String == "" {
+		userAppPermits.IsPermitToDo = false
+	}
+	if PermitDoing.String == "" {
+		userAppPermits.IsPermitDoing = false
+	}
+	if PermitDone.String == "" {
+		userAppPermits.IsPermitDone = false
+	}
 
 	c.JSON(200, gin.H{
 		"IsPermitCreate": userAppPermits.IsPermitCreate,

@@ -76,7 +76,7 @@
   }
 
   $: GetPlans();
-  $: complexItems = getPlansData.map(info => ({
+  $: planItems = getPlansData.map(info => ({
     value: info.plan_name,
     label: info.plan_name
   }))
@@ -98,13 +98,7 @@
     <Col>
       <FormGroup>
         <Label>Plan Name:</Label>
-        <Select items={complexItems} bind:value={task_plan}></Select>
-        <!-- <Input type="select" bind:value={task_plan}>
-          {#each getPlansData as getPlanData}
-            <option hidden></option>
-            <option>{getPlanData.plan_name}</option>
-          {/each}
-        </Input> -->
+        <Select items={planItems} bind:value={task_plan}></Select>
       </FormGroup>
     </Col>
   </Row>

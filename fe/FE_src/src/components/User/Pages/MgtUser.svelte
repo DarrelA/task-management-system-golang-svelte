@@ -1,7 +1,7 @@
 <script>
   import { Modal, ModalBody, ModalHeader, ModalFooter, Button, Row, Col } from "sveltestrap";
   import Navbar from "../NavBar/IsLoggedInUser.svelte";
-  import FormUser from "../Form/AddUser.svelte";
+  import FormUser from "../Form/UpdateUser.svelte";
 
   export let password = "" 
   export let email = "";

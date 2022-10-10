@@ -70,6 +70,7 @@
         console.log(response.data.error);
       } else if (response) {
          appData = response.data
+         console.log(appData)
          app_description = appData.app_description;
          start_date = appData.start_date;
          end_date = appData.end_date;
@@ -169,4 +170,3 @@
       </Col>
     </Row>
 </Form>
-
