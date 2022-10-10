@@ -49,7 +49,7 @@ func main() {
 	router.GET("/get-application", middleware.CheckCookie, route.GetApplication)
 
 	router.POST("create-plan", middleware.CheckCookie, route.CreatePlan)
-	router.GET("/get-all-plans", route.GetAllPlans)
+	router.GET("/get-all-plans", middleware.CheckCookie, route.GetAllPlans)
 
 	router.POST("/update-task", middleware.CheckCookie, route.UpdateTask)
 	router.POST("/create-task", middleware.CheckCookie, route.CreateTask)

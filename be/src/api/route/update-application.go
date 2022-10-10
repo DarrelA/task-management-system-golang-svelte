@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-) 
+)
 
 func UpdateApplication(c *gin.Context) {
 	var application models.Application
@@ -36,88 +36,45 @@ func UpdateApplication(c *gin.Context) {
 	application.AppAcronym = c.Query("AppAcronym")
 	// currentData := getSelectedApp(application.AppAcronym)
 
-	updateAppToDB(application.AppAcronym, application.Description, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, c)
+	var (
+		start *string = nil
+		end   *string = nil
+	)
 
-	/////////// Description ///////////
-	// if application.Description == "" {
-	// 	updateAppToDB(application.AppAcronym, application.Description, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, c)
-	// } else if (application.Description != "") {
-	// 	updateAppToDB(application.AppAcronym, application.Description, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, c)
-	// }
+	if application.StartDate == "" && application.EndDate == "" {
+		_, err := middleware.UpdateApplicationNullDate(application.Description, start, end, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, application.AppAcronym)
+		if err != nil {
+			fmt.Println(err)
+		}
+		c.JSON(http.StatusCreated, gin.H{"code": 200, "message": "Application successfully updated"})
+		return
+	}
 
-	// /////////// Start Date ///////////
-	// if application.StartDate == "" {
-	// 	updateAppToDB(application.AppAcronym, application.Description, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, c)
-	// }
+	if application.StartDate == "" {
+		fmt.Println("line 45")
+		_, err := middleware.UpdateApplicationNullStartDate(application.Description, start, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, application.AppAcronym)
+		if err != nil {
+			fmt.Println(err)
+		}
+		c.JSON(http.StatusCreated, gin.H{"code": 200, "message": "Application successfully updated"})
+		return
+	}
 
-	// /////////// End Date ///////////
-	// if application.EndDate == "" {
-	// 	updateAppToDB(application.AppAcronym, application.Description, application.StartDate, currentData["end_date"], application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, c)
-	// } else if (application.EndDate != "") {
-	// 	updateAppToDB(application.AppAcronym, application.Description, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, c)
-	// }
+	if application.EndDate == "" {
+		fmt.Println("line 55")
+		_, err := middleware.UpdateApplicationNullEndDate(application.Description, application.StartDate, end, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, application.AppAcronym)
+		if err != nil {
+			fmt.Println(err)
+		}
+		c.JSON(http.StatusCreated, gin.H{"code": 200, "message": "Application successfully updated"})
+		return
+	}
 
-	// /////////// Permit Create ///////////
-	// if application.PermitCreate == "" {
-	// 	updateAppToDB(application.AppAcronym, application.Description, application.StartDate, application.EndDate, currentData["app_permitCreate"], application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, c)
-	// } else if application.PermitCreate != "" {
-	// 	updateAppToDB(application.AppAcronym, application.Description, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, c)
-	// }
-
-	// /////////// Permit Open ///////////
-	// if application.PermitOpen == "" {
-	// 	updateAppToDB(application.AppAcronym, application.Description, application.StartDate, application.EndDate, application.PermitCreate, currentData["app_permitOpen"], application.PermitToDo, application.PermitDoing, application.PermitDone, c)
-	// } else if application.PermitOpen != "" {
-	// 	updateAppToDB(application.AppAcronym, application.Description, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, c)
-	// }
-
-	// /////////// Permit ToDo ///////////
-	// if application.PermitToDo == "" {
-	// 	updateAppToDB(application.AppAcronym, application.Description, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, currentData["app_permitToDo"], application.PermitDoing, application.PermitDone, c)
-	// } else if application.PermitToDo != "" {
-	// 	updateAppToDB(application.AppAcronym, application.Description, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, c)
-	// }
-
-	// /////////// Permit Doing ///////////
-	// if application.PermitDoing == "" {
-	// 	updateAppToDB(application.AppAcronym, application.Description, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, currentData["app_permitDoing"], application.PermitDone, c)
-	// } else if application.PermitDoing != "" {
-	// 	updateAppToDB(application.AppAcronym, application.Description, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, c)
-	// }
-
-	// /////////// Permit Done ///////////
-	// if application.PermitDone == "" {
-	// 	updateAppToDB(application.AppAcronym, application.Description, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, currentData["app_permitDone"], c)
-	// } else if application.PermitDone != "" {
-	// 	updateAppToDB(application.AppAcronym, application.Description, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, c)
-	// }
-	c.JSON(http.StatusCreated, gin.H{"code": 200, "message": "Application successfully updated"})
-}
-
-func updateAppToDB(AppAcronym string, Description string, StartDate string, EndDate string, PermitCreate string, PermitOpen string, PermitToDo string, PermitDoing string, PermitDone string, c *gin.Context) {
-	_, err := middleware.UpdateApplication(Description, StartDate, EndDate, PermitCreate, PermitOpen, PermitToDo, PermitDoing, PermitDone, AppAcronym)
+	_, err := middleware.UpdateApplication(application.Description, application.StartDate, application.EndDate, application.PermitCreate, application.PermitOpen, application.PermitToDo, application.PermitDoing, application.PermitDone, application.AppAcronym)
 	if err != nil {
 		fmt.Println(err)
 	}
+	// fmt.Println("line 68")
+	c.JSON(http.StatusCreated, gin.H{"code": 200, "message": "Application successfully updated"})
+
 }
-
-// func getSelectedApp (AppAcronym string) map[string]string {
-// 	var Description, PermitCreate, PermitOpen, PermitToDo, PermitDoing, PermitDone, StartDate, EndDate, CreatedDate string
-// 	var Rnumber int
-// 	result := middleware.SelectSingleApplication(AppAcronym)
-
-// 	currentAppData := make(map[string]string)
-// 	err := result.Scan(&Description, &Rnumber, &PermitCreate, &PermitOpen, &PermitToDo, &PermitDoing, &PermitDone, &CreatedDate, &StartDate, &EndDate)
-// 	if err != sql.ErrNoRows {
-// 		currentAppData["app_description"] = Description
-// 		currentAppData["app_Rnum"] = strconv.Itoa(Rnumber)
-// 		currentAppData["start_date"] = StartDate
-// 		currentAppData["end_date"] = EndDate
-// 		currentAppData["app_permitCreate"] = PermitCreate
-// 		currentAppData["app_permitOpen"] = PermitOpen
-// 		currentAppData["app_permitTodo"] = PermitToDo
-// 		currentAppData["app_permitDoing"] = PermitDoing
-// 		currentAppData["app_permitDone"] = PermitDone	
-// 	}		
-// 	return currentAppData
-// }

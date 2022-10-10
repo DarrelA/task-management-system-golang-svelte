@@ -70,7 +70,7 @@
       );
 
       if (response.data) {
-        planData = response.data;
+        planData = response.data.plans;
       }
     } catch (error) {
       console.log(error);

@@ -243,8 +243,6 @@ func updateTaskTable(task models.Task, c *gin.Context) {
 			panic(err)
 		}
 	} else {
-		fmt.Println("line 245")
-		fmt.Println("line 246", task.TaskNotes)
 		_, err := middleware.UpdateTaskWithoutPlan(task.TaskNotes, TaskPlan, task.TaskColor, task.TaskOwner, task.TaskName, task.TaskAppAcronym)
 		if err != nil {
 			panic(err)

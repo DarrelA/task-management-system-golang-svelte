@@ -186,6 +186,21 @@ func UpdateApplication(Description string, StartDate string, EndDate string, Per
 	return result, err
 }
 
+func UpdateApplicationNullStartDate(Description string, StartDate *string, EndDate string, PermitCreate string, PermitOpen string, PermitToDo string, PermitDoing string, PermitDone string, AppAcronym string) (sql.Result, error) {
+	result, err := db.Exec(queryUpdateApplication, Description, StartDate, EndDate, PermitCreate, PermitOpen, PermitToDo, PermitDoing, PermitDone, AppAcronym)
+	return result, err
+}
+
+func UpdateApplicationNullEndDate(Description string, StartDate string, EndDate *string, PermitCreate string, PermitOpen string, PermitToDo string, PermitDoing string, PermitDone string, AppAcronym string) (sql.Result, error) {
+	result, err := db.Exec(queryUpdateApplication, Description, StartDate, EndDate, PermitCreate, PermitOpen, PermitToDo, PermitDoing, PermitDone, AppAcronym)
+	return result, err
+}
+
+func UpdateApplicationNullDate(Description string, StartDate *string, EndDate *string, PermitCreate string, PermitOpen string, PermitToDo string, PermitDoing string, PermitDone string, AppAcronym string) (sql.Result, error) {
+	result, err := db.Exec(queryUpdateApplication, Description, StartDate, EndDate, PermitCreate, PermitOpen, PermitToDo, PermitDoing, PermitDone, AppAcronym)
+	return result, err
+}
+
 func UpdateTask(TaskNotes string, TaskPlan string, TaskPlanColor string, TaskOwner string, TaskName string, TaskAppAcronym string) (sql.Result, error) {
 	result, err := db.Exec(queryUpdateTask, TaskNotes, TaskPlan, TaskPlanColor, TaskOwner, TaskName, TaskAppAcronym)
 
