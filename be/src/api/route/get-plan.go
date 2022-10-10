@@ -4,6 +4,7 @@ import (
 	"backend/api/middleware"
 	"backend/api/models"
 	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -12,15 +13,13 @@ import (
 
 // route: /get-all-plans?AppAcronym=durian
 func GetAllPlans(c *gin.Context) {
-	// var plan models.Plan
-	// if err := c.BindJSON(&plan); err != nil {
-	//   return
-	// }
 
 	var pData []models.Plan
 	var planName, planColor, planStartDate, planEndDate sql.NullString
+	fmt.Println(c.GetString("username"))
+	checkPM := middleware.CheckGroup(c.GetString("username"), "Project Manager")
+	
 	// AppAcronym URL params will be passed in here
-	//var appAcro map[string][]string = c.Request.URL.Query()
 	planAppAcronym := c.Query("AppAcronym")
 	rows, err := middleware.SelectAllPlans(planAppAcronym)
 
@@ -49,5 +48,13 @@ func GetAllPlans(c *gin.Context) {
 		pData = append(pData, resArray)
 	}
 
-	c.JSON(200, pData)
+	if len(pData) == 0 {
+		fmt.Println("1")
+		c.JSON(200, gin.H{"plans": []string{}, "checkPM": checkPM})
+		return
+	} else {
+		c.JSON(200, gin.H{"plans": pData, "checkPM": checkPM})
+	}
+
+	
 }
