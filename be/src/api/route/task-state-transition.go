@@ -3,6 +3,7 @@ package route
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -118,13 +119,35 @@ func TaskStateTransition(c *gin.Context) {
 		return
 	}
 
-	// insert note when state is promoted or demoted
 	if task.TaskState != TaskState.String {
 		updateNotes := fmt.Sprintf("Task state has been updated from \"%s\" to \"%s\"", TaskState.String, task.TaskState)
-		fmt.Println(updateNotes)
+
+		// insert task_note into TASK_NOTES TABLE when state is promoted or demoted
 		_, err := middleware.InsertCreateTaskNotes(task.TaskName, updateNotes, Username, task.TaskState, task.TaskAppAcronym)
 		if err != nil {
-			fmt.Println(err)
+			middleware.ErrorHandler(c, http.StatusInternalServerError, "Failed to insert notes in /task-state-transition")
+			return
+		}
+
+		// insert task_note into TASK TABLE when state is promoted or demoted
+		// logic from update-task.go
+		rows, err := middleware.SelectTaskNotesTimestamp(task.TaskName, task.TaskAppAcronym)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		var TaskNotes, TaskNotesDate, TaskNotesTime, TaskOwner, TaskState sql.NullString
+		var taskNotesAuditString string
+		for rows.Next() {
+			if err := rows.Scan(&TaskNotesDate, &TaskNotesTime, &TaskNotes, &TaskOwner, &TaskState); err != nil {
+				log.Fatal(err)
+			}
+
+			taskNotesAuditString += TaskNotesDate.String + " " + TaskNotesTime.String + "\n" + "Task Owner: " + TaskOwner.String + ", Task State: " + TaskState.String + "\n" + TaskNotes.String + " \n\n"
+		}
+
+		_, err = middleware.UpdateTaskAuditNotes(taskNotesAuditString, task.TaskName, task.TaskAppAcronym)
+		if err != nil {
 			middleware.ErrorHandler(c, http.StatusInternalServerError, "Failed to insert notes in /task-state-transition")
 			return
 		}
