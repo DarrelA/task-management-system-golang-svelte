@@ -104,7 +104,7 @@
         type="textarea"
         bind:value={task_description}
         placeholder="Task Description"
-        rows={2}
+        rows={5}
       />
     </FormGroup>
   </Row>
@@ -115,7 +115,7 @@
         type="textarea"
         bind:value={task_notes}
         placeholder="Task Notes"
-        rows={2}
+        rows={5}
       />
     </FormGroup>
   </Row>
