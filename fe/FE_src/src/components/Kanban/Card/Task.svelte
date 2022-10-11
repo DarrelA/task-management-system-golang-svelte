@@ -9,6 +9,7 @@
     <CardHeader>
       <CardTitle>
         <slot name="task-name" />
+        <slot name="button" />
       </CardTitle>
     </CardHeader>
     <CardBody style={color ? `border-left:5px solid ${color}` : ""}>

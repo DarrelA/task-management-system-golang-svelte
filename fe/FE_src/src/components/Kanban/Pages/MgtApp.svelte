@@ -76,10 +76,12 @@
     <CardBody style="text-align: center;">
         <Row>
             <Col>
-                <CardSubtitle>Application</CardSubtitle>
-                <CardText>
-                    {appData.app_acronym}
-                </CardText>
+                <div class="box">
+                    <CardSubtitle>Application</CardSubtitle>
+                    <CardText>
+                        {appData.app_acronym}
+                    </CardText>
+                </div>
             </Col>
             <Col>
                 <CardSubtitle>Permit Create</CardSubtitle>
@@ -147,4 +149,9 @@
 </Modal>
 
 <style>
+    .box {
+        border: 1px solid black;
+        border-radius: 5px;
+        padding: 2px;
+    }
 </style>

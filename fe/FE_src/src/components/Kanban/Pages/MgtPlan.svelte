@@ -1,14 +1,7 @@
 <script>
   import axios from "axios";
-  import { errorToast, successToast } from "../../toast";
   import {
     Button,
-    Card,
-    CardBody,
-    CardHeader,
-    CardSubtitle,
-    CardText,
-    CardTitle,
     Row,
     Col,
   } from "sveltestrap";
@@ -16,10 +9,10 @@
   import Icon from "@iconify/svelte";
   import Plan from "../Card/Plan.svelte";
   import AddPlan from "../Form/AddPlan.svelte";
+  import PlanState from "../Card/PlanState.svelte";
 
   export let appacronym = null;
   let plansData = [];
-  let checkPM = true;
 
   let openPlanModal = false;
   let createPlanButton;
@@ -40,14 +33,13 @@
 
       if (response.data) {
         plansData = response.data.plans;
-        checkPM = response.data.checkPM;
       }
     } catch (error) {
       console.log("error in get plans");
     }
   }
 
-  function toggleCreatePlan(e) {
+  export function toggleCreatePlan(e) {
     e.preventDefault();
     randomHexGenerator();
     openPlanModal = !openPlanModal;
@@ -69,30 +61,20 @@
   }
 </script>
 
-<div class="text-center">
-  <Card class="mb-3">
-    <CardHeader>
-      <CardTitle>Plan</CardTitle>
-    </CardHeader>
-    <CardBody>
-      <!-- create plan test button -->
-      {#if checkPM}
-        <Button size="small" on:click={toggleCreatePlan}>Create plan</Button><br/><br />
-      {/if}
-      <CardSubtitle />
-      <CardText>
-        <!-- All plans will be displayed here -->
-        {#each plansData as plan}
-          <Plan color={plan.plan_color}>
-            <span slot="plan-name">{plan.plan_name}</span>
-            <span slot="plan-startdate">{plan.plan_start}</span>
-            <span slot="plan-enddate">{plan.plan_end}</span>
-          </Plan>
-        {/each}
-      </CardText>
-    </CardBody>
-  </Card>
-</div>
+<PlanState title="Plan">
+  {#each plansData as plan}
+    <Plan color={plan.plan_color}>
+      <span slot="plan-name">{plan.plan_name}</span>
+
+      <span slot="plan-startdate" style="font-size: 15px;">
+        <Icon icon="bi:calendar-event" /> {plan.plan_start}
+      </span>
+      <span slot="plan-enddate" style="font-size: 15px;">
+        <Icon icon="bi:calendar-x" /> {plan.plan_end}
+      </span>
+    </Plan>
+  {/each}
+</PlanState>
 
 <!-- Modal for Create Plan -->
 <Modal isOpen={openPlanModal} {toggleCreatePlan} {size}>
