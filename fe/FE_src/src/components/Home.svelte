@@ -7,11 +7,23 @@
   import UserNavbar from "./User/Navbar/IsLoggedInUser.svelte";
 
   import AddApplication from "./Kanban/Form/AddApplication.svelte";
+  import ViewApp from "./Kanban/Form/ViewApp.svelte";
 
   const isAdmin = localStorage.getItem("isAdmin");
   let username = localStorage.getItem("username");
 
+  export let app_description = "";
+  export let app_startDate = "";
+  export let app_endDate = "";
+  export let app_permitCreate = "";
+  export let app_permitOpen = "";
+  export let app_permitTodo = "";
+  export let app_permitDoing = "";
+  export let app_permitDone = "";
+  let app_acronym = "";
+
   let openModal = false;
+  let open = false;
   let size = "lg";
   let addButton;
   const toggle = (e) => {
@@ -22,12 +34,18 @@
     size = "xl";
   };
 
+  function toggleViewApp(AppAcronym) {
+        open = !open;
+        size = "xl";
+        fetchApplications()
+        app_acronym = AppAcronym
+    }
+
   let applications = [];
   let isLead = false;
   async function fetchApplications() {
     try {
       const response = await axios.get("http://localhost:4000/get-all-applications", { withCredentials: true });
-      console.log(response)
       applications = response.data.applications;
       isLead = response.data.isLead;
     } catch (e) {
@@ -64,6 +82,9 @@
       <h4>
         {application.app_acronym}
         <a href="/dashboard/{application.app_acronym}"><Icon icon="bi:send" width="15" height="15" /></a>
+        <Button style="font-weight: bold; color: black; background-color: #bde0fe; border:none; margin-left: 130px" color="warning" on:click={() => toggleViewApp(application.app_acronym)}>
+          <Icon icon="bi:eye-fill" width="25" height="25" />
+        </Button>
       </h4>
 
       <div class="text-container">
@@ -91,10 +112,19 @@
     <ModalBody>
       <AddApplication bind:this={addButton} on:fetch={callbackFetchGroups} />
     </ModalBody>
-
     <ModalFooter>
       <Button style="color: #fffbf0; background-color: #2a9d8f;" on:click={(e) => addButton.CreateApp(e)}>Add Application</Button>
       <Button class="back-button" color="danger" on:click={toggle}>Back</Button>
+    </ModalFooter>
+  </Modal>
+  
+  <Modal isOpen={open} {toggleViewApp} {size}>
+    <ModalHeader {toggleViewApp}>View Application</ModalHeader>
+    <ModalBody>
+        <ViewApp {app_acronym} />
+    </ModalBody>
+    <ModalFooter>
+      <Button class="back-button" color="danger" on:click={toggleViewApp}>Back</Button>
     </ModalFooter>
   </Modal>
 </div>

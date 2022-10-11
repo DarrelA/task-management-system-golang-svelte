@@ -19,6 +19,11 @@ func GetAllApplications(c *gin.Context) {
 		acronym     sql.NullString
 		description sql.NullString
 		rNumber     sql.NullInt64
+		permitCreate sql.NullString
+		permitOpen 	sql.NullString
+		permitToDo 	sql.NullString
+		permitDoing	 sql.NullString
+		permitDone 	sql.NullString
 		start       sql.NullString
 		end         sql.NullString
 	)
@@ -32,7 +37,7 @@ func GetAllApplications(c *gin.Context) {
 
 	for rows.Next() {
 
-		if err := rows.Scan(&acronym, &description, &rNumber, &start, &end); err != nil {
+		if err := rows.Scan(&acronym, &description, &rNumber, &permitCreate, &permitOpen, &permitToDo, &permitDoing, &permitDone, &start, &end); err != nil {
 			panic(err)
 		}
 
@@ -40,6 +45,11 @@ func GetAllApplications(c *gin.Context) {
 			AppAcronym:  acronym.String,
 			Description: description.String,
 			Rnumber:     int(rNumber.Int64),
+			PermitCreate: permitCreate.String,
+			PermitOpen: permitOpen.String,
+			PermitToDo: permitToDo.String,
+			PermitDoing: permitDoing.String,
+			PermitDone: permitDone.String,
 			StartDate:   start.String,
 			EndDate:     end.String,
 		}
