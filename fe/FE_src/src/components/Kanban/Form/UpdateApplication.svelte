@@ -1,7 +1,7 @@
 <script>
   import axios from "axios";
-  import { onMount, createEventDispatcher } from "svelte";
-  import { Form, FormGroup, Input, Label, Col, Row, Styles, Icon, Accordion, AccordionItem, Button, Modal, ModalHeader, ModalBody, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "sveltestrap";
+  import { createEventDispatcher } from "svelte";
+  import { Form, FormGroup, Input, Label, Col, Row } from "sveltestrap";
   import { errorToast, successToast } from "../../toast";
   import Select from 'svelte-select'
   const dispatch = createEventDispatcher();

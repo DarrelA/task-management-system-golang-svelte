@@ -14,7 +14,7 @@ var (
 	querySelectPlanColor                 = `SELECT plan_color FROM plan WHERE plan_mvp_name = ? AND plan_app_acronym = ?;`
 	querySelectPlanColorByApp 			 		 = `SELECT plan_color FROM plan WHERE plan_color = ? AND plan_app_acronym = ?;`
 	querySelectTaskNotes                 = `SELECT task_notes FROM task WHERE task_name = ? AND task_app_acronym = ?`
-	querySelectAllApplications           = `SELECT app_acronym, app_description, app_Rnum, app_startDate, app_endDate FROM application`
+	querySelectAllApplications           = `SELECT app_acronym, app_description, app_Rnum, app_permitCreate, app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone, CONVERT(app_startDate, DATE), CONVERT(app_endDate, DATE) FROM application`
 	querySelectApplicationByAcronym      = `SELECT app_acronym FROM application WHERE app_acronym = ?`
 	querySelectSingleApplication         = `SELECT app_description, app_Rnum, app_permitCreate, app_permitOpen, app_permitToDo, app_permitDoing, app_permitDone, app_createdDate, CONVERT(app_startDate, DATE), CONVERT(app_endDate, DATE) FROM application WHERE app_acronym = ?`
 	querySelectCreatedTaskNotesTimestamp = `SELECT DATE_FORMAT(task_createDate, "%d/%m/%Y") as formattedDate, TIME_FORMAT(task_createDate, "%H:%i:%s") as formattedTime FROM task WHERE task_name = ? AND task_app_acronym = ?`

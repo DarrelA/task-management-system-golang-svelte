@@ -1,7 +1,6 @@
 <script>
     import axios from "axios";
-    import { errorToast, successToast } from "../../toast";
-    import { Table, Row, Col, Button, Modal, ModalBody, ModalHeader, ModalFooter, Card, CardBody, CardSubtitle, CardText } from "sveltestrap";
+    import { Row, Col, Button, Modal, ModalBody, ModalHeader, ModalFooter, Card, CardBody, CardSubtitle, CardText } from "sveltestrap";
     import { navigate } from "svelte-routing";
     import UpdateApplication from "../Form/UpdateApplication.svelte";
     import Icon from '@iconify/svelte';
@@ -139,7 +138,7 @@
 <Modal isOpen={open} {toggle} {size}>
   <ModalHeader {toggle}>Update Application</ModalHeader>
   <ModalBody>
-      <UpdateApplication bind:this={updateAppButton} {app_startDate} {app_endDate} {app_permitCreate} {app_permitOpen} {app_permitTodo} {app_permitDoing} {app_permitDone} {appacronym} />
+      <UpdateApplication bind:this={updateAppButton} {app_description} {app_startDate} {app_endDate} {app_permitCreate} {app_permitOpen} {app_permitTodo} {app_permitDoing} {app_permitDone} {appacronym} />
   </ModalBody>
   <ModalFooter>
     <Button style="color: #fffbf0;" color="warning" on:click={(e) => updateAppButton.handleSubmit(e)}>Update Application</Button>
