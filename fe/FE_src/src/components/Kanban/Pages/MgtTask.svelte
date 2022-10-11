@@ -38,6 +38,12 @@
   export let IsPermitDoing = '';
   export let IsPermitDone = '';
 
+  export let appData;
+  export let IsPermitCreate;
+  // $:  console.log("fk",appData)
+  // $:  console.log("dog", appData.app_permitCreate)
+  
+
   async function GetAllTasks() {
     try {
       const response = await axios.get(

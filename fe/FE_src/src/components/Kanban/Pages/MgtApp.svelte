@@ -5,6 +5,11 @@
     import UpdateApplication from "../Form/UpdateApplication.svelte";
     import Icon from '@iconify/svelte';
 
+    import {createEventDispatcher} from "svelte"
+  import { onMount } from "svelte";
+
+    const dispatch = createEventDispatcher()
+
     let updateAppButton;
 
     export let app_description = "";
@@ -22,26 +27,26 @@
     let size = "lg";
     let open = false;
 
-    function toggleUpdateApp(e) {
-        e.preventDefault()
-        open = !open;
-        size = "xl";
-        app_description = ""
-        app_startDate = ""
-        app_endDate = ""
-        app_permitCreate = ""
-        app_permitOpen = ""
-        app_permitTodo = ""
-        app_permitDoing = ""
-        app_permitDone = ""
+    function toggle(e) {
         GetApplicationData()
+          e.preventDefault()
+          open = !open;
+          size = "xl";
+          app_description = ""
+          app_startDate = ""
+          app_endDate = ""
+          app_permitCreate = ""
+          app_permitOpen = ""
+          app_permitTodo = ""
+          app_permitDoing = ""
+          app_permitDone = ""
     }
 
     function handleBack() {
         navigate("/home")
     }
 
-    async function GetApplicationData() {
+   export async function GetApplicationData() {
     try {
       const response = await axios.get(`http://localhost:4000/get-application?AppAcronym=${appacronym}`, { withCredentials: true });
       if (response.data.error) {
@@ -49,13 +54,18 @@
       } else if (!response.data.error) {
         appData = response.data.applications
         isProjectLead = response.data.isLead
+        dispatch("fetch")
       }
     } catch (error) {
       console.log(error)
     }
   }
   
-  $: GetApplicationData()
+//   $: GetApplicationData()
+
+  onMount(() => {
+    GetApplicationData()
+  })
 </script>   
 
 <!-- TO BE DONE BY AMOS -->
@@ -106,7 +116,7 @@
                     <Row>
                         <Col>
                         {#if isProjectLead}
-                          <Button style="font-weight: bold; color: black;" color="warning" on:click={toggleUpdateApp}>
+                          <Button style="font-weight: bold; color: black;" color="warning" on:click={toggle}>
                             <Icon icon="bi:pencil-square" width="25" height="25" />
                           </Button>
                           {/if}
@@ -125,14 +135,14 @@
 </div>
 <br />
 
-<Modal isOpen={open} {toggleUpdateApp} {size}>
-  <ModalHeader {toggleUpdateApp}>Update Application</ModalHeader>
+<Modal isOpen={open} {toggle} {size}>
+  <ModalHeader {toggle}>Update Application</ModalHeader>
   <ModalBody>
       <UpdateApplication bind:this={updateAppButton} {app_description} {app_startDate} {app_endDate} {app_permitCreate} {app_permitOpen} {app_permitTodo} {app_permitDoing} {app_permitDone} {appacronym} />
   </ModalBody>
   <ModalFooter>
     <Button style="color: #fffbf0;" color="warning" on:click={(e) => updateAppButton.handleSubmit(e)}>Update Application</Button>
-    <Button class="back-button" color="danger" on:click={toggleUpdateApp}>Back</Button>
+    <Button class="back-button" color="danger" on:click={toggle}>Back</Button>
   </ModalFooter>
 </Modal>
 
