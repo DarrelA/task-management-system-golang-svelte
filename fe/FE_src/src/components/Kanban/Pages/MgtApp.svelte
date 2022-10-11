@@ -76,7 +76,7 @@
     <CardBody style="text-align: center;">
         <Row>
             <Col>
-                <div class="box">
+                <div class="bordered-box">
                     <CardSubtitle>Application</CardSubtitle>
                     <CardText>
                         {appData.app_acronym}
@@ -84,34 +84,44 @@
                 </div>
             </Col>
             <Col>
-                <CardSubtitle>Permit Create</CardSubtitle>
-                <CardText>
-                    {appData.app_permitCreate}
-                </CardText>
+                <div class="box">
+                    <CardSubtitle>Permit Create</CardSubtitle>
+                    <CardText>
+                        {appData.app_permitCreate}
+                    </CardText>
+                </div>
             </Col>
             <Col>
-                <CardSubtitle>Permit Open</CardSubtitle>
-                <CardText>
-                    {appData.app_permitOpen}
-                </CardText>
+                <div class="box">
+                    <CardSubtitle>Permit Open</CardSubtitle>
+                    <CardText>
+                        {appData.app_permitOpen}
+                    </CardText>
+                </div>
             </Col>
             <Col>
-                <CardSubtitle>Permit To Do</CardSubtitle>
-                <CardText>
-                    {appData.app_permitTodo}
-                </CardText>
+                <div class="box">
+                    <CardSubtitle>Permit To Do</CardSubtitle>
+                    <CardText>
+                        {appData.app_permitTodo}
+                    </CardText>
+                </div>
             </Col>
             <Col>
-                <CardSubtitle>Permit Doing</CardSubtitle>
-                <CardText>
-                    {appData.app_permitDoing}
-                </CardText>
+                <div class="box">
+                    <CardSubtitle>Permit Doing</CardSubtitle>
+                    <CardText>
+                        {appData.app_permitDoing}
+                    </CardText>
+                </div>
             </Col>
             <Col>
-                <CardSubtitle>Permit Done</CardSubtitle>
-                <CardText>
-                    {appData.app_permitDone}
-                </CardText>
+                <div class="box">
+                    <CardSubtitle>Permit Done</CardSubtitle>
+                    <CardText>
+                        {appData.app_permitDone}
+                    </CardText>
+                </div>
             </Col>
             <Col>
                 <CardText>
@@ -149,9 +159,14 @@
 </Modal>
 
 <style>
-    .box {
-        border: 1px solid black;
+    .bordered-box {
+        border: 2px solid black;
         border-radius: 5px;
+        background-color: #ffd480;
         padding: 2px;
+    }
+
+    .box {
+        padding: 5px;
     }
 </style>
