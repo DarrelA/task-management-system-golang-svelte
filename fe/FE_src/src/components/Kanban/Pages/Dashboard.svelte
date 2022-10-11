@@ -10,6 +10,7 @@
     import axios from "axios";
     import { errorToast } from '../../toast';
 
+
     const isAdmin = localStorage.getItem("isAdmin");
     
     export let appacronym;
@@ -57,6 +58,11 @@
   };
 
   $: GetUserAppPermits();
+
+  let appData;
+  const callBackfetch = (event) => {
+    GetUserAppPermits()
+  } 
 </script>   
   
 <style>
@@ -72,8 +78,9 @@
 {/if}
 
 <Col xs = "12">
-    <MgtApp appacronym={appacronym} />
+    <MgtApp  appacronym={appacronym}  on:fetch={callBackfetch}/>
 </Col>
+
 
 <div class="btn">
     <Icon icon="bi:plus-lg" width="25" height="25" /> Plan
@@ -92,7 +99,7 @@
             <MgtPlan appacronym={appacronym} />
         </Col>
         <Col xs="10">
-            <MgtTask bind:this={toggleButton} appacronym={appacronym} {IsPermitOpen} {IsPermitToDo} {IsPermitDoing} {IsPermitDone} />
+            <MgtTask bind:this={toggleButton} appacronym={appacronym} {IsPermitCreate} {IsPermitToDo} {IsPermitDoing} {IsPermitDone} {appData}/>
         </Col>
     </Row>
 </div>

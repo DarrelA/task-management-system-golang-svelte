@@ -31,7 +31,6 @@
     app_permitDone ? app_permitDone = app_permitDone.value : app_permitDone = ""
     const json = {app_acronym, app_Rnum:rnumber, app_description, start_date, end_date, app_permitCreate, app_permitOpen, app_permitTodo, app_permitDoing, app_permitDone};
     try {
-      console.log(json)
       const response = await axios.post(`http://localhost:4000/update-application?AppAcronym=${appacronym}`, json, { withCredentials: true });  
         if (response) {
          successToast(response.data.message);
@@ -51,7 +50,6 @@
         groups.push(group);
       });
       groups = groups;
-      console.log(groups)
       dispatch("fetch", {
         response,
       });
@@ -69,7 +67,6 @@
       if (response.data.error) {
         console.log(response.data.error);
       } else if (response) {
-        console.log(response.data)
          appData = response.data.applications
          app_description = appData.app_description;
          start_date = appData.start_date;
