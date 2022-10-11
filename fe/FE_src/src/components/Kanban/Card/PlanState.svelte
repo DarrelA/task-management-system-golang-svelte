@@ -20,7 +20,6 @@
   </CardHeader>
   <CardBody>
     <CardSubtitle>
-      <slot name="button" />
     </CardSubtitle>
     <CardText>
       <slot />

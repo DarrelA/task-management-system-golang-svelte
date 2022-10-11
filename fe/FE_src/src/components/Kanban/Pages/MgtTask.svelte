@@ -13,14 +13,15 @@
   import { errorToast } from '../../toast';
   import Task from '../Card/Task.svelte';
   import TaskState from '../Card/TaskState.svelte';
-  import CreateTask from '../Form/CreateTask.svelte';
   import UpdateTask from '../Form/UpdateTask.svelte';
+  import ViewTask from "../Form/ViewTask.svelte";
 
   export let appacronym = null;
   
   let tasksData = [];
   let size = 'xl';
   let openUpdateTask = false;
+  let openViewTask = false;
   let updateTaskButton;
 
   let task_name = '';
@@ -31,7 +32,6 @@
   let task_state;
   let task_owner;
   let task_creator;
-  let canUpdateTask = false;
   
   export let IsPermitOpen = '';
   export let IsPermitToDo = '';
@@ -116,6 +116,16 @@
     GetAllTasks();
   }
 
+  function toggleViewTask(e) {
+    e.preventDefault();
+    openViewTask = !openViewTask;
+  }
+
+  function viewTask(taskname) {
+    openViewTask = !openViewTask;
+    task_name = taskname;
+  }
+
   function editTask(taskname) {
     openUpdateTask = !openUpdateTask;
     task_name = taskname;
@@ -124,38 +134,46 @@
   $: GetAllTasks();
 </script>
 
-<div class="text-center" />
 <Row>
   <Col>
     <TaskState title="Open">
       {#each tasksData as task}
         {#if task.task_state === 'Open'}
-          <Task color={task.task_color}>
-            <span slot="task-name">{task.task_name}</span>
-            <span slot="task-owner">{task.task_owner}</span>
-            <span slot="task-description" class="line-ellipsis"
-              >{task.task_description}</span
-            >
-            <Row slot="task-actions">
-              <Col>
-                <Button
-                  on:click={() => {
-                    canUpdateTask = IsPermitOpen;
-                    editTask(task.task_name);
-                  }}>{IsPermitOpen ? 'Update Task' : 'Read Task'}</Button
-                >
-              </Col>
+          <Task color={task.task_color} style="text-align: center;">
+            <span slot="button" style="float: right;">
               {#if IsPermitOpen}
-                <Col>
-                  <Button
-                    color="primary"
-                    on:click={() => promoteTask(task.task_name, 'ToDo')}
-                  >
-                    &#8594;
-                  </Button>
-                </Col>
+              <Button size="sm" on:click={() => {editTask(task.task_name);}}>
+                <Icon icon="bi:pencil-square" />
+              </Button>
               {/if}
-            </Row>
+              <Button size="sm" on:click={() => {viewTask(task.task_name);}}>
+                <Icon icon="fluent:eye-24-regular" />
+              </Button>
+            </span>
+            <span slot="task-name">{task.task_name}</span>
+            <span slot="task-owner" style="font-size: 15px;">
+              <Icon icon="carbon:user-avatar-filled-alt" /> {task.task_owner}
+            </span>
+            <span slot="task-description" class="line-ellipsis" style="font-size: 15px;">
+              <Icon icon="material-symbols:description-outline-rounded" /> {task.task_description}
+            </span>
+            <span slot="task-actions" style="float: right;">
+              {#if IsPermitOpen}
+              <Button size="sm" color="warning" on:click={() => promoteTask(task.task_name, 'ToDo')}>
+                <Icon icon="akar-icons:arrow-right" />
+              </Button>
+              {/if}
+              {#if !IsPermitOpen}
+              <div class="invisible">
+                <Button size="sm" color="warning">
+                  <Icon icon="akar-icons:arrow-left" />
+                </Button>
+                <Button size="sm" color="warning">
+                  <Icon icon="akar-icons:arrow-right" />
+                </Button>
+              </div>
+              {/if}
+            </span>
           </Task>
         {/if}
       {/each}
@@ -164,35 +182,43 @@
 
   <Col>
     <TaskState title="To Do">
-      <br />
       {#each tasksData as task}
         {#if task.task_state === 'ToDo'}
           <Task color={task.task_color}>
-            <span slot="task-name">{task.task_name}</span>
-            <span slot="task-owner">{task.task_owner}</span>
-            <span slot="task-description" class="line-ellipsis"
-              >{task.task_description}</span
-            >
-            <Row slot="task-actions">
-              <Col>
-                <Button
-                  on:click={() => {
-                    canUpdateTask = IsPermitToDo;
-                    editTask(task.task_name);
-                  }}>{IsPermitToDo ? 'Update Task' : 'Read Task'}</Button
-                >
-              </Col>
+            <span slot="button" style="float: right;">
               {#if IsPermitToDo}
-                <Col>
-                  <Button
-                    color="primary"
-                    on:click={() => promoteTask(task.task_name, 'Doing')}
-                  >
-                    &#8594;
-                  </Button>
-                </Col>
+              <Button size="sm" on:click={() => {editTask(task.task_name);}}>
+                <Icon icon="bi:pencil-square" />
+              </Button>
               {/if}
-            </Row>
+              <Button size="sm" on:click={() => {viewTask(task.task_name);}}>
+                <Icon icon="fluent:eye-24-regular" />
+              </Button>
+            </span>
+            <span slot="task-name">{task.task_name}</span>
+            <span slot="task-owner" style="font-size: 15px;">
+              <Icon icon="carbon:user-avatar-filled-alt" /> {task.task_owner}
+            </span>
+            <span slot="task-description" class="line-ellipsis" style="font-size: 15px;">
+              <Icon icon="material-symbols:description-outline-rounded" /> {task.task_description}
+            </span>
+            <span slot="task-actions" style="float: right;">
+              {#if IsPermitToDo}
+              <Button size="sm" color="warning" on:click={() => promoteTask(task.task_name, 'Doing')}>
+                <Icon icon="akar-icons:arrow-right" />
+              </Button>
+              {/if}
+              {#if !IsPermitToDo}
+              <div class="invisible">
+                <Button size="sm" color="warning">
+                  <Icon icon="akar-icons:arrow-left" />
+                </Button>
+                <Button size="sm" color="warning">
+                  <Icon icon="akar-icons:arrow-right" />
+                </Button>
+              </div>
+              {/if}
+            </span>
           </Task>
         {/if}
       {/each}
@@ -201,45 +227,46 @@
 
   <Col>
     <TaskState title="Doing">
-      <br />
       {#each tasksData as task}
         {#if task.task_state === 'Doing'}
           <Task color={task.task_color}>
+            <span slot="button" style="float: right;">
+              {#if IsPermitDoing}
+              <Button size="sm" on:click={() => {editTask(task.task_name);}}>
+                <Icon icon="bi:pencil-square" />
+              </Button>
+              {/if}
+              <Button size="sm" on:click={() => {viewTask(task.task_name);}}>
+                <Icon icon="fluent:eye-24-regular" />
+              </Button>
+            </span>
             <span slot="task-name">{task.task_name}</span>
-            <span slot="task-owner">{task.task_owner}</span>
-            <span slot="task-description" class="line-ellipsis"
-              >{task.task_description}</span
-            >
-            <Row slot="task-actions">
+            <span slot="task-owner" style="font-size: 15px;">
+              <Icon icon="carbon:user-avatar-filled-alt" /> {task.task_owner}
+            </span>
+            <span slot="task-description" class="line-ellipsis" style="font-size: 15px;">
+              <Icon icon="material-symbols:description-outline-rounded" /> {task.task_description}
+            </span>
+            <span slot="task-actions" style="float: right;">
               {#if IsPermitDoing}
-                <Col>
-                  <Button
-                    color="primary"
-                    on:click={() => demoteTask(task.task_name, 'ToDo')}
-                  >
-                    &#8592;
-                  </Button>
-                </Col>
+                <Button size="sm" color="warning" on:click={() => demoteTask(task.task_name, 'ToDo')}>
+                  <Icon icon="akar-icons:arrow-left" />
+                </Button>
+                <Button size="sm" color="warning" on:click={() => promoteTask(task.task_name, 'Done')}>
+                  <Icon icon="akar-icons:arrow-right" />
+                </Button>
               {/if}
-              <Col>
-                <Button
-                  on:click={() => {
-                    canUpdateTask = IsPermitDoing;
-                    editTask(task.task_name);
-                  }}>{IsPermitDoing ? 'Update Task' : 'Read Task'}</Button
-                >
-              </Col>
-              {#if IsPermitDoing}
-                <Col>
-                  <Button
-                    color="primary"
-                    on:click={() => promoteTask(task.task_name, 'Done')}
-                  >
-                    &#8594;
-                  </Button>
-                </Col>
+              {#if !IsPermitDoing}
+              <div class="invisible">
+                <Button size="sm" color="warning">
+                  <Icon icon="akar-icons:arrow-left" />
+                </Button>
+                <Button size="sm" color="warning">
+                  <Icon icon="akar-icons:arrow-right" />
+                </Button>
+              </div>
               {/if}
-            </Row>
+            </span>
           </Task>
         {/if}
       {/each}
@@ -248,45 +275,46 @@
 
   <Col>
     <TaskState title="Done">
-      <br />
       {#each tasksData as task}
         {#if task.task_state === 'Done'}
           <Task color={task.task_color}>
+            <span slot="button" style="float: right;">
+              {#if IsPermitDone}
+              <Button size="sm" on:click={() => {editTask(task.task_name);}}>
+                <Icon icon="bi:pencil-square" />
+              </Button>
+              {/if}
+              <Button size="sm" on:click={() => {viewTask(task.task_name);}}>
+                <Icon icon="fluent:eye-24-regular" />
+              </Button>
+            </span>
             <span slot="task-name">{task.task_name}</span>
-            <span slot="task-owner">{task.task_owner}</span>
-            <span slot="task-description" class="line-ellipsis"
-              >{task.task_description}</span
-            >
-            <Row slot="task-actions">
+            <span slot="task-owner" style="font-size: 15px;">
+              <Icon icon="carbon:user-avatar-filled-alt" /> {task.task_owner}
+            </span>
+            <span slot="task-description" class="line-ellipsis" style="font-size: 15px;">
+              <Icon icon="material-symbols:description-outline-rounded" /> {task.task_description}
+            </span>
+            <span slot="task-actions" style="float: right;">
               {#if IsPermitDone}
-                <Col>
-                  <Button
-                    color="primary"
-                    on:click={() => demoteTask(task.task_name, 'Doing')}
-                  >
-                    &#8592;
-                  </Button>
-                </Col>
+                <Button size="sm" color="warning" on:click={() => demoteTask(task.task_name, 'Doing')}>
+                  <Icon icon="akar-icons:arrow-left" />
+                </Button>
+                <Button size="sm" color="warning" on:click={() => promoteTask(task.task_name, 'Closed')}>
+                  <Icon icon="akar-icons:arrow-right" />
+                </Button>
               {/if}
-              <Col>
-                <Button
-                  on:click={() => {
-                    canUpdateTask = IsPermitDone;
-                    editTask(task.task_name);
-                  }}>{IsPermitDone ? 'Update Task' : 'Read Task'}</Button
-                >
-              </Col>
-              {#if IsPermitDone}
-                <Col>
-                  <Button
-                    color="primary"
-                    on:click={() => promoteTask(task.task_name, 'Closed')}
-                  >
-                    &#8594;
-                  </Button>
-                </Col>
+              {#if !IsPermitDone}
+              <div class="invisible">
+                <Button size="sm" color="warning">
+                  <Icon icon="akar-icons:arrow-left" />
+                </Button>
+                <Button size="sm" color="warning">
+                  <Icon icon="akar-icons:arrow-right" />
+                </Button>
+              </div>
               {/if}
-            </Row>
+            </span>
           </Task>
         {/if}
       {/each}
@@ -295,25 +323,31 @@
 
   <Col>
     <TaskState title="Close">
-      <br />
       {#each tasksData as task}
         {#if task.task_state === 'Closed'}
           <Task color={task.task_color}>
+            <span slot="button" style="float: right;">
+              <Button size="sm" on:click={() => {viewTask(task.task_name);}}>
+                <Icon icon="fluent:eye-24-regular" />
+              </Button>
+            </span>
             <span slot="task-name">{task.task_name}</span>
-            <span slot="task-owner">{task.task_owner}</span>
-            <span slot="task-description" class="line-ellipsis"
-              >{task.task_description}</span
-            >
-            <Row slot="task-actions">
-              <Col>
-                <Button
-                  on:click={() => {
-                    canUpdateTask = false;
-                    editTask(task.task_name);
-                  }}>Read Task</Button
-                >
-              </Col>
-            </Row>
+            <span slot="task-owner" style="font-size: 15px;">
+              <Icon icon="carbon:user-avatar-filled-alt" /> {task.task_owner}
+            </span>
+            <span slot="task-description" class="line-ellipsis" style="font-size: 15px;">
+              <Icon icon="material-symbols:description-outline-rounded" /> {task.task_description}
+            </span>
+            <span slot="task-actions" style="float: right;">
+              <div class="invisible">
+                <Button size="sm" color="warning">
+                  <Icon icon="akar-icons:arrow-left" />
+                </Button>
+                <Button size="sm" color="warning">
+                  <Icon icon="akar-icons:arrow-right" />
+                </Button>
+              </div>
+            </span>
           </Task>
         {/if}
       {/each}
@@ -335,7 +369,6 @@
       {task_creator}
       {task_owner}
       {appacronym}
-      {canUpdateTask}
     />
   </ModalBody>
   <ModalFooter>
@@ -348,6 +381,26 @@
   </ModalFooter>
 </Modal>
 
+<!-- Modal for View Task -->
+<Modal isOpen={openViewTask} {toggleViewTask} {size}>
+  <ModalHeader {toggleViewTask}>View Task</ModalHeader>
+  <ModalBody>
+    <ViewTask 
+      {task_name}
+      {task_description}
+      {task_notes_existing}
+      {task_plan}
+      {task_state}
+      {task_creator}
+      {task_owner}
+      {appacronym} 
+    />
+  </ModalBody>
+  <ModalFooter>
+    <Button class="back-button" color="danger" on:click={toggleViewTask}>Back</Button>
+  </ModalFooter>
+</Modal>
+
 <style>
   .line-ellipsis {
     display: -webkit-box;
@@ -355,5 +408,9 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .invisible {
+    visibility: hidden;
   }
 </style>

@@ -1,5 +1,5 @@
 <script>
-    import {Card, CardBody, CardHeader, CardSubtitle, CardText, CardTitle, Col, Button } from "sveltestrap";
+    import {Card, CardBody, CardHeader, CardSubtitle, CardText, CardTitle, Col, Row, Button } from "sveltestrap";
   
     export let color = null;
   </script>
@@ -13,8 +13,14 @@
       </CardHeader>
       <CardBody style={color ? `border-left:5px solid ${color}` : ""}>
         <CardSubtitle>
-          <slot name="plan-startdate" />
-          <slot name="plan-enddate" />
+          <Row>
+            <Col>
+              <slot name="plan-startdate" />
+            </Col>
+            <Col>
+              <slot name="plan-enddate" />
+            </Col>
+          </Row>
         </CardSubtitle>
       </CardBody>
     </Card>
