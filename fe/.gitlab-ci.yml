@@ -3,7 +3,6 @@ image: alpine
 before_script:
   - apk add npm
   - apk add git --no-cache
-  - git --version
 
 stages:
   - clone
@@ -13,18 +12,8 @@ clone repo:
   stage: clone
   script:
     - echo "Cloning Frontend Repo"
-    # created folder for clone
-    - mkdir workspace
-    - cd workspace
     - pwd && ls
-    - git clone https://gitlab.com/lowjiewei/tms-a3.git
-    - pwd && ls
-    - cd ./tms-a3/FE_src
-    - pwd && ls
-    - npm install
-    - cd src
-    - npm run dev
-    - npm run build
+    - git clone https://gitlab.com/lowjiewei/tms-a3.git workspace
 
   artifacts:
     paths:
@@ -34,9 +23,21 @@ clone repo:
 build:
   stage: build
   script:
+    - pwd && ls
+    - cd FE_src
     - echo "Building Frontend Repo"
+    - pwd && ls
+    - npm install
+    - npm run build
+    - cd ..
+    - mkdir bin
     - pwd
-    # - cd tms-a3/FE_src
-
-    # - npm install
+    - ls
+    - cp -r FE_src bin
+    - tar -czvf bin.tar.gz bin
+  artifacts:
+    paths:
+      - ./bin.tar.gz
+  dependencies:
+    - clone repo
 

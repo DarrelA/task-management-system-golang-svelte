@@ -12,14 +12,6 @@
   const isAdmin = localStorage.getItem("isAdmin");
   let username = localStorage.getItem("username");
 
-  let app_description = "";
-  let app_startDate = "";
-  let app_endDate = "";
-  let app_permitCreate = "";
-  let app_permitOpen = "";
-  let app_permitTodo = "";
-  let app_permitDoing = "";
-  let app_permitDone = "";
   let app_acronym = "";
 
   let openModal = false;
