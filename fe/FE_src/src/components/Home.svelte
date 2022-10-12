@@ -4,7 +4,7 @@
   import { Button, Modal, ModalBody, ModalHeader, ModalFooter } from "sveltestrap";
   import Icon from "@iconify/svelte";
   import AdminNavbar from "./Admin/NavBar/IsLoggedInAdmin.svelte";
-  import UserNavbar from "./User/Navbar/IsLoggedInUser.svelte";
+  import UserNavbar from "./User/NavBar/IsLoggedInUser.svelte";
 
   import AddApplication from "./Kanban/Form/AddApplication.svelte";
   import ViewApp from "./Kanban/Form/ViewApp.svelte";
@@ -12,21 +12,21 @@
   const isAdmin = localStorage.getItem("isAdmin");
   let username = localStorage.getItem("username");
 
-  export let app_description = "";
-  export let app_startDate = "";
-  export let app_endDate = "";
-  export let app_permitCreate = "";
-  export let app_permitOpen = "";
-  export let app_permitTodo = "";
-  export let app_permitDoing = "";
-  export let app_permitDone = "";
+  let app_description = "";
+  let app_startDate = "";
+  let app_endDate = "";
+  let app_permitCreate = "";
+  let app_permitOpen = "";
+  let app_permitTodo = "";
+  let app_permitDoing = "";
+  let app_permitDone = "";
   let app_acronym = "";
 
   let openModal = false;
   let open = false;
   let size = "lg";
   let addButton;
-  const toggle = (e) => {
+  const toggle = e => {
     fetchApplications();
     callbackFetchGroups(e);
     e.preventDefault();
@@ -35,11 +35,11 @@
   };
 
   function toggleViewApp(AppAcronym) {
-        open = !open;
-        size = "xl";
-        fetchApplications()
-        app_acronym = AppAcronym
-    }
+    open = !open;
+    size = "xl";
+    fetchApplications();
+    app_acronym = AppAcronym;
+  }
 
   let applications = [];
   let isLead = false;
@@ -48,8 +48,7 @@
       const response = await axios.get("http://localhost:4000/get-all-applications", { withCredentials: true });
       applications = response.data.applications;
       isLead = response.data.isLead;
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   function callbackFetchGroups(event) {
@@ -113,15 +112,15 @@
       <AddApplication bind:this={addButton} on:fetch={callbackFetchGroups} />
     </ModalBody>
     <ModalFooter>
-      <Button style="color: #fffbf0; background-color: #2a9d8f;" on:click={(e) => addButton.CreateApp(e)}>Add Application</Button>
+      <Button style="color: #fffbf0; background-color: #2a9d8f;" on:click={e => addButton.CreateApp(e)}>Add Application</Button>
       <Button class="back-button" color="danger" on:click={toggle}>Back</Button>
     </ModalFooter>
   </Modal>
-  
+
   <Modal isOpen={open} {toggleViewApp} {size}>
     <ModalHeader {toggleViewApp}>View Application</ModalHeader>
     <ModalBody>
-        <ViewApp {app_acronym} />
+      <ViewApp {app_acronym} />
     </ModalBody>
     <ModalFooter>
       <Button class="back-button" color="danger" on:click={toggleViewApp}>Back</Button>
