@@ -7,7 +7,9 @@ ssh commonuser@192.168.0.105 "cd C:\Users\commonuser\Desktop\fe-temp\backup && t
 
 ssh commonuser@192.168.0.105 "powershell -Command "Copy-Item -Path "C:/Users/commonuser/Desktop/fe-temp/backup/fe-test-server/bin/FE_src" -Destination "C:/Users/commonuser/Desktop/TMS/FE" -Recurse""
 
-ssh commonuser@192.168.0.105 "powershell -Command "npx kill-port 3000""
+# ssh commonuser@192.168.0.105 "powershell -Command "npx kill-port 3000""
+ssh commonuser@192.168.0.105 "$procid=(Get-Process "node").id && kill $procid"
+
 ssh commonuser@192.168.0.105 "cd C:/Users/commonuser/Desktop/TMS/FE && npm install"
 
 ssh commonuser@192.168.0.105 "cd C:\Users\commonuser\Desktop\TMS && echo cd C:\Users\commonuser\Desktop\TMS\FE >> runfe.ps1 && echo npm run dev >> runfe.ps1"

@@ -13,7 +13,8 @@ ssh commonuser@192.168.0.105 "cd C:\Users\commonuser\Desktop\be-temp\backup && t
 
 ssh commonuser@192.168.0.105 "powershell -Command "Copy-Item -Path "C:/Users/commonuser/Desktop/be-temp/backup/be-test-server/*" -Destination "C:/Users/commonuser/Desktop/TMS/BE" -Recurse""
 
-ssh commonuser@192.168.0.105 "powershell -Command "npx kill-port 8080""
+# ssh commonuser@192.168.0.105 "powershell -Command "npx kill-port 8080""
+ssh commonuser@192.168.0.105 "$procid=(Get-Process "backend").id && kill $procid"
 
 ssh commonuser@192.168.0.105 "cd C:\Users\commonuser\Desktop\TMS && echo cd C:\Users\commonuser\Desktop\TMS\BE\bin\src > runbe.ps1 && echo ./backend.exe >> runbe.ps1" 
 ## copy config folder over to TMS folder
