@@ -6,14 +6,13 @@ stages:
 variables:
   GIT_CLONE_PATH: "./release/$CI_COMMIT_BRANCH"
   GIT_STRATEGY: none
+  # CLONE_BRANCH: $BRANCH_NAME
 
 clone_repo:
   stage: clone
   script:
-    - echo "Cloning"
-    - dir
-    - git --version
-    - git clone --branch REL_FE_0_4_1 http://192.168.0.102:4000/root/fe.git C:/Users/commonuser/Desktop/release/$CI_COMMIT_BRANCH
+    - echo "Cloning REL_BE_0_3_1"`
+    - git clone --branch $CI_COMMIT_BRANCH http://192.168.0.102:4000/root/be.git C:/Users/commonuser/Desktop/release/$CI_COMMIT_BRANCH
   rules:
     - if: $CI_COMMIT_BRANCH =~ /^REL_/
 
